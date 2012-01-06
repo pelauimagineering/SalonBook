@@ -7,7 +7,7 @@
 	<license>GNU/GPL</license>
 	<authorEmail>darren@pelau.com</authorEmail>
 	<authorUrl>www.pelau.com</authorUrl>
-	<version>1.0.1</version>
+	<version>1.0.2</version>
 	<description>Synchronizes the Salonbook Users table when Joomla users are updated</description>
 	<files>
 	    <filename plugin="salonbook">salonbook.php</filename>
