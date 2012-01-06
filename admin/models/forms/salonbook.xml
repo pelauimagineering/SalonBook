@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<fieldset>
+		<field
+			name="id"
+			type="hidden"
+		/>
+		<field
+			name="appointmentDate"
+			type="text"
+			label="COM_SALONBOOK_SALONBOOK_APPOINTMENTS_DETAIL_DATE"
+			description="COM_SALONBOOK_SALONBOOK_APPOINTMENTS_DETAIL_DATE_DESC"
+			size="40"
+			class="inputbox"
+			default=""
+		/>
+		<field
+			name="startTime"
+			type="text"
+			label="COM_SALONBOOK_SALONBOOK_APPOINTMENTS_DETAIL_TIME"
+			description="COM_SALONBOOK_SALONBOOK_APPOINTMENTS_DETAIL_TIME_DESC"
+			size="40"
+			class="inputbox"
+			default="10:00"
+		/>
+		<field
+			name="stylist"
+			type="text"
+			label="COM_SALONBOOK_SALONBOOK_APPOINTMENTS_DETAIL_STYLIST"
+			description="COM_SALONBOOK_SALONBOOK_APPOINTMENTS_DETAIL_STYLIST_DESC"
+			size="40"
+			class="inputbox"
+			default=""
+		/>
+		<field
+			name="service"
+			type="text"
+			label="COM_SALONBOOK_SALONBOOK_APPOINTMENTS_DETAIL_SERVICE"
+			description="COM_SALONBOOK_SALONBOOK_APPOINTMENTS_DETAIL_SERVICE_DESC"
+			size="40"
+			class="inputbox"
+			default=""
+		/>
+		<field
+			name="depositPaid"
+			type="text"
+			label="COM_SALONBOOK_SALONBOOK_APPOINTMENTS_DETAIL_DEPOSIT_PAID"
+			description="COM_SALONBOOK_SALONBOOK_APPOINTMENTS_DETAIL_DEPOSIT_PAID_DESC"
+			class="checkbox"
+			default=""
+		/>
+		
+	</fieldset>
+</form>

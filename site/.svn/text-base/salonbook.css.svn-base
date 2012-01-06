@@ -1,0 +1,56 @@
+ul#salon_list
+{
+	list-style: none;
+}
+
+table
+{
+	border-collapse:collapse;
+}
+
+table,th,td
+{
+border: 0px solid #ffffff;
+}
+
+table#navFooterTable
+{
+	width: 100%;
+}
+
+td#leftColumn
+{
+	text-align: center;
+}
+
+td#rightColumn
+{
+	text-align: center;
+}
+
+/* timeslots UI */
+/* p {margin-left:20px;} */
+#main_display_area {
+	width: 240px;
+	color: black;
+	float: left;
+}
+#selectedTimeslot {
+	color:green;
+}
+#stepHeaderTitle {
+	color:black;
+}
+#displayAreaSelectedTimeslot {
+	float:left;
+	margin-left:40px;
+}
+
+/* admin area */
+.salonbook_admin_tools #synch_users {
+	border: 1px solid #000000;
+	padding: 30px 30px 30px 30px;
+	background-color: #ff0000;
+	color: #ffffff;
+}
+

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+        <layout title="COM_SALONBOOK_SALONBOOK_VIEW_DEFAULT_TITLE">
+                <message>COM_SALONBOOK_SALONBOOK_VIEW_DEFAULT_DESC</message>
+        </layout>
+		 <fields 
+				name="request"
+				addfieldpath="/administrator/components/com_salonbook/models/fields"
+			>
+		                <fieldset name="request">
+		                        <field
+		                                name="id"
+		                                type="salonbook"
+		                                label="COM_SALONBOOK_SALONBOOK_FIELD_DISPLAYNAME_LABEL"
+		                                description="COM_SALONBOOK_SALONBOOK_FIELD_DISPLAYNAME_DESC"
+		                        />
+		                </fieldset>
+		</fields>
+</metadata>
