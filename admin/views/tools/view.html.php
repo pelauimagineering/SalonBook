@@ -8,7 +8,7 @@ jimport('joomla.application.component.view');
 /**
  * SalonBooks View of all bookings created and managed by the system
  */
-class SalonBookViewTools extends JView
+class SalonBooksViewTools extends JView
 {
 	/**
 	 * view display method
@@ -17,7 +17,7 @@ class SalonBookViewTools extends JView
 	function display($tpl = null) 
 	{
 		// Get data from the model
-		$model = new SalonBookModelUsers;
+		$model = new SalonBooksModelUsers;
 		$this->countUsersInserted = $model->countUsersInserted;
 		$this->countUsersUpdated = $model->countUsersUpdated;
 
@@ -32,9 +32,17 @@ class SalonBookViewTools extends JView
 		// Assign data to the view
 		// $this->items = $items;
 		$this->pagination = $pagination;
- 
+ 		
+		$this->addToolBar();
+		
 		// Display the template
 		parent::display($tpl);
+	}
+	
+	protected function addToolBar() 
+	{
+		JHtml::stylesheet('com_salonbook/admin.stylesheet.css', array(), true, false, false);
+		JToolBarHelper::title(JText::_('COM_SALONBOOK_MANAGER_TOOLS'),'salonbook');
 	}
 	
 }

@@ -40,7 +40,7 @@ DROP TABLE IF EXISTS `#__salonbook_appointments`;
 CREATE TABLE  `#__salonbook_appointments` (
 	`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 	`created_when` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
-	`appointmentDate` DATE NOT NULL ,
+	`appointmentDate` DATE NULL ,
 	`startTime` TIME NULL ,
 	`durationInMinutes` INT NULL ,
 	`user` INT NOT NULL COMMENT  'foreign key',
@@ -48,7 +48,8 @@ CREATE TABLE  `#__salonbook_appointments` (
 	`balance_due` FLOAT NULL ,
 	`stylist` INT NULL COMMENT  'foreign key',
 	`service` INT NULL COMMENT  'foreign key',
-	`paypal_id` varchar(50) NULL 
+	`payment_id` varchar(50) NULL, 
+	`status` INT NULL COMMENT 'foreign key',
 ) ENGINE=MYISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `#__salonbook_users`;
@@ -68,3 +69,15 @@ CREATE TABLE `#__salonbook_users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_id` (`user_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;
+
+CREATE TABLE `#__salonbook_status` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `status` varchar(25) NOT NULL,
+   PRIMARY KEY  (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+
+INSERT INTO `#__salonbook_status` (`status`) VALUES
+	('In Progress'),
+	('Completed'),
+	('Refunded'),
+	('Cancelled');

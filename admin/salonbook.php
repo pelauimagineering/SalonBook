@@ -16,8 +16,29 @@ JSubMenuHelper::addEntry(JText::_('SALONBOOK_MENU_TOOLS'), 'index.php?option=com
 JSubMenuHelper::addEntry(JText::_('SALONBOOK_MENU_HELP'), 'index.php?option=com_salonbook&view=clients',$view == 'clients' );
 
 // Get an instance of the controller prefixed by SalonBook
-$controller = JController::getInstance('SalonBook');
+// $controller = JController::getInstance('SalonBook');
+
+//
+require_once( JPATH_COMPONENT.DS.'controller.php' );
  
+// Require specific controller if requested
+if($controller = JRequest::getWord('controller')) {
+	$path = JPATH_COMPONENT.DS.'controllers'.DS.$controller.'.php';
+	if (file_exists($path)) {
+		require_once $path;
+	} else {
+		$controller = '';
+	}
+}
+
+// Create the controller
+$classname	= 'SalonBooksController'.$controller;
+$controller	= new $classname( );
+
+$theTask = JRequest::getCmd('task');
+error_log("using controller: " . $classname . " and task: " . $theTask . "\n", 3, "../logs/salonbook.log");
+//
+
 // Perform the Request task
 $controller->execute(JRequest::getCmd('task'));
  

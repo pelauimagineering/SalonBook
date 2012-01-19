@@ -8,7 +8,7 @@ jimport('joomla.application.component.view');
 /**
  * SalonBook View
  */
-class SalonBookViewSalonBook extends JView
+class SalonBooksViewSalonBook extends JView
 {
 	/**
 	 * display method of SalonBook view
@@ -16,10 +16,17 @@ class SalonBookViewSalonBook extends JView
 	 */
 	public function display($tpl = null) 
 	{
+		
 		// get the Data
 		$form = $this->get('Form');
-		$item = $this->get('Item');
+		$appointment = $this->get('Appointment');
  
+		// get more data
+		$stylists = $this->get('OptionListOfStylists');
+		$services = $this->get('OptionListOfServices');
+		$clients = $this->get('OptionListOfClients');
+		$statusNames = $this->get('OptionListOfStatusNames');
+		
 		// Check for errors.
 		if (count($errors = $this->get('Errors'))) 
 		{
@@ -28,8 +35,12 @@ class SalonBookViewSalonBook extends JView
 		}
 		// Assign the Data
 		$this->form = $form;
-		$this->item = $item;
- 
+		$this->appointment = $appointment;
+ 		$this->stylistList = $stylists;
+		$this->serviceList = $services;
+		$this->clientList = $clients;
+		$this->statusList = $statusNames;
+
 		// Set the toolbar
 		$this->addToolBar();
  
@@ -45,12 +56,12 @@ class SalonBookViewSalonBook extends JView
 		// the stylesheet is need to display the header graphics properly in the backend Admin
 		JHtml::stylesheet('com_salonbook/admin.stylesheet.css', array(), true, false, false);
 		JRequest::setVar('hidemainmenu', true);
-		$isNew = ($this->item->id == 0);
+		$isNew = ($this->appointment->id == 0);
 		
 		JToolBarHelper::title($isNew ? JText::_('COM_SALONBOOK_MANAGER_APPOINTMENTS_NEW')
 		                             : JText::_('COM_SALONBOOK_MANAGER_APPOINTMENTS_EDIT'), 'salonbook');
-		JToolBarHelper::save('salonbook.save');
-		JToolBarHelper::cancel('salonbook.cancel', $isNew ? 'JTOOLBAR_CANCEL'
+		JToolBarHelper::save('save');
+		JToolBarHelper::cancel('cancel', $isNew ? 'JTOOLBAR_CANCEL'
 		                                                   : 'JTOOLBAR_CLOSE');
 	}
 }

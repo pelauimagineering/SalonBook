@@ -49,8 +49,9 @@ class SalonBookModelAppointments extends JModelItem
 			$convertedTime =  date('H:i:s A', strtotime($startTime));
 			$convertedDate =  date('Y-m-d', strtotime($date));
 			
+			// a status of `1` is 'In Progress'
 			// do an insert query
-			$insertAppointmentQuery = "INSERT into `#__salonbook_appointments`(appointmentDate, startTime,durationInMinutes,user,deposit_paid,stylist, service) values('$convertedDate','$convertedTime',$durationInMinutes,$user->id,0,$stylist_id,$service_id)";
+			$insertAppointmentQuery = "INSERT into `#__salonbook_appointments`(appointmentDate, startTime,durationInMinutes,user,deposit_paid,stylist, service, status) values('$convertedDate','$convertedTime',$durationInMinutes,$user->id,0,$stylist_id,$service_id,1)";
 			
 			$log_info = "\ninsert SQL: ". $insertAppointmentQuery . " \n";
 			error_log($log_info, 3, "logs/salonbook.log");

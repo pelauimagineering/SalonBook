@@ -6,7 +6,7 @@ jimport('joomla.application.component.modellist');
 /**
  * SalonBookList Model
  */
-class SalonBookModelClients extends JModelList
+class SalonBooksModelClients extends JModelList
 {
 	/**
 	 * Method to build an SQL query to load the list data.

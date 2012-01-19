@@ -56,7 +56,7 @@ class plgUserSalonbook extends JPlugin
 
 		$uid = $user['id'];
 		
-		$model = new SalonBookModelUsers;
+		$model = new SalonBooksModelUsers;
 		$model->getCopyUsers($uid);
 		error_log("ran the copyUsers method now \n", 3, "../logs/salonbook.log");
 	}

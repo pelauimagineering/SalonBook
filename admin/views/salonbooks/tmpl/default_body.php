@@ -11,29 +11,33 @@ defined('_JEXEC') or die('Restricted Access');
 	else
 	{
 		$class = "";
-	}
+	}	
+	
+	$link = JRoute::_( 'index.php?option=com_salonbook&view=salonbook&layout=edit&task=edit&cid[]='. $item->id );
 	?>
 	<tr class="row<?php echo $i % 2; echo " " . $class; ?>">
 		<td>
 			<?php echo $item->id; ?>
 		</td>
 		<td>
-			<?php echo JHtml::_('grid.id', $i, $item->id); ?>
+			<?php echo JHtml::_('grid.id', $i, $item->id); // creates a checkbox ?>
 		</td>
 		<td>
-			<?php echo $item->appointmentDate; ?>
+			<a href="<?php echo $link; ?>"><?php echo $item->appointmentDate; ?></a>
 		</td>
 		<td>
-			<?php echo $item->startTime;
-			// if no deposit has been received
-			if ( $item->deposit_paid < 1)
-			{
-				echo "&nbsp; &nbsp; [NO DEPOSIT]";
-			}
+			<?php 
+				$startTime = strtotime($item->startTime);
+				echo date("H:i", $startTime);
+				// if no deposit has been received
+				if ( $item->deposit_paid < 1)
+				{
+					echo "&nbsp; &nbsp; [NO DEPOSIT]";
+				}
 			?>
 		</td>
 		<td>
-			<?php echo $item->clientName; ?>
+			<?php echo $item->clientFullName; ?>
 		</td>
 		<td>
 			<?php echo $item->serviceName; ?>
@@ -41,7 +45,10 @@ defined('_JEXEC') or die('Restricted Access');
 		<td>
 			<?php $names = explode( " ", $item->stylistName); echo $names[0]; ?>
 		</td>
-	</tr>
+		<td>
+			<?php echo $item->status; ?>
+		</td>
+		</tr>
 <?php endforeach; ?>
 
 

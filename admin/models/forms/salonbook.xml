@@ -6,8 +6,17 @@
 			type="hidden"
 		/>
 		<field
+			name="client"
+			type="user"
+			label="COM_SALONBOOK_SALONBOOK_APPOINTMENTS_DETAIL_CLIENT"
+			description="COM_SALONBOOK_SALONBOOK_APPOINTMENTS_DETAIL_CLIENT_DESC"
+			size="40"
+			class="inputbox"
+			default=""
+		/>
+		<field
 			name="appointmentDate"
-			type="text"
+			type="calendar"
 			label="COM_SALONBOOK_SALONBOOK_APPOINTMENTS_DETAIL_DATE"
 			description="COM_SALONBOOK_SALONBOOK_APPOINTMENTS_DETAIL_DATE_DESC"
 			size="40"
@@ -21,11 +30,11 @@
 			description="COM_SALONBOOK_SALONBOOK_APPOINTMENTS_DETAIL_TIME_DESC"
 			size="40"
 			class="inputbox"
-			default="10:00"
+			default="13:00"
 		/>
 		<field
 			name="stylist"
-			type="text"
+			type="list"
 			label="COM_SALONBOOK_SALONBOOK_APPOINTMENTS_DETAIL_STYLIST"
 			description="COM_SALONBOOK_SALONBOOK_APPOINTMENTS_DETAIL_STYLIST_DESC"
 			size="40"
@@ -34,7 +43,7 @@
 		/>
 		<field
 			name="service"
-			type="text"
+			type="list"
 			label="COM_SALONBOOK_SALONBOOK_APPOINTMENTS_DETAIL_SERVICE"
 			description="COM_SALONBOOK_SALONBOOK_APPOINTMENTS_DETAIL_SERVICE_DESC"
 			size="40"
@@ -43,12 +52,20 @@
 		/>
 		<field
 			name="depositPaid"
-			type="text"
+			type="list"
 			label="COM_SALONBOOK_SALONBOOK_APPOINTMENTS_DETAIL_DEPOSIT_PAID"
 			description="COM_SALONBOOK_SALONBOOK_APPOINTMENTS_DETAIL_DEPOSIT_PAID_DESC"
-			class="checkbox"
+			class="inputbox"
 			default=""
-		/>
+		/>	
+		<field
+			name="status"
+			type="list"
+			label="COM_SALONBOOK_SALONBOOK_APPOINTMENTS_DETAIL_APPOINTMENT_STATUS"
+			description="COM_SALONBOOK_SALONBOOK_APPOINTMENTS_DETAIL_APPOINTMENT_STATUS_DESC"
+			class="inputbox"
+			default=""
+		/>	
 		
 	</fieldset>
 </form>

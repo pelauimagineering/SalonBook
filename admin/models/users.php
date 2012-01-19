@@ -11,7 +11,7 @@ jimport('joomla.application.component.modelitem');
  * SalonBook Users Model
  */
 // class SalonBookModelUsers extends JModelList
-class SalonBookModelUsers extends JModelItem
+class SalonBooksModelUsers extends JModelItem
 {
 	public $lastUserAdded;
 	public $countUsersInserted;

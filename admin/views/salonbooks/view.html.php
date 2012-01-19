@@ -8,7 +8,7 @@ jimport('joomla.application.component.view');
 /**
  * SalonBooks View of all bookings created and managed by the system
  */
-class SalonBookViewSalonBooks extends JView
+class SalonBooksViewSalonBooks extends JView
 {
 	/**
 	 * view display method
@@ -44,9 +44,9 @@ class SalonBookViewSalonBooks extends JView
 	{
 		JHtml::stylesheet('com_salonbook/admin.stylesheet.css', array(), true, false, false);
 		JToolBarHelper::title(JText::_('COM_SALONBOOK_MANAGER_APPOINTMENTS'),'salonbook');
-		JToolBarHelper::deleteList('', 'salonbook.delete');
-		JToolBarHelper::editList('salonbook.edit');
-		JToolBarHelper::addNew('salonbook.add');
+		JToolBarHelper::deleteList('', 'delete');
+		JToolBarHelper::editList('edit');
+		JToolBarHelper::addNew('add');
 	}
 }
 ?>

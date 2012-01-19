@@ -8,15 +8,29 @@ jimport('joomla.database.table');
 /**
  * SalonBook Table class
  */
-class SalonBookTableSalonBook extends JTable
+class TableSalonBook extends JTable
 {
+	// properties
+	// primary key
+	var $id = null;
+	
+	var $appointmentDate = null;
+	var $startTime = null;
+	var $durationInMinutes = null;
+	var $user = null;
+	var $deposit_paid = null;
+	var $balance_due = null;
+	var $stylist = null;
+	var $service = null;
+	var $status = null;
+	
 	/**
 	 * Constructor
 	 *
 	 * @param object Database connector object
 	 */
-	function __construct(&$db) 
+	function TableSalonbook(&$db) 
 	{
-		parent::__construct('#__salonbook_durations', 'id', $db);
+		parent::__construct('#__salonbook_appointments', 'id', $db);
 	}
 }

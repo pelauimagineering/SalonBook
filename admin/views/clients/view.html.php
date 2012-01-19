@@ -8,7 +8,7 @@ jimport('joomla.application.component.view');
 /**
  * SalonBooks View of all bookings created and managed by the system
  */
-class SalonBookViewClients extends JView
+class SalonBooksViewClients extends JView
 {
 	/**
 	 * view display method
