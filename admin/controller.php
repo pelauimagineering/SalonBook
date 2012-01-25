@@ -5,8 +5,7 @@ defined('_JEXEC') or die('Restricted access');
 // import Joomla controller library
 jimport('joomla.application.component.controller');
  
-// ini_set("include_path", "includes");  
-// require_once 'Zend/Loader.php';
+require_once (JPATH_ROOT.DS.'includes'.DS.'Zend'.DS.'Loader.php');
 require_once 'models/users.php';
 
 /**
@@ -51,6 +50,9 @@ class SalonBooksController extends JController
 		
 	}
 	
+	/**
+	*	Kept in simply as an example for adding multiple models to a view
+	*/
 	function TESTdisplay()
 	{		
 		/*

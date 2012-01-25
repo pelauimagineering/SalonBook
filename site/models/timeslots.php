@@ -142,13 +142,13 @@ class SalonBookModelTimeslots extends JModelItem
 			
 			// $durationInMinutes = 90;
 			// $appointmentStart = '';
-			error_log("INSIDE: getAvailableSlotsQuery startDate:" . $startDate . " endDate: $endDate \n", 3, "logs/salonbook.log");
+			error_log("INSIDE: getAvailableSlotsQuery startDate:" . $startDate . " endDate: $endDate \n", 3, "../logs/salonbook.log");
 			
 			$db = JFactory::getDBO();
 			$endOfDayOnLastDay = strtotime("23:59", $endDate);
 			$busyTimesQuery = "SELECT * FROM `#__salonbook_appointments` WHERE strtotime(appointmentDate+'T'+startTime) >= $startDate AND strtotime(appointmentDate) <= $endOfDayOnLastDay ";	
 			
-			error_log("the busyTimesQuery sql: " . $busyTimesQuery . "\n", 3, "logs/salonbook.log");
+			error_log("the busyTimesQuery sql: " . $busyTimesQuery . "\n", 3, "../logs/salonbook.log");
 			
 			$db->setQuery((string)$busyTimesQuery);
 			$this->busyTimes = $db->loadObjectList();
@@ -189,7 +189,7 @@ class SalonBookModelTimeslots extends JModelItem
 			// startTime
 			// duraionInMinutes
 			
-			error_log("INSIDE: getAvailableSlotsQuery startDate:" . $startDate . " endDate: $endDate \n", 3, "logs/salonbook.log");
+			error_log("INSIDE: getAvailableSlotsQuery startDate:" . $startDate . " endDate: $endDate \n", 3, "../logs/salonbook.log");
 			
 			// $query->setStartMin($currentDate);
 			// $endOfDay = strtotime("23:59", $currentDate);
@@ -198,7 +198,7 @@ class SalonBookModelTimeslots extends JModelItem
 			// $endOfDayOnLastDay = strtotime("23:59", $endDate);
 			$busyTimesQuery = "SELECT * FROM `#__salonbook_appointments` WHERE deposit_paid = '1' AND user = '$current_user_id' AND appointmentDate >= '$startDate' AND appointmentDate <= '$endDate' ";	
 			
-			error_log("the busyTimesQuery sql: " . $busyTimesQuery . "\n", 3, "logs/salonbook.log");
+			error_log("the busyTimesQuery sql: " . $busyTimesQuery . "\n", 3, "../logs/salonbook.log");
 			
 			$db->setQuery((string)$busyTimesQuery);
 			$this->busyTimes = $db->loadObjectList();

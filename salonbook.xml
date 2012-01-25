@@ -10,7 +10,7 @@
 	<copyright>Copyright ® 2012 - All Rights Reserved</copyright>
 	<license>License Info</license>
 	<!--  The version string is recorded in the components table -->
-	<version>0.8.0.4</version>
+	<version>0.8.1.1</version>
 	<!-- The description is optional and defaults to the name -->
 	<description>COM_SALONBOOK_DESCRIPTION</description>
  
@@ -56,7 +56,7 @@
 		<folder>images</folder>
 		<folder>css</folder>
 	</media>
-	
+
 	<administration>
 		<!-- Administration Menu Section -->
 		<!--menu view="salonbooks" img="components/com_salonbook/assets/celeb-16x16.png">COM_SALONBOOK_MENU</menu-->

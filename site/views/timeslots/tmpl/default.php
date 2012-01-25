@@ -172,7 +172,7 @@ echo "<form action='/index.php?option=com_salonbook&view=confirmation&id=1&Itemi
 	// @return: array of time slot numbers (0=12:00 - 12:30AM, 1= 12:30 AM - 1:00 AM)
 	function timeSlotsUsedByEvent ($anEvent)
 	{
-		error_log("\n anEvent: " . $anEvent->startTime . "\n", 3, "logs/salonbook.log");
+		error_log("\n anEvent: " . $anEvent->startTime . "\n", 3, "../logs/salonbook.log");
 		
 		// open up the event to look at the startTime -> endTime to calculate timeslots used
 		
@@ -181,7 +181,7 @@ echo "<form action='/index.php?option=com_salonbook&view=confirmation&id=1&Itemi
 		// {
 			//echo "Start: " . $when->startTime . "<br/>\n";
 			$theStart =  strtotime($anEvent->startTime);
-			error_log("\n startTime of anEvent is " . $theStart . "\n", 3, "logs/salonbook.log");
+			error_log("\n startTime of anEvent is " . $theStart . "\n", 3, "../logs/salonbook.log");
 			
 			$minutes = idate('H', $theStart) * 60;
 			$minutes += idate('i', $theStart);
@@ -190,7 +190,7 @@ echo "<form action='/index.php?option=com_salonbook&view=confirmation&id=1&Itemi
 			$duration = $anEvent->durationInMinutes;
 			$theEnd = strtotime("+ $duration minutes", $theStart);
 			
-			error_log("\n endTime of anEvent is " . $theEnd . "\n", 3, "logs/salonbook.log");
+			error_log("\n endTime of anEvent is " . $theEnd . "\n", 3, "../logs/salonbook.log");
 			
 			$minutes = idate('H', $theEnd) * 60;
 			$minutes += idate('i', $theEnd);
@@ -215,7 +215,7 @@ echo "<form action='/index.php?option=com_salonbook&view=confirmation&id=1&Itemi
 	// use this (original) version to parse the Google Calendars back into out database, updating entries as we go (if needed)
 	function GOOGLE_VERSION_timeSlotsUsedByEvent ($anEvent)
 	{
-		error_log("\nanEvent: " . $anEvent . "\n", 3, "logs/salonbook.log");
+		error_log("\nanEvent: " . $anEvent . "\n", 3, "../logs/salonbook.log");
 		
 		// open up the event to look at the startTime -> endTime to calculate timeslots used
 		
@@ -272,7 +272,7 @@ while($currentDate < $end)
 	
 	//$feed = $this->availableSlots;
 	$feed = $this->busySlots;
-	error_log("the busy feed has " . count($feed) . " items \n", 3, "logs/salonbook.log");
+	error_log("the busy feed has " . count($feed) . " items \n", 3, "../logs/salonbook.log");
 	$dailyResults = $feed;
 	// echo " : " . count($dailyResults) > 0 ? " *" : " ";
 	
@@ -288,12 +288,12 @@ while($currentDate < $end)
 		{
 			// $id = substr($event->id, strrpos($event->id, '/')+1);
 			$id = $event->id;
-			// error_log("we found an appointment with ID $id in the feed \n", 3, "logs/salonbook.log");
+			// error_log("we found an appointment with ID $id in the feed \n", 3, "../logs/salonbook.log");
 		
 			// check that the event is for the currentDate
 			if ( $event->appointmentDate == date('Y-m-d', $currentDate) )
 			{
-				// error_log("we found an event with a matching date: " . $event->appointmentDate . "\n", 3, "logs/salonbook.log");
+				// error_log("we found an event with a matching date: " . $event->appointmentDate . "\n", 3, "../logs/salonbook.log");
 				
 				// process each event looking for timeslots used
 				$usedSlots = timeSlotsUsedByEvent( $event );				

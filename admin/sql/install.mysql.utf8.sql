@@ -49,7 +49,7 @@ CREATE TABLE  `#__salonbook_appointments` (
 	`stylist` INT NULL COMMENT  'foreign key',
 	`service` INT NULL COMMENT  'foreign key',
 	`payment_id` varchar(50) NULL, 
-	`status` INT NULL COMMENT 'foreign key',
+	`status` INT NULL DEFAULT '1' COMMENT 'foreign key',
 ) ENGINE=MYISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `#__salonbook_users`;

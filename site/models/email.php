@@ -6,12 +6,12 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.application.component.modelitem');
  
 /**
- * SalonBookEmailer
+ * SalonBookModelEmail
  * Usage: create a new instance of this class, then call either the setSuccessMessage or setFailureMessage
  * Then call sendMail()
  * @returns true/false to indicate success of sending
  */
-class SalonBookEmailer extends JModelItem
+class SalonBookModelEmail extends JModelItem
 {
 	protected $type;
 	protected $email;
@@ -24,15 +24,13 @@ class SalonBookEmailer extends JModelItem
 		
 		$send =& $this->mailer->Send();
 		
-		// $user =& JFactory::getUser();
-		// $loggedInUser = $user->email;
-		
 		if ( $send !== true ) {
 		    // echo 'Error sending email: ' . $send->message;
-			error_log("\n Error sending email:" . $send->message . "\n", 3, "logs/salonbook.log");
+			error_log("\n Error sending email:" . $send->message . "\n", 3, "../logs/salonbook.log");
 		} else {
 		    // echo 'Mail sent';
-			error_log("\n Email sent to:" . $loggedInUser . "\n", 3, "logs/salonbook.log");
+		    $emailList = var_export($recipients,true);
+			error_log("\n Email sent to:" . $emailList . "\n", 3, "../logs/salonbook.log");
 		}
 	}
 	
@@ -45,7 +43,20 @@ class SalonBookEmailer extends JModelItem
 		$startTime = $appointmentData[0]['startTime'];
 		$this->email = $appointmentData[0]['email'];
 		
-		$this->message = JText::sprintf('COM_SALONBOOK_EMAIL_BODY_SUCCESS', $serviceName, $stylistName, $appointmentDate, $startTime);
+		$this->message = JText::sprintf('COM_SALONBOOK_EMAIL_BODY_SUCCESS', $serviceName, $stylistName, $appointmentDate, date("H:i", $startTime));
+		$this->mailer->setBody($this->message);		
+	}
+	
+	function setDetailsUpdatedMessage($appointmentData)
+	{
+		// look up the details
+		$stylistName = $appointmentData[0]['stylistName'];
+		$serviceName = $appointmentData[0]['serviceName'];
+		$appointmentDate = $appointmentData[0]['appointmentDate'];
+		$startTime = $appointmentData[0]['startTime'];
+		$this->email = $appointmentData[0]['email'];
+		
+		$this->message = JText::sprintf('COM_SALONBOOK_EMAIL_BODY_DETAILS_UPDATED', $serviceName, $stylistName, $appointmentDate, date("H:i", $startTime));
 		$this->mailer->setBody($this->message);		
 	}
 	
@@ -59,7 +70,7 @@ class SalonBookEmailer extends JModelItem
 	
 	function __construct()
 	{
-		error_log("\n constructing an email...\n", 3, "logs/salonbook.log");
+		error_log("\n constructing an email...\n", 3, "../logs/salonbook.log");
 		
 		$this->mailer =& JFactory::getMailer();
 		
@@ -69,12 +80,6 @@ class SalonBookEmailer extends JModelItem
 		    $config->getValue( 'config.fromname' ) );
 
 		$this->mailer->setSender($sender);
-		
-		// $user =& JFactory::getUser();
-		// $loggedInUser = $user->email;
-
-		// $recipients = array( $loggedInUser, 'darren@pelau.com' );
-		// $this->mailer->addRecipient($recipients);
 		
 		$subject = JText::sprintf('COM_SALONBOOK_EMAIL_SUBJECT', $config->getValue('config.fromname'));
 		

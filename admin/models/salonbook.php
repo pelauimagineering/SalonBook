@@ -14,8 +14,8 @@ jimport('joomla.application.component.modeladmin');
 class SalonBooksModelSalonBook extends JModelAdmin
 // class SalonBooksModelSalonBook extends JModel
 {
-// 	protected $_data;
-// 	protected  $_id;
+ 	protected $_data;
+ 	protected  $_id;
 	
 	/**
 	 * Constructor that retrieves the ID from the request
@@ -60,8 +60,10 @@ class SalonBooksModelSalonBook extends JModelAdmin
 		
 		if ( !$this->_data)
 		{
-			$this->_data = new stdClass();
-			$this->_data->id = 0;
+			$this->_data = $this->getTable();
+// 			$this->_data = new stdClass();
+// 			$this->_data->id = 0;
+			$this->_data->client = NULL;
 		}
 	}
 	
@@ -93,8 +95,10 @@ class SalonBooksModelSalonBook extends JModelAdmin
 			$this->_data = $this->_db->loadObject();
 		}
 		if (!$this->_data) {
-			$this->_data = new stdClass();
-			$this->_data->id = 0;
+			$this->_data = $this->getTable();
+// 			$this->_data = new stdClass();
+// 			$this->_data->id = 0;
+			$this->_data->client = NULL;
 		}
 		return $this->_data;
 	}
@@ -195,7 +199,10 @@ class SalonBooksModelSalonBook extends JModelAdmin
 		$to_print = var_export($data, true);
 		error_log("FORM data:\n" . $to_print . "\n", 3, "../logs/salonbook.log");
 		
-		error_log("it all passed \n", 3, "../logs/salonbook.log");
+		error_log("Save worked. The new appt # is: " . $row->get('id') . "\n", 3, "../logs/salonbook.log");
+		$this->_data = $row;
+		$this->_id = $row->get('id');
+		
 		return true;
 	}
 	

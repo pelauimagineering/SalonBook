@@ -1,6 +1,6 @@
 ALTER TABLE `#__salonbook_appointments` CHANGE  `paypal_id`  `payment_id` VARCHAR( 50 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 
-ALTER TABLE `#__salonbook_appointments` ADD `status` INT NULL COMMENT 'foreign key' AFTER `payment_id`;
+ALTER TABLE `#__salonbook_appointments` ADD `status` INT NULL DEFAULT '1' COMMENT 'foreign key' AFTER `payment_id`;
 
 CREATE TABLE `#__salonbook_status` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

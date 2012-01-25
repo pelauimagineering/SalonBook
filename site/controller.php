@@ -7,8 +7,7 @@ jimport('joomla.application.component.controller');
  
 jimport('joomla.error.log');
 
-ini_set("include_path", "includes");  
-require_once 'Zend/Loader.php';
+require_once (JPATH_SITE.DS.'includes'.DS.'Zend'.DS.'Loader.php');
 require_once 'models/email.php';
 
 /* TEST URL
@@ -28,7 +27,7 @@ class SalonBookController extends JController
 	
 	function sendPaymentConfirmationEmail($success)
 	{
-		error_log("\ninside sendPaymentConfirmationEmail...\n", 3, "logs/salonbook.log");
+		error_log("\ninside sendPaymentConfirmationEmail...\n", 3, "../logs/salonbook.log");
 		
 		// look up details and decide the contents of the message based on success/failure of the payment
 		$mailer = new SalonBookEmailer();
@@ -51,19 +50,19 @@ class SalonBookController extends JController
 	
 	function setupCalendarConnection($calendarLogin, $calendarPassword)
 	{
-		error_log("trying to setupCalendarConnection [method call] \n", 3, "logs/salonbook.log");
+		error_log("trying to setupCalendarConnection [method call] \n", 3, "../logs/salonbook.log");
 
 		Zend_Loader::loadClass('Zend_Gdata');
 		Zend_Loader::loadClass('Zend_Gdata_ClientLogin');
 		Zend_Loader::loadClass('Zend_Gdata_Calendar');
 		Zend_Loader::loadClass('Zend_Http_Client');
 
-		error_log("Zend_Loader found and loaded\n", 3, "logs/salonbook.log");
+		error_log("Zend_Loader found and loaded\n", 3, "../logs/salonbook.log");
 
 		// create authenticated HTTP client for Calendar service
 		$gcal = Zend_Gdata_Calendar::AUTH_SERVICE_NAME;
 
-		error_log("prepare an entry for [ $calendarLogin ]\n", 3, "logs/salonbook.log");
+		error_log("prepare an entry for [ $calendarLogin ]\n", 3, "../logs/salonbook.log");
 
 		$client = Zend_Gdata_ClientLogin::getHttpClient($calendarLogin, $calendarPassword, $gcal);
 		$calendar = new Zend_Gdata_Calendar($client);
@@ -73,7 +72,7 @@ class SalonBookController extends JController
 
 	function createCalendarEvent ($calendar, $customer, $service, $appointmentDate, $startTimestamp, $formattedEndDate, $formattedEndTime)	
 	{
-		error_log('createCalendarEvent', 3, "logs/salonbook.log");
+		error_log('createCalendarEvent', 3, "../logs/salonbook.log");
 		
 		$newEvent = $calendar->newEventEntry();
 		$eventTitle = "$customer ($service)";
@@ -94,7 +93,7 @@ class SalonBookController extends JController
 		$createdEvent = $calendar->insertEvent($newEvent);
 
 		$output = 'Calendar Event ID: ' . $createdEvent->id->text . '\n';
-		error_log($output, 3, "logs/salonbook.log");
+		error_log($output, 3, "../logs/salonbook.log");
 		
 		return $output;
 		
@@ -102,7 +101,7 @@ class SalonBookController extends JController
 
 	function saveAppointmentToGoogle($appointment_id)
 	{
-		error_log("\ninside saveAppointmentToGoogle...\n", 3, "logs/salonbook.log");
+		error_log("\ninside saveAppointmentToGoogle...\n", 3, "../logs/salonbook.log");
 
 
 		$model = $this->getModel('appointments');
@@ -114,7 +113,7 @@ class SalonBookController extends JController
 
 		// extract the interesting details needed to create a Google Calendar event
 		$stylistName = $appointmentData[0]['stylistName'];
-		error_log("Stylist: " . $stylistName . "\n", 3, "logs/salonbook.log");
+		error_log("Stylist: " . $stylistName . "\n", 3, "../logs/salonbook.log");
 		
 		$customer = $appointmentData[0]['name'];
 		$appointmentDate = $appointmentData[0]['appointmentDate'];
@@ -134,13 +133,13 @@ class SalonBookController extends JController
 			$calendarPassword = $appointmentData[0]['calendarPassword'];					
 		}
 
-		error_log("go setup the connection...\n", 3, "logs/salonbook.log");
+		error_log("go setup the connection...\n", 3, "../logs/salonbook.log");
 		// use the stylist data to figure out the correct calendar to post to
 		
 		$calendar = $this->setupCalendarConnection($calendarLogin, $calendarPassword);
 		$calFeed = $calendar->getCalendarListFeed();
 		$output = "here's the calendarFeed title [  " . $calFeed->title->text . "  ]\n";
-		error_log($output, 3, "logs/salonbook.log");
+		error_log($output, 3, "../logs/salonbook.log");
 		
 
 
@@ -183,13 +182,13 @@ class SalonBookController extends JController
 
 		echo $appointment_id;
 
-		error_log("\n\nID: $appointment_id on date: $date\n", 3, "logs/salonbook.log");
+		error_log("\n\nID: $appointment_id on date: $date\n", 3, "../logs/salonbook.log");
 		
 	}
 	
 	function showpaymentresult()
 	{
-		error_log('inside showpaymentresult()\n', 3, "logs/salonbook.log");
+		error_log('inside showpaymentresult()\n', 3, "../logs/salonbook.log");
 		
 		$model = $this->getModel('appointments');
 		$appointmentData = $model->getAppointmentDetails();
@@ -202,7 +201,7 @@ class SalonBookController extends JController
 
 	function showpaymentsuccess()
 	{
-		error_log('inside showpaymentsuccess()\n', 3, "logs/salonbook.log");
+		error_log('inside showpaymentsuccess()\n', 3, "../logs/salonbook.log");
 		
 		$invoice_id = JRequest::getVar('xxxVar1');
 		
@@ -224,7 +223,7 @@ class SalonBookController extends JController
 
 	function showpaymentcancelled()
 	{
-		error_log('inside showpaymentcancelled()\n', 3, "logs/salonbook.log");
+		error_log('inside showpaymentcancelled()\n', 3, "../logs/salonbook.log");
 		
 		$view = &$this->getView('Processed', 'html');
 		$view->assign("paid", '0');
@@ -251,7 +250,7 @@ class SalonBookController extends JController
 	{
 		// $log = &JLog::getInstance('logs/ipn_log.php');
 		
-		error_log("IPN start", 3, "logs/ipn.log");
+		error_log("IPN start", 3, "../logs/ipn.log");
 		// read the post from PayPal system and add 'cmd'
 		$req = 'cmd=_notify-validate';
 
@@ -260,7 +259,7 @@ class SalonBookController extends JController
 		{
 			$value = urlencode(stripslashes($value));
 			$req .= "&$key=$value";
-			error_log("&$key=$value\n", 3, "logs/ipn.log");
+			error_log("&$key=$value\n", 3, "../logs/ipn.log");
 		}
 
 		// post back to PayPal system to validate
@@ -282,11 +281,11 @@ class SalonBookController extends JController
 		if (!$fp) 
 		{
 			// HTTP ERROR
-			error_log("IPN mess up! An HTTP error occurred.\n", 3, "logs/ipn.log");
+			error_log("IPN mess up! An HTTP error occurred.\n", 3, "../logs/ipn.log");
 		} else 
 		{
 			error_log("IPN reposting SUCCESS!", 3, "logs/ipn.log");
-			error_log("Invoice" . $invoice_number . "\n", 3, "logs/ipn.log");
+			error_log("Invoice" . $invoice_number . "\n", 3, "../logs/ipn.log");
 			
 			fputs ($fp, $header . $req);
 			while (!feof($fp)) 
@@ -294,7 +293,7 @@ class SalonBookController extends JController
 				$res = fgets ($fp, 1024);
 				if (strcmp ($res, "VERIFIED") == 0) 
 				{
-					error_log("VERIFIED\n", 3, "logs/ipn.log");
+					error_log("VERIFIED\n", 3, "../logs/ipn.log");
 					// check the payment_status is Completed
 					// check that txn_id has not been previously processed
 					// check that receiver_email is your Primary PayPal email
@@ -304,7 +303,7 @@ class SalonBookController extends JController
 					$model = $this->getModel('appointments');
 					
 					$num_rows = $model->getMarkAppointmentDepositPaid($invoice_number, $txn_id);
-					error_log("db_update rows $num_rows for invoice $invoice_number\n", 3, "logs/ipn.log");
+					error_log("db_update rows $num_rows for invoice $invoice_number\n", 3, "../logs/ipn.log");
 					
 					// update the Google Calendar if this was successful
 					if ( $num_rows > 0 )
@@ -326,7 +325,7 @@ class SalonBookController extends JController
 					$this->sendPaymentConfirmationEmail(false);
 
 					// log for manual investigation
-					error_log("INVALID", 3, "logs/ipn.log");
+					error_log("INVALID", 3, "../logs/ipn.log");
 				}
 			}
 			fclose ($fp);
@@ -342,14 +341,14 @@ class SalonBookController extends JController
 	 */
 	function internetsecureconfirmation()
 	{
-		error_log("Export Script data from InternetSecure\n", 3, "logs/salonbook.log");
+		error_log("Export Script data from InternetSecure\n", 3, "../logs/salonbook.log");
 		
 		// read what was sent to us
 		foreach ($_REQUEST as $key => $value) 
 		{
 			$value = urlencode(stripslashes($value));
 			$req .= "&$key=$value";
-			error_log("&$key=$value\n", 3, "logs/salonbook.log");
+			error_log("&$key=$value\n", 3, "../logs/salonbook.log");
 		}
 		
 		//echo "hello";
@@ -362,7 +361,7 @@ class SalonBookController extends JController
 		
 		// $num_rows = $model->getMarkAppointmentDepositPaid($invoice_number, $txn_id);
 		$num_rows = $model->getMarkAppointmentDepositPaidFromInternetSecure($invoice_id);
-		error_log("db_update rows $num_rows for invoice $invoice_id\n", 3, "logs/salonbook.log");
+		error_log("db_update rows $num_rows for invoice $invoice_id\n", 3, "../logs/salonbook.log");
 		
 		// update the Google Calendar if this was successful
 		if ( $num_rows > 0 )
