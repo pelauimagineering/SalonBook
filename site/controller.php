@@ -48,117 +48,6 @@ class SalonBookController extends JController
 		}
 	}
 	
-	function setupCalendarConnection($calendarLogin, $calendarPassword)
-	{
-		error_log("trying to setupCalendarConnection [method call] \n", 3, "../logs/salonbook.log");
-
-		Zend_Loader::loadClass('Zend_Gdata');
-		Zend_Loader::loadClass('Zend_Gdata_ClientLogin');
-		Zend_Loader::loadClass('Zend_Gdata_Calendar');
-		Zend_Loader::loadClass('Zend_Http_Client');
-
-		error_log("Zend_Loader found and loaded\n", 3, "../logs/salonbook.log");
-
-		// create authenticated HTTP client for Calendar service
-		$gcal = Zend_Gdata_Calendar::AUTH_SERVICE_NAME;
-
-		error_log("prepare an entry for [ $calendarLogin ]\n", 3, "../logs/salonbook.log");
-
-		$client = Zend_Gdata_ClientLogin::getHttpClient($calendarLogin, $calendarPassword, $gcal);
-		$calendar = new Zend_Gdata_Calendar($client);
-		
-		return $calendar;
-	}
-
-	function createCalendarEvent ($calendar, $customer, $service, $appointmentDate, $startTimestamp, $formattedEndDate, $formattedEndTime)	
-	{
-		error_log('createCalendarEvent', 3, "../logs/salonbook.log");
-		
-		$newEvent = $calendar->newEventEntry();
-		$eventTitle = "$customer ($service)";
-		$newEvent->title = $calendar->newTitle($eventTitle);
-		$newEvent->content = $calendar->newContent("$service");
-
-		$startTime = date("H:i", $startTimestamp);
-		$endDate = $formattedEndDate;
-
-		$when = $calendar->newWhen();
-
-		$when->startTime = "{$appointmentDate}T{$startTime}:00.000";
-		$when->endTime = "{$endDate}T{$formattedEndTime}:00.000";
-		$newEvent->when = array($when);
-
-		// Upload the event to the calendar server
-		// A copy of the event as it is recorded on the server is returned
-		$createdEvent = $calendar->insertEvent($newEvent);
-
-		$output = 'Calendar Event ID: ' . $createdEvent->id->text . '\n';
-		error_log($output, 3, "../logs/salonbook.log");
-		
-		return $output;
-		
-	}
-
-	function saveAppointmentToGoogle($appointment_id)
-	{
-		error_log("\ninside saveAppointmentToGoogle...\n", 3, "../logs/salonbook.log");
-
-
-		$model = $this->getModel('appointments');
-		$appointmentData = $model->getAppointmentDetailsForID($appointment_id);
-		$this->appointmentDetails = $appointmentData;
-		
-		// to avoid conversion errors
-		date_default_timezone_set('America/Toronto');
-
-		// extract the interesting details needed to create a Google Calendar event
-		$stylistName = $appointmentData[0]['stylistName'];
-		error_log("Stylist: " . $stylistName . "\n", 3, "../logs/salonbook.log");
-		
-		$customer = $appointmentData[0]['name'];
-		$appointmentDate = $appointmentData[0]['appointmentDate'];
-		$startTime = $appointmentData[0]['startTime'];
-		$duration = $appointmentData[0]['durationInMinutes'];
-		$service = $appointmentData[0]['serviceName'];
-		
-		// if we are missing login info for this user, default to the login for the admin account
-		if ( $appointmentData[0]['calendarLogin'] == '' || $appointmentData[0]['calendarPassword'] == '' )
-		{
-			$calendarLogin = 'admin@celebrityunisexsalon.com';
-			$calendarPassword = 'JKX9DuR7eyBCEXEj';					
-		}
-		else
-		{
-			$calendarLogin = $appointmentData[0]['calendarLogin'];
-			$calendarPassword = $appointmentData[0]['calendarPassword'];					
-		}
-
-		error_log("go setup the connection...\n", 3, "../logs/salonbook.log");
-		// use the stylist data to figure out the correct calendar to post to
-		
-		$calendar = $this->setupCalendarConnection($calendarLogin, $calendarPassword);
-		$calFeed = $calendar->getCalendarListFeed();
-		$output = "here's the calendarFeed title [  " . $calFeed->title->text . "  ]\n";
-		error_log($output, 3, "../logs/salonbook.log");
-		
-
-
-		// calendar math
-		$fullStartDateTimeString = "$appointmentDate"." "."$startTime";
-		$startTimestamp = strtotime($fullStartDateTimeString);
-
-		$endTime = strtotime("+$duration minutes", $startTimestamp);
-
-		$formattedEndTime = date("H:i", $endTime);
-		$formattedEndDate = date("Y-m-d", $endTime);
-
-		// $fullEndDateTimeString = $formattedEndDate." ".$formattedEndTime;
-		// $endTimestamp = strtotime($fullEndDateTimeString);
-
-		$this->createCalendarEvent ($calendar, $customer, $service, $appointmentDate, $startTimestamp, $formattedEndDate, $formattedEndTime);
-	}
-	
-	
 	/**
 	*	Saves a new Appointment given the passed in parameters.
 	*	The deposit_paid flag will be set to false.
@@ -249,6 +138,12 @@ class SalonBookController extends JController
 	function paypalconfirmation()
 	{
 		// $log = &JLog::getInstance('logs/ipn_log.php');
+		JLoader::register('SalonBookModelCalendar',  JPATH_COMPONENT_SITE.'/models/calendar.php');
+		error_log("Completed registering Calendar class \n", 3, "../logs/salonbook.log");
+		
+		// look up details and decide the contents of the message based on success/failure of the payment
+		$calendarModel = new SalonBookModelCalendar();
+		error_log("Got a Calendar class MODEL to work with \n", 3, "../logs/salonbook.log");
 		
 		error_log("IPN start", 3, "../logs/ipn.log");
 		// read the post from PayPal system and add 'cmd'
@@ -308,7 +203,7 @@ class SalonBookController extends JController
 					// update the Google Calendar if this was successful
 					if ( $num_rows > 0 )
 					{						
-						$this->saveAppointmentToGoogle($invoice_number);
+						$calendarModel->saveAppointmentToGoogle($invoice_number);
 
 						// send an email to the client informing them of the transaction
 						$this->sendPaymentConfirmationEmail(true);
@@ -343,6 +238,13 @@ class SalonBookController extends JController
 	{
 		error_log("Export Script data from InternetSecure\n", 3, "../logs/salonbook.log");
 		
+		JLoader::register('SalonBookModelCalendar',  JPATH_COMPONENT_SITE.'/models/calendar.php');
+		error_log("Completed registering Calendar class \n", 3, "../logs/salonbook.log");
+		
+		// look up details and decide the contents of the message based on success/failure of the payment
+		$calendarModel = new SalonBookModelCalendar();
+		error_log("Got a Calendar class MODEL to work with \n", 3, "../logs/salonbook.log");
+		
 		// read what was sent to us
 		foreach ($_REQUEST as $key => $value) 
 		{
@@ -351,9 +253,6 @@ class SalonBookController extends JController
 			error_log("&$key=$value\n", 3, "../logs/salonbook.log");
 		}
 		
-		//echo "hello";
-		
-		//xxxVar1
 		$invoice_id = JRequest::getVar('xxxVar1');
 		
 		// we only get these messages after a successful transaction, so send an email to the client, and mark the database as DEPOSIT PAID
@@ -369,7 +268,7 @@ class SalonBookController extends JController
 			$appointmentData = $model->getAppointmentDetailsForID($invoice_id);
 			$this->appointmentDetails = $appointmentData;
 			
-			$this->saveAppointmentToGoogle($invoice_id);
+			$calendarModel->saveAppointmentToGoogle($invoice_id);
 
 			// send an email to the client informing them of the transaction
 			$this->sendPaymentConfirmationEmail(true);

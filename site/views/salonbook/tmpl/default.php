@@ -2,7 +2,8 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-$firstName = $this->userCBProfile->firstname;
+$namesArray = split(" ",$this->loggedInUserName);
+$firstName = $namesArray[0];
 ?>
 
 <script type="text/javascript" src="/components/com_salonbook/jquery-1.6.2.min.js"></script>

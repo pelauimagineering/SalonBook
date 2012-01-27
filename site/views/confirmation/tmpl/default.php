@@ -138,20 +138,20 @@ $site_name = "";
 	*/
 	?>
 		
-	<!-- Internet Secure -->
+	<!-- InternetSecure -->
 	<form action="https://secure.internetsecure.com/process.cgi" method="post"> 
-	<input type="hidden" name="GatewayID" value="16079"> 
-	<input type="hidden" name="language" value="English"> 
-	<input type="hidden" name="ReturnURL" id="returnUrl" value=""> 
-	<input type="hidden" name="xxxCancelURL" value="<?php echo $host; ?>index.php?option=com_salonbook&view=payment&task=showpaymentcancelled"> 
-	<input type="hidden" name="xxxVar1" id="sbkInvoice">
+		<input type="hidden" name="GatewayID" value="16079"> 
+		<input type="hidden" name="language" value="English"> 
+		<input type="hidden" name="ReturnURL" id="returnUrl" value=""> 
+		<input type="hidden" name="xxxCancelURL" value="<?php echo $host; ?>index.php?option=com_salonbook&view=payment&task=showpaymentcancelled"> 
+		<input type="hidden" name="xxxVar1" id="sbkInvoice">
+		
+		<input type=hidden name="Products" value="" id="productString">
+		
+		<input type="hidden" name="on0" value="Time"><input type="hidden" name="os0" id="scheduledTimeForPayment" maxlength="200">
+		<input type="hidden" name="on1" value="Invoice"><input type="hidden" name="os1" id="invoice" maxlength="200">
 	
-	<input type=hidden name="Products" value="" id="productString">
-	
-	<input type="hidden" name="on0" value="Time"></td></tr><tr><td><input type="hidden" name="os0" id="scheduledTimeForPayment" maxlength="200">
-	<input type="hidden" name="on1" value="Invoice"></td></tr><tr><td><input type="hidden" name="os1" id="invoice" maxlength="200">
-
-	<input type="submit" name="submit" value="Pay now">	
+		<input type="image" src="/media/com_salonbook/images/pay-now-button.png" name="submit" alt="You can pay securely via most Canadian credit or debit cards" />
 	</form>
 	
 </div>

@@ -63,8 +63,9 @@ class SalonBookModelCalendar extends JModel
 	
 		$when = $calendar->newWhen();
 	
-		$when->startTime = "{$appointmentDate}T{$startTime}:00.000";
-		$when->endTime = "{$endDate}T{$formattedEndTime}:00.000";
+		$timezoneOffset = '-05';	// -05 during the summer, -04 during the winter		
+		$when->startTime = "{$appointmentDate}T{$startTime}:00.000{$timezoneOffset}:00";
+		$when->endTime = "{$endDate}T{$formattedEndTime}:00.000{$timezoneOffset}:00";
 		$newEvent->when = array($when);
 	
 		// Upload the event to the calendar server
@@ -74,8 +75,7 @@ class SalonBookModelCalendar extends JModel
 		$output = "Calendar Event ID: " . $createdEvent->id->text . "\n";
 		error_log($output, 3, "../logs/salonbook.log");
 		
-		return $output;
-		
+		return $output;		
 	}
 	
 	function saveAppointmentToGoogle($appointment_id)

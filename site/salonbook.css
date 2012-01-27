@@ -46,6 +46,17 @@ td#rightColumn
 	margin-left:40px;
 }
 
+/* confirm and pay */
+#mainContent {
+	width: 300px;
+	float: left;
+}
+
+#paymentForm {
+	float: left;
+	margin-left: 40px;
+}
+
 /* admin area */
 .salonbook_admin_tools #synch_users {
 	border: 1px solid #000000;
