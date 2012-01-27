@@ -28,6 +28,23 @@ td#rightColumn
 	text-align: center;
 }
 
+/* Booking Wizard */
+.apptEditButton_change {
+	margin-right: 40px;
+	color: green;
+	width: 120px;
+}
+
+.apptEditButton_locked {
+	margin-right: 40px;
+	color: gray;
+	width: 120px;
+}
+
+.apptDetail {
+	margin-bottom: 10px;
+}
+
 /* timeslots UI */
 /* p {margin-left:20px;} */
 #main_display_area {

@@ -54,7 +54,7 @@ class SalonBookModelAppointments extends JModelItem
 			$insertAppointmentQuery = "INSERT into `#__salonbook_appointments`(appointmentDate, startTime,durationInMinutes,user,deposit_paid,stylist, service, status) values('$convertedDate','$convertedTime',$durationInMinutes,$user->id,0,$stylist_id,$service_id,1)";
 			
 			$log_info = "\ninsert SQL: ". $insertAppointmentQuery . " \n";
-			error_log($log_info, 3, "../logs/salonbook.log");
+			error_log($log_info, 3, "logs/salonbook.log");
 			
 			$db->setQuery((string)$insertAppointmentQuery);
 			$db->query();
@@ -68,7 +68,7 @@ class SalonBookModelAppointments extends JModelItem
 			$db = JFactory::getDBO();
 			$updateQuery = "UPDATE `#__salonbook_appointments` SET deposit_paid = '1', paypal_id = '$txn_id' WHERE id='$orderNumber'";
 			
-			error_log($updateQuery."\n", 3, "../logs/salonbook.log");
+			error_log($updateQuery."\n", 3, "logs/salonbook.log");
 			
 			$db->setQuery((string)$updateQuery);
 			$db->query();
@@ -82,7 +82,7 @@ class SalonBookModelAppointments extends JModelItem
 			$db = JFactory::getDBO();
 			$updateQuery = "UPDATE `#__salonbook_appointments` SET deposit_paid = '1' WHERE id='$orderNumber'";
 			
-			error_log($updateQuery."\n", 3, "../logs/salonbook.log");
+			error_log($updateQuery."\n", 3, "logs/salonbook.log");
 			
 			$db->setQuery((string)$updateQuery);
 			$db->query();
@@ -110,18 +110,42 @@ class SalonBookModelAppointments extends JModelItem
 		// @params: id - (int) primary key of the #__salonbook_appointments table
 		public function getAppointmentDetailsForID($id = 0)
 		{
-			error_log("\nlooking up details for $id\n", 3, "../logs/salonbook.log");
+			error_log("\nlooking up details for $id\n", 3, "logs/salonbook.log");
 			
 			// look up the details of the passed in appointment
 			$db = JFactory::getDBO();
 			$appointmentQuery = "SELECT A.*, concat(STYLIST.firstname,' ',STYLIST.lastname) as stylistName, U.name, STYLIST.firstname, S.name as serviceName, U.email, STYLIST.calendarLogin, STYLIST.calendarPassword FROM `#__salonbook_appointments` A join `#__users` U ON A.user = U.id join `#__salonbook_services` S ON A.service = S.id join `#__salonbook_users` STYLIST on A.stylist = STYLIST.user_id WHERE A.id = $id";
 			
-			error_log("Using this query: $appointmentQuery \n", 3, "../logs/salonbook.log");
+			error_log("Using this query: $appointmentQuery \n", 3, "logs/salonbook.log");
 			
 			$db->setQuery((string)$appointmentQuery);
 
 			$appointmentData = $db->loadAssocList();	
 
+			return $appointmentData;
+		}
+
+		// @return an associative array with details about the appointment for a given user
+		// @params: user_id - (int) user of the #__salonbook_appointments table
+		public function getAppointmentDetailsForUser($user_id = 0)
+		{
+			if ( $user_id == 0 ) 
+			{
+				return 0;
+			}
+			
+			error_log("\nlooking up details for user $id\n", 3, "logs/salonbook.log");
+		
+			// look up the details of the passed in appointment
+			$db = JFactory::getDBO();
+			$appointmentQuery = "SELECT A.*, U.name, STYLIST.firstname as stylistName, S.name as serviceName, U.email FROM `#__salonbook_appointments` A join `#__users` U ON A.user = U.id join `#__salonbook_services` S ON A.service = S.id join `#__salonbook_users` STYLIST on A.stylist = STYLIST.user_id WHERE A.user = $user_id AND A.status = 1 ORDER BY A.appointmentDate ASC";
+
+			error_log("Find existing appointments for a user with this query: $appointmentQuery \n", 3, "logs/salonbook.log");
+		
+			$db->setQuery((string)$appointmentQuery);
+		
+			$appointmentData = $db->loadAssocList();
+		
 			return $appointmentData;
 		}
 		

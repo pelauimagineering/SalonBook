@@ -6,6 +6,7 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.application.component.view');
  
 require_once (JPATH_COMPONENT_ADMINISTRATOR.DS.'models'.DS.'users.php');
+require_once (JPATH_COMPONENT_SITE.DS.'models'.DS.'appointments.php');
 
 /**
  * HTML View class for the SalonBook Component
@@ -19,7 +20,14 @@ class SalonBookViewSalonBook extends JView
 			$user =& JFactory::getUser();
 			$user_name = $user->name;
 			$this->loggedInUserName = $user_name;
-				
+			
+			// load more data models
+			JLoader::register('SalonBookModelAppointments',  JPATH_COMPONENT_SITE.'/models/appointments.php');
+			$appointmentModel = new SalonBookModelAppointments();
+			$user_id = $user->id;
+			$appointmentData = $appointmentModel->getAppointmentDetailsForUser($user_id);
+			$this->appointmentsList = $appointmentData;
+			
              // Check for errors.
              if (count($errors = $this->get('Errors'))) 
              {
