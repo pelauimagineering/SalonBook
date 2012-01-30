@@ -16,7 +16,9 @@ class SalonBookViewTimeslots extends JView
                 // Assign data to the view
  				// $this->availableSlots = $this->get("AvailableSlotsQuery");
  				$this->busySlots = $this->get("BusySlotsQuery");
-				$this->style = $this->get("Hairstyle");
+				
+				$this->selectedDate = $this->appointmentData['appointmentDate'];
+				$this->selectedStartTime = $this->appointmentData['startTime'];
 				
                 // Check for errors.
                 if (count($errors = $this->get('Errors'))) 

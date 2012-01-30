@@ -141,23 +141,8 @@ class SalonBookModelConfirmation extends JModelItem
 		// @return: array for slots available for a given set of (consecutive) days
 		public function getAvailableSlotsQuery()
 		{
-			/*
-			`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-			`date` DATE NOT NULL ,
-			`startTime` TIME NULL ,
-			`duration` INT NULL COMMENT  'foreign key',
-			`user` INT NOT NULL COMMENT  'foreign key',
-			`deposit_paid` BINARY NOT NULL DEFAULT  '0',
-			`balance_due` FLOAT NULL ,
-			`stylist` INT NULL COMMENT  'foreign key'
-			*/
-			
 			$startDate = strtotime('+1 day 00:00');
 			$endDate = strtotime('+8 days 23:59');
-			
-			// $query->setStartMin($currentDate);
-			// $endOfDay = strtotime("23:59", $currentDate);
-			// $query->setStartMax($endOfDay);
 			
 			$db = JFactory::getDBO();
 			$endOfDayOnLastDay = strtotime("23:59", $endDate);
@@ -168,6 +153,7 @@ class SalonBookModelConfirmation extends JModelItem
 			return $this->busyTimes;
 		}
 		
+		/*
 		////////////////////////////
 		//// from AJAX version /////
 		////////////////////////////
@@ -248,7 +234,6 @@ class SalonBookModelConfirmation extends JModelItem
 			}
 
 		    // load library
-		//	require_once '/Applications/MAMP/svn/zendframework/trunk/library/Zend/Loader.php';
 			require_once 'Zend/Loader.php';
 
 		    Zend_Loader::loadClass('Zend_Gdata');
@@ -279,8 +264,7 @@ class SalonBookModelConfirmation extends JModelItem
 		//$start = date(DATE_ATOM, strtotime('today 00:00'));
 		//$end = date(DATE_ATOM, strtotime('+3 months 23:59'));
 
-		/* use parameters to determine how much data we show. The default start date will be 'tomorrow' and will be 1 week
-			and the default end is 'one week' */
+		// use parameters to determine how much data we show. The default start date will be 'tomorrow' and will be 1 week and the default end is 'one week' //
 			$start = strtotime('+1 day 00:00');
 
 			$endDateParam = JRequest::getInt('endDateParam');
@@ -299,7 +283,8 @@ class SalonBookModelConfirmation extends JModelItem
 		// add a script to allow the selection of only a single timeslot at a time. On select, all others will be reset.
 		// display the selected Date and Time in a separate div on the page
 	}
-	
+	*/
+		
 	public function getCalendarDataFromGoogle()
 	{
 		if (!isset($this->queryGoogleCalendarForAppointments))

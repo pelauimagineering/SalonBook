@@ -17,9 +17,8 @@ class SalonBookViewConfirmation extends JView
  				$this->selectedDate = $this->get('SelectedDate');
  				$this->selectedTime = $this->get('SelectedTime');
 				
-				// get the chosen Stylist's ID (if one)
-				// get the timeslot ID
-				
+ 				$this->appointmentData = $this->appointmentData;
+ 				
                 // Check for errors.
                 if (count($errors = $this->get('Errors'))) 
                 {

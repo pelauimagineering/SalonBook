@@ -17,8 +17,8 @@ class TableSalonBook extends JTable
 	var $appointmentDate = null;
 	var $startTime = null;
 	var $durationInMinutes = null;
-	var $user = null;
-	var $deposit_paid = null;
+	var $user = 0;
+	var $deposit_paid = 0;
 	var $balance_due = null;
 	var $stylist = null;
 	var $service = null;

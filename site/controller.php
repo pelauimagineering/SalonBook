@@ -7,6 +7,8 @@ jimport('joomla.application.component.controller');
  
 jimport('joomla.error.log');
 
+JTable::addIncludePath(JPATH_COMPONENT_ADMINISTRATOR.DS.'tables');
+
 require_once (JPATH_SITE.DS.'includes'.DS.'Zend'.DS.'Loader.php');
 require_once 'models/email.php';
 
@@ -24,6 +26,138 @@ http://celebrity3.pelau.com/index.php?option=com_salonbook&view=payment&task=int
 class SalonBookController extends JController
 {
 	protected $appointmentDetails;
+	
+	/** 
+	 * Tasks
+	 */
+	
+	/**
+	 * Called after the User has any of the Appointment details
+	 */
+	function updateAppointment()
+	{
+		error_log("inside updateAppointment()\n", 3, "logs/salonbook.log");
+
+		JLoader::register('SalonBookModelAppointments',  JPATH_COMPONENT_SITE.'/models/appointments.php');
+ 		$model = new SalonBookModelAppointments();
+		
+		$appointment_id=JRequest::getVar('id', '0');
+		
+		// retrieve the current appointment object
+ 		if ( $this->appointmentDetails['id'] == 0 )
+ 		{
+ 			// this is a new Appointment, so clear exisiting cached data
+ 			$_SESSION['apptData'] = null;
+ 		}
+ 		
+		$this->appointmentDetails = &$_SESSION['apptData'][0];
+		
+		// if id == 0, create a new object
+		// else load from the db
+		
+		if ( empty($this->appointmentDetails) )
+		{
+			// we shouldn't be fetching data from the database AGAIN, only from the object we are passing around!!
+			error_log("get a lookup/create an appointment object\n", 3, "logs/salonbook.log");
+			
+			$model = new SalonBookModelAppointments();
+			error_log("passed-in ID:" . $appointment_id . "\n", 3, "logs/salonbook.log");
+			
+			if ( $appointment_id == 0 )
+			{
+				$appointmentData =& JTable::getInstance('SalonBook', 'Table');
+				$this->appointmentDetails = array();	// &$appointmentData;
+				error_log("This is the NEW object\n" . var_export($this->appointmentDetails, true) ."\n", 3, "logs/salonbook.log");
+			}
+			else
+			{
+				$appointmentData = $model->getAppointmentDetailsForID($appointment_id);
+				error_log( "This was in the database..\n" . var_export($this->appointmentDetails, true) ."\n", 3, "logs/salonbook.log");
+				$this->appointmentDetails = &$appointmentData[0];
+			}
+		}
+		else
+		{
+			// use what we already have
+			error_log("reuse the EXISTING appointment object\n", 3, "logs/salonbook.log");
+			error_log("This is the existing object\n" . var_export($this->appointmentDetails, true) ."\n", 3, "logs/salonbook.log");
+			
+		}
+		
+		error_log( "OKAY. Model now set. Get use input\n", 3, "logs/salonbook.log");
+		
+		// get the input from the last screen
+		// there may be an array of fields being sent
+		$fieldName = JRequest::getVar('fieldName');
+		$fieldCount = count($fieldName);
+		
+		if ( $fieldCount == 1)
+		{
+			$fieldName = JRequest::getVar('fieldName');
+			$fieldValue = JRequest::getVar('fieldValue');
+			
+			// update with the recently selected values
+			error_log("SINGLE: setting " . $fieldName . " to " . $fieldValue . "\n", 3, "logs/salonbook.log");
+			$this->appointmentDetails[$fieldName] = $fieldValue;
+			
+		}
+		else 
+		{
+			error_log("field count = " . $fieldCount . "\n", 3, "logs/salonbook.log");
+			
+			// it's an array
+			$fieldNameArray = JRequest::getVar('fieldName');
+			$fieldValueArray = JRequest::getVar('fieldValue');
+			
+			for ($x=0; $x < $fieldCount; $x++)
+			{				
+				error_log("MULTIPLE: setting " . $fieldNameArray[$x] . " to " . $fieldValueArray[$x] . "\n", 3, "logs/salonbook.log");
+				$this->appointmentDetails[$fieldNameArray[$x]] = $fieldValueArray[$x];
+			}	
+		}
+		
+		// get the rest of the passed in vars
+		$nextViewName = JRequest::getVar('view');
+		$nextViewType = JRequest::getVar('nextViewType', 'html');
+		$nextViewModel = JRequest::getVar('nextViewModel');
+		
+		$view = &$this->getView($nextViewName, $nextViewType);
+		$view->assignRef("appointmentData", &$this->appointmentDetails);
+		$view->setModel($model, false);
+
+		error_log("saving the appointment details to the session object\n", 3, "logs/salonbook.log");
+		$_SESSION['apptData'][0] = &$this->appointmentDetails;
+		
+		// load and add the Services Model
+		$nextModel = $this->getModel($nextViewModel);
+		$view->setModel($nextModel, true);
+		
+		$view->display();
+	}
+	
+	/**
+	 * Called at the start of the Booking Wizard, if the user wants to Edit an existing appointment
+	 */
+	function showAppointmentToEdit()
+	{
+		error_log("inside showAppointmentToEdit()\n", 3, "logs/salonbook.log");
+	
+		$appointment_id=JRequest::getVar( 'id');
+		
+		$model = $this->getModel('appointments');
+		$this->appointmentDetails = $model->getAppointmentDetailsForID($appointment_id);
+		
+		$view = &$this->getView('Services', 'html');
+		$view->assignRef("appointmentData", &$this->appointmentDetails);
+		
+		$view->setModel($model, false);
+		
+		// load and add the Services Model
+		$servicesModel = $this->getModel('services');
+		$view->setModel($servicesModel, true);
+		
+		$view->display();
+	}
 	
 	function sendPaymentConfirmationEmail($success)
 	{
@@ -53,9 +187,17 @@ class SalonBookController extends JController
 	*	The deposit_paid flag will be set to false.
 	*	The current user will be pulled from session values
 	*	@Params: date, startTime, stylist
+	*
+	*	@return (via the ehco statement) 
+	*			a NEGATIVE number indicates failure, 
+	*			ZERO == a successful update and payment already made, 
+	*			a POSITIVE number == successfully added a new appointment and direct user to pay deposit
+	*
 	*/
 	function addappointment()
 	{ 
+		error_log("inside addappointment\n", 3, "logs/salonbook.log");		
+		
 		date_default_timezone_set('America/Toronto');
 		
 		// variables needed: date, startTime, stylist, service
@@ -66,12 +208,38 @@ class SalonBookController extends JController
 		$stylist_id = JRequest::getVar('stylist_id');
 		$service_id = JRequest::getVar('service_id');
 		
+		
 		$model = $this->getModel('appointments');
-		$appointment_id = $model->getNewAppointment($date, $startTime, $stylist_id, $service_id);
 
-		echo $appointment_id;
+		JLoader::register('SalonBookModelAppointments',  JPATH_COMPONENT_SITE.'/models/appointments.php');
+		$appointmentModel = new SalonBookModelAppointments();
+		$success = $appointmentModel->store();
+				
+		$appointment_id = $appointmentModel->_id;
+		error_log("ID: $appointment_id on date: $date\n", 3, "logs/salonbook.log");		
+		
+		// get the details of the deposit status to determine what is returned here
+		if ( $success == false ) 
+		{
+			return '-1';
+		}
+		else 
+		{
+			if ( $appointmentModel->depositPaid == true )
+			{
+				echo '0';
+			}
+			else
+			{
+				echo $appointment_id;
+			}
+		}
 
-		error_log("\n\nID: $appointment_id on date: $date\n", 3, "../logs/salonbook.log");
+	}
+	
+	function saveAppointment()
+	{
+		$this->appointmentDetails = &$_SESSION['apptData'][0];
 		
 	}
 	
@@ -273,10 +441,6 @@ class SalonBookController extends JController
 			// send an email to the client informing them of the transaction
 			$this->sendPaymentConfirmationEmail(true);
 		}
-		
-		// redirect to the home page
-		// $message = "Payment made at Internet Secure";
-		// $this->setRedirect('index.php', $message);
 		
 		$view = &$this->getView('Salonbook', 'raw');
 		$view->display();				

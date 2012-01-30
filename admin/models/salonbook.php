@@ -4,15 +4,11 @@ defined('_JEXEC') or die;
  
 // import Joomla modelform library
 jimport('joomla.application.component.modeladmin');
-// jimport('joomla.application.component.model');
-
-//require "stylists.php";
 
 /**
  * SalonBook Model
  */
 class SalonBooksModelSalonBook extends JModelAdmin
-// class SalonBooksModelSalonBook extends JModel
 {
  	protected $_data;
  	protected  $_id;
@@ -61,8 +57,6 @@ class SalonBooksModelSalonBook extends JModelAdmin
 		if ( !$this->_data)
 		{
 			$this->_data = $this->getTable();
-// 			$this->_data = new stdClass();
-// 			$this->_data->id = 0;
 			$this->_data->client = NULL;
 		}
 	}
@@ -72,11 +66,10 @@ class SalonBooksModelSalonBook extends JModelAdmin
 		// Create a new query object.
 		$db = JFactory::getDBO();
 		$query = $db->getQuery(true);
-		// Select some fields
 	
 		$query->select("COALESCE(U.firstName, U.userName) as clientName, A.*, S.name as stylistName, SERVICES.name as serviceName");
-	
 		$query->from('#__salonbook_appointments A join #__salonbook_users U on A.user = U.user_id JOIN #__users S on A.stylist = S.id join #__salonbook_services SERVICES on A.service = SERVICES.id');
+		
 		return $query;
 	}
 	
@@ -96,28 +89,11 @@ class SalonBooksModelSalonBook extends JModelAdmin
 		}
 		if (!$this->_data) {
 			$this->_data = $this->getTable();
-// 			$this->_data = new stdClass();
-// 			$this->_data->id = 0;
 			$this->_data->client = NULL;
 		}
 		return $this->_data;
 	}
-	
-	/**
-	 * Returns a reference to the a Table object, always creating it.
-	 *
-	 * @param	type	The table type to instantiate
-	 * @param	string	A prefix for the table class name. Optional.
-	 * @param	array	Configuration array for model. Optional.
-	 * @return	JTable	A database object
-	 * @since	1.6
-	 */
-// 	public function getTable($type = 'SalonBook', $prefix = 'SalonBookTable', $config = array()) 
-// 	public function getTable($type = 'SalonBook') 
-// 	{
-// 		return JTable::getInstance($type, $prefix, $config);
-// 	}
-	
+		
 	/**
 	 * Method to get the record form.
 	 *
@@ -150,14 +126,13 @@ class SalonBooksModelSalonBook extends JModelAdmin
 		$data = JFactory::getApplication()->getUserState('com_salonbook.edit.salonbook.data', array());
 		if (empty($data)) 
 		{
-// 			$data = $this->getItem();
 			$data = $this->getAppointment();
 		}
 		return $data;
 	}
 	
 	/**
-	 * Method to store an appointment record
+	 * Method to store an appointment record from the Admin panels
 	 * 
 	 * @access	public
 	 * @return	boolean	True on success
@@ -258,7 +233,7 @@ class SalonBooksModelSalonBook extends JModelAdmin
 				$options[] = JHtml::_('select.option', $message->id, $message->name);
 			}
 		}
-		// $options = array_merge(parent::getOptions(), $options);
+		
 		return $options;
 	}
 
@@ -313,7 +288,6 @@ class SalonBooksModelSalonBook extends JModelAdmin
 		{
 			foreach($messages as $message) 
 			{
-// 				$toDisplay = $message->name . "&nbsp; &nbsp; &nbsp; &nbsp;" . $message->displayName;
 				$options[] = JHtml::_('select.option', $message->id, $message->name);
 			}
 		}

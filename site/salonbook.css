@@ -74,6 +74,14 @@ td#rightColumn
 	margin-left: 40px;
 }
 
+#updateSuccessMessage {
+	float: left;
+	margin-top: 80px;
+	margin-left: 40px;
+	color: green;
+	font-size: large;
+}
+
 /* admin area */
 .salonbook_admin_tools #synch_users {
 	border: 1px solid #000000;

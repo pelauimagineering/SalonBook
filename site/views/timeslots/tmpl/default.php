@@ -5,7 +5,6 @@ defined('_JEXEC') or die('Restricted access');
 $currentPage = JRequest::getInt('currentPage');
 $service_id = JRequest::getInt('service_id');
 $stylist_id = JRequest::getInt('stylist_id');
-
 ?>
 <link rel="stylesheet" href="/components/com_salonbook/salonbook.css" type="text/css" />
 
@@ -21,6 +20,8 @@ $stylist_id = JRequest::getInt('stylist_id');
 		if ( dateSelected.length > 0 )
 		{
 			$('#nextButton').attr("disabled", false);
+			$("#displayAreaSelectedTimeslot").css("display", "inline");
+			
 		}
 		else
 		{
@@ -56,14 +57,12 @@ $stylist_id = JRequest::getInt('stylist_id');
 				var content = $( data );
 				$( "#contentBody" ).empty().append( content );
 				}
-			);
+			);			
 		});
-		
-		/* handler for the select drop down */
-		$('.time_selector').change(function() {
-			// displaySelectedValues();
-			
-			//
+
+		/* handler for the select drop down */ 
+		$('.time_selector').change(function()
+		{			
 			str = $(this).find("option:selected").text();
 			
 			strVal = $(this).find("option:selected").val();	// timeslot id
@@ -112,20 +111,43 @@ $stylist_id = JRequest::getInt('stylist_id');
 			$('.time_selector').not('[id="' + strTimestamp + '"]').find("option[value='-1']").attr('selected', true);
 			
 			// test to see if the user should be able to continue
-			checkToEnableNextButton();
-			
+			checkToEnableNextButton();			
 		});
 		
+		
 	});
+	
+	function passthroughData()
+	{
+		appointment_id = '<?php echo JRequest::getVar(id); ?>'; 
+		$('#id').val(appointment_id);
+
+		// set the (newly?) selected date and time
+		newTime = $('#selected_startTime').val();
+		newDate = $('#selected_date').val();
+		newParsedDate = Date.parse(newDate);
+		formattedDate = newParsedDate.getFullYear() + "-" + (newParsedDate.getMonth() + 1) + "-" + newParsedDate.getDate();
+	
+		$('#fieldName0').val('appointmentDate');
+		$('#fieldValue0').val(formattedDate);
+		
+		$('#fieldName1').val('startTime');
+		$('#fieldValue1').val(newTime);
+		
+		$('#nextViewType').val('html');
+		$('#nextViewModel').val('confirmation');
+		$('#task').val('updateAppointment');
+
+		return true;
+	}
+		
 </script>
 
 <!-- page content -->
 <hr/>
 <?php
-// continue using the same ItemId, which allows the correct menu item to be highlighted
-$currentItemid = JRequest::getInt('Itemid', 123);
+echo "<form action='/index.php?Itemid=" . JRequest::getVar(Itemid) . "' method='POST' id='sb_main_form' onsubmit='return passthroughData()'>";
 
-echo "<form action='/index.php?option=com_salonbook&view=confirmation&id=1&Itemid=$currentItemid' method='POST' name='form_services' id='form_services'>";
 ?>
 <div id="stepHeaderTitle">
 <h1>Choose an open time slot</h1>
@@ -176,76 +198,33 @@ echo "<form action='/index.php?option=com_salonbook&view=confirmation&id=1&Itemi
 		
 		// open up the event to look at the startTime -> endTime to calculate timeslots used
 		
-		// with the database version of this anEvent should be an associativeList representing a row in the salonbook_apppointments table
-		// foreach ($anEvent->when as $when)
-		// {
-			//echo "Start: " . $when->startTime . "<br/>\n";
-			$theStart =  strtotime($anEvent->startTime);
-			error_log("\n startTime of anEvent is " . $theStart . "\n", 3, "../logs/salonbook.log");
-			
-			$minutes = idate('H', $theStart) * 60;
-			$minutes += idate('i', $theStart);
-			$startSlotNumber = intval($minutes / 30);
-			
-			$duration = $anEvent->durationInMinutes;
-			$theEnd = strtotime("+ $duration minutes", $theStart);
-			
-			error_log("\n endTime of anEvent is " . $theEnd . "\n", 3, "../logs/salonbook.log");
-			
-			$minutes = idate('H', $theEnd) * 60;
-			$minutes += idate('i', $theEnd);
-			// calculate the end time as if they finished a minute earlier
-			// this allows an appointment from 2:00 to 2:30 to appear as (29 minutes) so it only occupies a single timeslot
-			$endSlotNumber = intval(($minutes - 1) / 30);	
-			
-			// calculate all of the slots used for this appointment. It will always be a simple sequence of integers from the first to the last slot
-			for ( $newSlot=$startSlotNumber; $newSlot <= $endSlotNumber; $newSlot++)
-			{
-				$slotsArray[] = $newSlot;
-			}
-			
-		// }
-	
-		return $slotsArray;
-	}
-	
-	// function: timeSlotsUsedByEvent
-	// @params: calendar Event
-	// @return: array of time slot numbers (0=12:00 - 12:30AM, 1= 12:30 AM - 1:00 AM)
-	// use this (original) version to parse the Google Calendars back into out database, updating entries as we go (if needed)
-	function GOOGLE_VERSION_timeSlotsUsedByEvent ($anEvent)
-	{
-		error_log("\nanEvent: " . $anEvent . "\n", 3, "../logs/salonbook.log");
+		$theStart =  strtotime($anEvent->startTime);
+		error_log("\n startTime of anEvent is " . $theStart . "\n", 3, "../logs/salonbook.log");
 		
-		// open up the event to look at the startTime -> endTime to calculate timeslots used
+		$minutes = idate('H', $theStart) * 60;
+		$minutes += idate('i', $theStart);
+		$startSlotNumber = intval($minutes / 30);
 		
-		// with the database version of this anEvent should be an associativeList representing a row in the salonbook_apppointments table
-		foreach ($anEvent->when as $when)
+		$duration = $anEvent->durationInMinutes;
+		$theEnd = strtotime("+ $duration minutes", $theStart);
+		
+		error_log("\n endTime of anEvent is " . $theEnd . "\n", 3, "../logs/salonbook.log");
+		
+		$minutes = idate('H', $theEnd) * 60;
+		$minutes += idate('i', $theEnd);
+		// calculate the end time as if they finished a minute earlier
+		// this allows an appointment from 2:00 to 2:30 to appear as (29 minutes) so it only occupies a single timeslot
+		$endSlotNumber = intval(($minutes - 1) / 30);	
+		
+		// calculate all of the slots used for this appointment. It will always be a simple sequence of integers from the first to the last slot
+		for ( $newSlot=$startSlotNumber; $newSlot <= $endSlotNumber; $newSlot++)
 		{
-			//echo "Start: " . $when->startTime . "<br/>\n";
-			$theStart =  strtotime($when->startTime);
-			$minutes = idate('H', $theStart) * 60;
-			$minutes += idate('i', strtotime($when->startTime));
-			$startSlotNumber = intval($minutes / 30);
-			
-			$theEnd =  strtotime($when->endTime);
-			$minutes = idate('H', $theEnd) * 60;
-			$minutes += idate('i', strtotime($when->endTime));
-			// calculate the end time as if they finished a minute earlier
-			// this allows an appointment from 2:00 to 2:30 to appear as (29 minutes) so it only occupies a single timeslot
-			$endSlotNumber = intval(($minutes - 1) / 30);	
-			
-			// calculate all of the slots used for this appointment. It will always be a simple sequence of integers from the first to the last slot
-			for ( $newSlot=$startSlotNumber; $newSlot <= $endSlotNumber; $newSlot++)
-			{
-				$slotsArray[] = $newSlot;
-			}
-			
+			$slotsArray[] = $newSlot;
 		}
 	
 		return $slotsArray;
 	}
-	
+		
 ?>
 
 
@@ -266,13 +245,11 @@ while($currentDate < $end)
 	echo "<td>";
 	
 	// for each day, find all events
-	// don't query Google Calendar directly, use our database instead
-	
 	// use $this->busySlots; then remove from the $dailySlotsAvailable array
 	
 	//$feed = $this->availableSlots;
 	$feed = $this->busySlots;
-	error_log("the busy feed has " . count($feed) . " items \n", 3, "../logs/salonbook.log");
+	error_log("the busy feed has " . count($feed) . " items \n", 3, "logs/salonbook.log");
 	$dailyResults = $feed;
 	// echo " : " . count($dailyResults) > 0 ? " *" : " ";
 	
@@ -333,7 +310,15 @@ while($currentDate < $end)
 	{
 		$slotTime = slotNumber2Time($slotNumber);
 		$ampm = ($slotNumber < 24) ? "am" : "pm";
-		echo "<option value='$slotNumber' name='$slotNumber'>$slotTime $ampm</option>";
+		echo "<option value='$slotNumber' name='$slotNumber' ";
+		$displayTime = $slotTime . ' ' . $ampm;
+		$selectedTime = date('g:i a', strtotime($this->selectedStartTime));
+		if ( $displayTime == $selectedTime && $thisDate == date("Y-m-j", strtotime($this->selectedDate)) )
+		{
+			echo " selected ";
+		}
+		echo ">$slotTime $ampm</option>";
+		
 	}
 	echo "</select>";
 	echo "</td>";
@@ -342,10 +327,14 @@ while($currentDate < $end)
 	// move on to the next date
 	$currentDate = strtotime("+1 day", $currentDate);
    
-}	
+}
+
+echo "</table>";
 ?>
-	<tr><td colspan=2><input type='button' value='See more dates' disabled='disabled'></td></tr>
-</table>
+	<!-- 
+		<tr><td colspan=2><input type='button' value='See more dates' disabled='disabled'></td></tr>
+	-->
+
 
 	<input type="hidden" name='currentPage' value='3'>
 	<input type="button" value='< Back' class='goBackAPage' onclick="javascript:history.go(-1)"> &nbsp; &nbsp; 
@@ -356,12 +345,26 @@ while($currentDate < $end)
 	<input type="hidden" name="ctrl" value="product"/>
 	<input type="hidden" name="task" value="updatecart"/>
 	
-	<input type="hidden" name="selected_startTime" id="selected_startTime" value=""/>
-	<input type="hidden" name="selected_date" id="selected_date" value=""/>
+	<input type="hidden" name="selected_startTime" id="selected_startTime" value="<?php echo $this->selectedStartTime; ?>"/>
+	<input type="hidden" name="selected_date" id="selected_date" value="<?php echo $this->selectedDate; ?>"/>
 	<input type="hidden" name="selected_timeslot" id="selected_timeslot" value=""/>
 
 	<input type="hidden" name="service_id" id="service_id" value="<?php echo $service_id; ?>" />
 	<input type="hidden" name="stylist_id" id="stylist_id" value="<?php echo $stylist_id; ?>" />
+
+	<input type="hidden" name="option" value="com_salonbook" />
+	<input type="hidden" name="controller" value="salonbook" />
+	<input type="hidden" name="task" id="task" value="" />
+	<input type="hidden" name="view" value="confirmation" />
+	<input type="hidden" name="id" id="id" value="<?php echo JRequest::getVar(id); ?>" />
+	<input type="hidden" name="fieldName[0]" id="fieldName0" value="" />
+	<input type="hidden" name="fieldValue[0]" id="fieldValue0" value="" />
+	<input type="hidden" name="fieldName[1]" id="fieldName1" value="" />
+	<input type="hidden" name="fieldValue[1]" id="fieldValue1" value="" />
+	<input type="hidden" name="nextViewType" id="nextViewType" value="" />
+	<input type="hidden" name="nextViewModel" id="nextViewModel" value="" />	
+		
+	<?php echo JHtml::_('form.token'); ?>
 	
 </div>
 
@@ -372,4 +375,4 @@ while($currentDate < $end)
 	</h1>
 </div>
 
-</form>
+<?php echo "</form>" ?>

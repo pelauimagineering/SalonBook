@@ -16,7 +16,9 @@ class SalonBookViewServices extends JView
                 // Assign data to the view
                 $this->msg = "(services) YAD | " . $this->get('Msg');
  				$this->servicelist = $this->get("ListQuery");
-				// $this->dList = $this->get("dList");
+				
+ 				// load the selected service, if it exists in the model
+ 				$this->selectedService = $this->appointmentData['service'];
 				
                 // Check for errors.
                 if (count($errors = $this->get('Errors'))) 
