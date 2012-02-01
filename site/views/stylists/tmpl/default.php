@@ -2,7 +2,6 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-$currentPage = JRequest::getInt('currentPage');
 $service_id = $this->appointmentData['service'];
 
 ?>
@@ -12,7 +11,7 @@ $service_id = $this->appointmentData['service'];
 <script>
 function passthroughData()
 {
-	appointment_id = '<?php echo JRequest::getVar(id); ?>'; 
+	appointment_id = '<?php echo JRequest::getVar("id"); ?>'; 
 	$('#id').val(appointment_id);
 	
 	stylist_id = $('#stylist_id').find("option:selected").val();
@@ -32,7 +31,7 @@ function passthroughData()
 <hr/>
 <h1>Who is your preferred stylist for this appointment?</h1>
 
-<form action="/index.php?Itemid=<?php echo JRequest::getVar(Itemid); ?>" method="POST" id="sb_main_form" onsubmit="return passthroughData()">
+<form action="/index.php?Itemid=<?php echo JRequest::getVar('Itemid'); ?>" method="POST" id="sb_main_form" onsubmit="return passthroughData()">
 	
 	<select id="stylist_id" name="stylist_id" class="inputbox"> 
 		<?php 
@@ -79,7 +78,7 @@ function passthroughData()
 	<input type="hidden" name="controller" value="salonbook" />
 	<input type="hidden" name="task" id="task" value="" />
 	<input type="hidden" name="view" value="timeslots" />
-	<input type="hidden" name="id" id="id" value="<?php echo JRequest::getVar(id); ?>" />
+	<input type="hidden" name="id" id="id" value="<?php echo JRequest::getVar("id"); ?>" />
 	<input type="hidden" name="fieldName" id="fieldName" value="" />
 	<input type="hidden" name="fieldValue" id="fieldValue" value="" />
 	<input type="hidden" name="nextViewType" id="nextViewType" value="" />

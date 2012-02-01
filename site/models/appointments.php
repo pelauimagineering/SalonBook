@@ -141,7 +141,7 @@ class SalonBookModelAppointments extends JModelItem
 			error_log("looking up details for $id\n", 3, "logs/salonbook.log");
 			
 			// Load the data
-			if (empty( $this->_appointmentData )) 
+			if (empty( $this->_appointmentData ) && $id != 0 ) 
 			{
 				$appointmentQuery = "SELECT A.*, concat(STYLIST.firstname,' ',STYLIST.lastname) as stylistName, U.name, STYLIST.firstname, S.name as serviceName, U.email, STYLIST.calendarLogin, STYLIST.calendarPassword FROM `#__salonbook_appointments` A join `#__users` U ON A.user = U.id join `#__salonbook_services` S ON A.service = S.id join `#__salonbook_users` STYLIST on A.stylist = STYLIST.user_id WHERE A.id = $id";
 				$this->_db->setQuery( $appointmentQuery );
@@ -169,14 +169,12 @@ class SalonBookModelAppointments extends JModelItem
 				return 0;
 			}
 			
-			error_log("\nlooking up details for user $id\n", 3, "logs/salonbook.log");
+			error_log("\nlooking up details for user $user_id\n", 3, "logs/salonbook.log");
 		
 			// look up the details of the passed in appointment
 			$db = JFactory::getDBO();
 			$appointmentQuery = "SELECT A.*, U.name, STYLIST.firstname as stylistName, S.name as serviceName, U.email FROM `#__salonbook_appointments` A join `#__users` U ON A.user = U.id join `#__salonbook_services` S ON A.service = S.id join `#__salonbook_users` STYLIST on A.stylist = STYLIST.user_id WHERE A.user = $user_id AND A.status = 1 AND A.deposit_paid = 1 ORDER BY A.appointmentDate ASC";
 
-			error_log("Find existing appointments for a user with this query: $appointmentQuery \n", 3, "logs/salonbook.log");
-		
 			$db->setQuery((string)$appointmentQuery);
 		
 			$appointmentData = $db->loadAssocList();
@@ -194,7 +192,23 @@ class SalonBookModelAppointments extends JModelItem
 		{
 			error_log("inside store ~ front the FRONT END \n", 3, "logs/salonbook.log");
 		
-			$data = $_SESSION['apptData'][0];
+			$session = JFactory::getSession();
+			$data =& $session->get('appointmentData', array(), 'SalonBook');
+			
+			if ( empty($data) )
+			{	
+				error_log("no data passed into the store function\n", 3, "logs/salonbook.log");
+				return false;
+			}
+			
+			$db = JFactory::getDBO();
+			$service_id = $data['service'];
+			$durationQuery = "select durationInMinutes from #__salonbook_services where id = $service_id";
+			$db->setQuery((string)$durationQuery);
+			$db->query();
+			$durationInMinutes = $db->loadResult();
+			
+			$data['durationInMinutes'] = $durationInMinutes;
 			
 			error_log( "Trying to save the following to the database..\n" . var_export($data, true) ."\n", 3, "logs/salonbook.log");
 
@@ -220,8 +234,6 @@ class SalonBookModelAppointments extends JModelItem
 			$ignoreList = array('stylistName', 'name', 'firstname', 'serviceName', 'email', 'calendarLogin', 'calendarPassword');
 			error_log( "Ignore these fields.. " . var_export($ignoreList, true) ."\n", 3, "logs/salonbook.log");
 			
-			$row->bind($data, $ignoreList);
-			error_log("Errors: " . var_export($row->getErrors, true) . "\n", 3, "logs/salonbook.php");
 			if (!$row->bind($data, $ignoreList))
 			{
 				error_log("binding failed! \n", 3, "logs/salonbook.log");
@@ -247,10 +259,7 @@ class SalonBookModelAppointments extends JModelItem
 				return false;
 			}
 		
-			$to_print = var_export($data, true);
-			error_log("FORM data:\n" . $to_print . "\n", 3, "logs/salonbook.log");
-		
-			error_log("Save worked. The new appt # is: " . $row->get('id') . "\n", 3, "logs/salonbook.log");
+			error_log("Save worked. The new appointment # is: " . $row->get('id') . "\n", 3, "logs/salonbook.log");
 			$this->_data = $row;
 			$this->_id = $row->get('id');
 			$this->depositPaid = $row->get('deposit_paid');

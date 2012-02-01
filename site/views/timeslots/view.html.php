@@ -14,7 +14,6 @@ class SalonBookViewTimeslots extends JView
         function display($tpl = null) 
         {
                 // Assign data to the view
- 				// $this->availableSlots = $this->get("AvailableSlotsQuery");
  				$this->busySlots = $this->get("BusySlotsQuery");
 				
 				$this->selectedDate = $this->appointmentData['appointmentDate'];

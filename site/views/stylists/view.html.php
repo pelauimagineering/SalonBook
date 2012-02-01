@@ -14,11 +14,9 @@ class SalonBookViewStylists extends JView
         function display($tpl = null) 
         {
                 // Assign data to the view
- 				$this->stylistlist = $this->get("ListQuery");
-				$this->style = $this->get("Hairstyle");
-				
-				$this->selectedStylist = $this->appointmentData['stylist'];
-				
+ 				$this->stylistlist = $this->get("ListQuery");				
+ 				$this->selectedStylist = $this->appointmentData['stylist'];
+ 				
                 // Check for errors.
                 if (count($errors = $this->get('Errors'))) 
                 {

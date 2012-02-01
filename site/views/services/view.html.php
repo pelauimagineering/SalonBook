@@ -19,7 +19,7 @@ class SalonBookViewServices extends JView
 				
  				// load the selected service, if it exists in the model
  				$this->selectedService = $this->appointmentData['service'];
-				
+ 				
                 // Check for errors.
                 if (count($errors = $this->get('Errors'))) 
                 {

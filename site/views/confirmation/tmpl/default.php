@@ -6,8 +6,6 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.environment.uri' );
 $host = JURI::root();
 
-$currentPage = JRequest::getInt('currentPage');
-$currentItemid = JRequest::getInt('Itemid', 123);
 $service_id = JRequest::getInt('service_id');
 $appointment_id = $this->appointmentData['id'];
 
@@ -47,14 +45,14 @@ $site_name = "";
 				if ( data == 0 )
 				{
 					// if everything is okay with the update, inform the user
-					successMesage = "<?php echo JText::_(COM_SALONBOOK_UPDATE_SUCCESS_MESSAGE); ?>";
+					successMesage = "<?php echo JText::_('COM_SALONBOOK_UPDATE_SUCCESS_MESSAGE'); ?>";
 					$('#mainMessage').text(successMesage);
 					$('#mainMessage').css("display", "inline");
 					$('#updateSuccessMessage').css("display", "inline");
 					
 					//... and hide the confirm button to avoid duplicates
 					$('#confirmOrder').css("display", "none");
-}
+				}
 				else if ( data > 0 )
 				{
 					$("#invoice").val(data);
@@ -72,49 +70,13 @@ $site_name = "";
 				else if ( data < 0 )
 				{
 					// no operation
+					// display a failure message, and ask the user to call the shop
 				}			
 		  	}, "text"
 		);
 		
 	}
 
-	/**
-	 *	Called whenn the Customer is creating a new appointment, and so will need to be directed to make a payment
-	 */
-	function ajxSaveAppointment(apptDate, startTime, stylist_id, service_id)
-	{
-		$("div#loading").text("Loading...");
-		
-		if ( service_id < 1 ) 
-		{
-			service_id = 1;
-		}
-		
-		// invoice
-		$.post("index.php", { option:"com_salonbook", task:"addappointment", view: "confirmation", format: "raw", date: apptDate, startTime: startTime, stylist_id:stylist_id, service_id:service_id  },
-			function(data)
-			{
-				// check that data is a positive integer before proceeding
-				$("div#loading").text("");
-				
-				if ( data > 0 )
-				{
-					$("#invoice").val(data);
-					$("#sbkInvoice").val(data);
-
-					returnUrl = "<?php echo $host; ?>index.php?option=com_salonbook&view=payment&task=showpaymentsuccess&xxxVar1=" + data;
-					$("#returnUrl").val(returnUrl);
-					
-					// if everything is ok, show Pay button to allow the Customer to begin the payment process
-					$('#paymentForm').css("display", "inline");
-					
-					//... and hide the confirm button to avoid duplicates
-					$('#confirmOrder').css("display", "none");
-				}				
-		  	}, "text"
-		);
-	}
-	
 	function enablePaymentButton()
 	{
 		// assemble the data needed to add this order to the database
@@ -134,7 +96,7 @@ $site_name = "";
 		// remove colons from the time before passing on
 		timeStr = timeStr.replace(":", " ");
 		
-		product1 = "15.00::1::001::Appointment Booking at Celebrity Unisex Salon at " + timeStr + " on " + dateStr +"::{TEST}";
+		product1 = "25.00::1::001::Appointment Booking at Celebrity Unisex Salon at " + timeStr + " on " + dateStr +"::{TEST}";
 		taxes = "1.95::1::tax::13% HST::{TEST}";
 		$("#productString").val( productHeader + "|" + product1 + "|" + taxes);
 	}
@@ -181,7 +143,7 @@ else
 
 <div id="updateSuccessMessage">
 	<?php 
-		echo JText::_(COM_SALONBOOK_UPDATE_SUCCESS_MESSAGE);
+		echo JText::_('COM_SALONBOOK_UPDATE_SUCCESS_MESSAGE');
 	?>
 </div>
 <div id="paymentForm">
@@ -233,11 +195,3 @@ else
 	</form>
 	
 </div>
-
-<!--
-cancel
-http://celebrity3.pelau.com/index.php?option=com_salonbook&view=payment&task=paymentcancelled
-
-success
-http://celebrity3.pelau.com/index.php?option=com_salonbook&view=payment&task=showpaymentresult
--->

@@ -2,7 +2,6 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-$currentPage = JRequest::getInt('currentPage');
 $service_id = JRequest::getInt('service_id');
 $stylist_id = JRequest::getInt('stylist_id');
 ?>
@@ -119,7 +118,7 @@ $stylist_id = JRequest::getInt('stylist_id');
 	
 	function passthroughData()
 	{
-		appointment_id = '<?php echo JRequest::getVar(id); ?>'; 
+		appointment_id = '<?php echo JRequest::getVar("id"); ?>'; 
 		$('#id').val(appointment_id);
 
 		// set the (newly?) selected date and time
@@ -146,7 +145,7 @@ $stylist_id = JRequest::getInt('stylist_id');
 <!-- page content -->
 <hr/>
 <?php
-echo "<form action='/index.php?Itemid=" . JRequest::getVar(Itemid) . "' method='POST' id='sb_main_form' onsubmit='return passthroughData()'>";
+echo "<form action='/index.php?Itemid=" . JRequest::getVar("Itemid") . "' method='POST' id='sb_main_form' onsubmit='return passthroughData()'>";
 
 ?>
 <div id="stepHeaderTitle">
@@ -265,13 +264,10 @@ while($currentDate < $end)
 		{
 			// $id = substr($event->id, strrpos($event->id, '/')+1);
 			$id = $event->id;
-			// error_log("we found an appointment with ID $id in the feed \n", 3, "../logs/salonbook.log");
 		
 			// check that the event is for the currentDate
 			if ( $event->appointmentDate == date('Y-m-d', $currentDate) )
 			{
-				// error_log("we found an event with a matching date: " . $event->appointmentDate . "\n", 3, "../logs/salonbook.log");
-				
 				// process each event looking for timeslots used
 				$usedSlots = timeSlotsUsedByEvent( $event );				
 			}
@@ -286,6 +282,7 @@ while($currentDate < $end)
 	}
 	
 	$slotsOpenForBookingToday = array_diff($dailySlotsAvailable, $dailyUsedSlots);
+	
 	// highlight dates with LIMITED availability
 	$prettyDate = date("D M j", $currentDate);
 	$thisDate = date("Y-m-j", $currentDate);
@@ -356,7 +353,7 @@ echo "</table>";
 	<input type="hidden" name="controller" value="salonbook" />
 	<input type="hidden" name="task" id="task" value="" />
 	<input type="hidden" name="view" value="confirmation" />
-	<input type="hidden" name="id" id="id" value="<?php echo JRequest::getVar(id); ?>" />
+	<input type="hidden" name="id" id="id" value="<?php echo JRequest::getVar('id'); ?>" />
 	<input type="hidden" name="fieldName[0]" id="fieldName0" value="" />
 	<input type="hidden" name="fieldValue[0]" id="fieldValue0" value="" />
 	<input type="hidden" name="fieldName[1]" id="fieldName1" value="" />

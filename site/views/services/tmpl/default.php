@@ -2,8 +2,7 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-$currentPage = JRequest::getInt('currentPage');
-$stylist_id = $this->appointmentData[0]['stylist'];
+$stylist_id = $this->appointmentData['stylist'];
 ?>
 <!-- functions -->
 <script type="text/javascript" src="/components/com_salonbook/jquery-1.6.2.min.js"></script>
@@ -11,7 +10,7 @@ $stylist_id = $this->appointmentData[0]['stylist'];
 <script>
 	function passthroughData()
 	{
-		appointment_id = '<?php echo JRequest::getVar(id); ?>'; 
+		appointment_id = '<?php echo JRequest::getVar("id"); ?>'; 
 		$('#id').val(appointment_id);
 		
 		service_id = $('#service_id').find("option:selected").val();
@@ -31,7 +30,7 @@ $stylist_id = $this->appointmentData[0]['stylist'];
 
 <hr/>
 <h1>Select the service you need</h1>
-<form action="/index.php?Itemid=<?php echo JRequest::getVar(Itemid); ?>" method="POST" onsubmit="return passthroughData()" name="form_services" id="sb_main_form">
+<form action="/index.php?Itemid=<?php echo JRequest::getVar('Itemid'); ?>" method="POST" onsubmit="return passthroughData()" name="form_services" id="sb_main_form">
 
 	<select id="service_id" name="service_id" class="inputbox"> 
 	<?php		
@@ -67,7 +66,7 @@ $stylist_id = $this->appointmentData[0]['stylist'];
 	<input type="hidden" name="controller" value="salonbook" />
 	<input type="hidden" name="task" id="task" value="" />
 	<input type="hidden" name="view" value="stylists" />
-	<input type="hidden" name="id" id="id" value="<?php echo JRequest::getVar(id); ?>" />
+	<input type="hidden" name="id" id="id" value="<?php echo JRequest::getVar('id'); ?>" />
 	<input type="hidden" name="fieldName" id="fieldName" value="" />
 	<input type="hidden" name="fieldValue" id="fieldValue" value="" />
 	<input type="hidden" name="nextViewType" id="nextViewType" value="" />
