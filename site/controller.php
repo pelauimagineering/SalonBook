@@ -11,7 +11,7 @@ JTable::addIncludePath(JPATH_COMPONENT_ADMINISTRATOR.DS.'tables');
 
 JLoader::register('SalonBookModelAppointments',  JPATH_COMPONENT_SITE.DS.'models'.DS.'appointments.php');
 JLoader::register('TableSalonBook', JPATH_COMPONENT_ADMINISTRATOR.DS.'tables'.DS.'salonbook.php');
-
+JLoader::register('SalonBookModelEmail',  JPATH_COMPONENT_SITE.DS.'models'.DS.'email.php');
 
 require_once (JPATH_SITE.DS.'includes'.DS.'Zend'.DS.'Loader.php');
 require_once 'models/email.php';
@@ -185,7 +185,7 @@ class SalonBookController extends JController
 		error_log("\ninside sendPaymentConfirmationEmail...\n", 3, "../logs/salonbook.log");
 		
 		// look up details and decide the contents of the message based on success/failure of the payment
-		$mailer = new SalonBookEmailer();
+		$mailer = new SalonBookModelEmail();
 		
 		if ( $mailer )
 		{

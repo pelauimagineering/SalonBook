@@ -50,6 +50,7 @@ CREATE TABLE  `#__salonbook_appointments` (
 	`service` INT NULL COMMENT  'foreign key',
 	`payment_id` varchar(50) NULL, 
 	`status` INT NULL DEFAULT '1' COMMENT 'foreign key',
+	`calendarEventURL` VARCHAR( 255 ) NULL,
 ) ENGINE=MYISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `#__salonbook_users`;

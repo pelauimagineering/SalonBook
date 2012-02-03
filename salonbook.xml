@@ -10,7 +10,7 @@
 	<copyright>Copyright ® 2012 - All Rights Reserved</copyright>
 	<license>License Info</license>
 	<!--  The version string is recorded in the components table -->
-	<version>0.8.6</version>
+	<version>0.8.7</version>
 	<!-- The description is optional and defaults to the name -->
 	<description>COM_SALONBOOK_DESCRIPTION</description>
  

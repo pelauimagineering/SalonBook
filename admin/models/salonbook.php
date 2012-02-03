@@ -192,17 +192,62 @@ class SalonBooksModelSalonBook extends JModelAdmin
 		$cids = JRequest::getVar('cid', array(0), 'post', 'array');
 		
 		$to_print = var_export($cids, true);
-		error_log("tried to DELETE IDs " . $to_print . " \n", 3, "../logs/salonbook.log");
+		error_log("trying to DELETE IDs " . $to_print . " \n", 3, "../logs/salonbook.log");
 		
 		$row =& $this->getTable();
-	
+		
+		// create a calendar object
+		JLoader::register('SalonBookModelCalendar',  JPATH_COMPONENT_SITE.DS.'models'.DS.'calendar.php');
+		$calendarModel = new SalonBookModelCalendar();
+		
+		JLoader::register('SalonBooksModelUsers', JPATH_COMPONENT_ADMINISTRATOR.DS.'models'.DS.'users.php');
+		$userModel = new SalonBooksModelUsers();
+		
+		error_log("looping... \n", 3, "../logs/salonbook.log");
+		
 		foreach($cids as $cid)
 		{
+			$row->load($cid);
+			
+			// get the calendar info if needed
+			$calendarEventURL = $row->get('calendarEventURL');
+
+			// try to remove the Google Calendar event for this appointment
+			if ( $calendarEventURL )
+			{
+				try {
+					// lookup the calendar login info from the users table
+					$stylist_id = $row->get('stylist');
+					
+					$userTable =& $userModel->getTable('users');
+					$userTable->load(array('user_id' => $stylist_id));
+					
+					error_log("trying to delete a calendar event with a URI of: " . $calendarEventURL . "\n", 3, "../logs/salonbook.log");
+					$calendarLogin = $userTable->get('calendarLogin');
+					$calendarPassword = $userTable->get('calendarPassword');
+					
+					error_log("calendar name/password: " . $calendarLogin . "/" . $calendarPassword . "\n", 3, "../logs/salonbook.log");
+					
+					$calendar = $calendarModel->setupCalendarConnection($calendarLogin, $calendarPassword);
+					
+					error_log("trying to delete a calendar event\n", 3, "../logs/salonbook.log");
+					$response = $calendarModel->deleteCalendarEntry($calendar, $calendarEventURL);
+				}
+				catch (Exception $e)
+				{
+					error_log("Deletion of the Google Calendar event for appointment # " . $cid . " has FAILED\n", 3, "../logs/salonbook.log");
+				}
+			}
+			
 			if ( !$row->delete($cid))
 			{
+				error_log("Deletion of Appointment # " . $cid . " has FAILED\n", 3, "../logs/salonbook.log");
 				$this->setError( $row->getErrorMsg());
 				return false;
 			}
+			
+			error_log("successful deletion of Appointment # " . $cid . " \n", 3, "../logs/salonbook.log");
+			
 		}
 	
 		return true;

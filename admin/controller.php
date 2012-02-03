@@ -22,12 +22,9 @@ class SalonBooksController extends JController
 	function display($cachable = false) 
 	{
 		error_log("called for task:  " . JRequest::getVar('task', 'unknown-task') . "\n" , 3, "../logs/salonbook.log");
-		// set default view if not set
-// 		JRequest::setVar('view', JRequest::getCmd('view', 'SalonBooks'));
 		
  		// call parent behavior
 		parent::display($cachable);
-		
 	}
 	
 	/**
@@ -44,43 +41,9 @@ class SalonBooksController extends JController
 		error_log("\ninside synchUsers... AFTER copyUsers\n", 3, "../logs/salonbook.log");
 				
 		$view = &$this->getView('Tools', 'html');
-		// $view->assignRef("appointmentData", $appointmentData);
 		$view->setModel($model, true);
 		$view->display();		
 		
-	}
-	
-	/**
-	*	Kept in simply as an example for adding multiple models to a view
-	*/
-	function TESTdisplay()
-	{		
-		/*
-		// ====================
-		// try incorporating multiple data models
-		// ====================
-		$view = &$this->getView(JRequest::getCmd('view', 'SalonBooks'), 'html');
-
-		$stylistModel = $this->getModel('stylists');
-		$view->setModel($stylistModel);
-
-		// $view = & $this->getView( 'My3', 'html' );
-		// $view->setModel( $this->getModel( 'My3' ), true );
-		// $view->setModel( $this->getModel( 'My1' ) );
-		// $this->setModel( $this->getModel( 'Stylists' ) );
-
-		
-		$defaultModel = $this->getModel('salonbooks');
-		$view->setModel($defaultModel, true);	// 'true' in the second parameter sets this ad the default model for the view
-		// 
-		JRequest::setVar('view', $view);
-		
-		//TODO: handle the different layouts used for editing: delete, edit, add
-		JRequest::setVar('layout', JRequest::getCmd('layout','add'));
-		// JRequest::setVar('template', 'edit');
-		// parent::display($cachable);
-		$view->display();
-		*/		
 	}
 }
 ?>

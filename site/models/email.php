@@ -19,18 +19,18 @@ class SalonBookModelEmail extends JModelItem
 	
 	function sendMail()
 	{
-		$recipients = array( $this->email, 'darren@pelau.com' );
+		$recipients = array( $this->email );
 		$this->mailer->addRecipient($recipients);
 		
 		$send =& $this->mailer->Send();
 		
 		if ( $send !== true ) {
 		    // echo 'Error sending email: ' . $send->message;
-			error_log("\n Error sending email:" . $send->message . "\n", 3, "../logs/salonbook.log");
+			error_log("\n Error sending email:" . $send->message . "\n", 3, "logs/salonbook.log");
 		} else {
 		    // echo 'Mail sent';
 		    $emailList = var_export($recipients,true);
-			error_log("\n Email sent to:" . $emailList . "\n", 3, "../logs/salonbook.log");
+			error_log("\n Email sent to:" . $emailList . "\n", 3, "logs/salonbook.log");
 		}
 	}
 	
@@ -70,7 +70,7 @@ class SalonBookModelEmail extends JModelItem
 	
 	function __construct()
 	{
-		error_log("\n constructing an email...\n", 3, "../logs/salonbook.log");
+		error_log("\n constructing an email...\n", 3, "logs/salonbook.log");
 		
 		$this->mailer =& JFactory::getMailer();
 		

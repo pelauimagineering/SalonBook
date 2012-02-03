@@ -24,13 +24,42 @@ class SalonBookModelCalendar extends JModel
 	protected $email;
 	protected $mailer;
 
+	/**
+	 * Delete a single entry from a Google Calendar
+	 * 
+	 * @param string $calendarEventURL
+	 * 
+	 * @return bool success
+	 */
+	function deleteCalendarEntry($calendar, $calendarEventURL)
+	{
+		error_log("deleting event at URI: " . $calendarEventURL . "\n", 3, "../logs/salonbook.log");
+		try {
+			$response = $calendar->performHttpRequest('DELETE', $calendarEventURL);
+			
+		} catch (Zend_Gdata_App_Exception $e) {
+			error_log("Error deleting a calendar entry: " . $e->getMessage() . "\n", 3, "../logs/salonbook.log");
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Instantiate and return a live connection to the Google Calendar service
+	 * 
+	 * @param string $calendarLogin
+	 * @param string $calendarPassword
+	 * 
+	 * @return Zend_Gdata_Calendar 
+	 */
 	function setupCalendarConnection($calendarLogin = 'admin@celebrityunisexsalon.com', $calendarPassword = 'JKX9DuR7eyBCEXEj')
 	{
 		error_log("trying to setupCalendarConnection \n", 3, "../logs/salonbook.log");
 	
 		error_log("loading Zend classes...\n", 3, "../logs/salonbook.log");
 		
-		JLoader::register('Zend_Loader', JPATH_PLATFORM.DS.'includes'.DS.'Zend'.DS.'Loader.php');	//includes
+		JLoader::register('Zend_Loader', JPATH_PLATFORM.DS.'includes'.DS.'Zend'.DS.'Loader.php');
 		error_log("loaded Zend_Loader...\n", 3, "../logs/salonbook.log");
 		
 		Zend_Loader::loadClass('Zend_Gdata');
@@ -46,14 +75,43 @@ class SalonBookModelCalendar extends JModel
 		$client = Zend_Gdata_ClientLogin::getHttpClient($calendarLogin, $calendarPassword, $gcal);
 		$calendar = new Zend_Gdata_Calendar($client);
 		
+		error_log("We have a calendar object for " . $calendarLogin . "\n", 3, "../logs/salonbook.log");
+		
 		return $calendar;
 	}
 	
-	function createCalendarEvent ($calendar, $customer, $service, $appointmentDate, $startTimestamp, $formattedEndDate, $formattedEndTime)	
+	/**
+	 * Create and save a Google Calendar object
+	 * If an existing calendar_id is passed in, then update instead of create the event
+	 * @param unknown_type $calendar
+	 * @param string $customer
+	 * @param string $service
+	 * @param string $appointmentDate
+	 * @param datetime $startTimestamp
+	 * @param datetime $formattedEndDate
+	 * @param datetime $formattedEndTime
+	 * @param int $event_to_update
+	 */	
+	function createCalendarEvent ($calendar, $customer, $service, $appointmentDate, $startTimestamp, $formattedEndDate, $formattedEndTime, $calendarEventURL = null)	
 	{
 		error_log("createCalendarEvent \n", 3, "../logs/salonbook.log");
 		
-		$newEvent = $calendar->newEventEntry();
+		if ( $calendarEventURL == null )
+		{
+			error_log("creating a brand new calendar event\n", 3, "../logs/salonbook.log");
+			$newEvent = $calendar->newEventEntry();
+		}
+		else
+		{
+			// retrieve an existing event
+			error_log("updating event at URI: " . $calendarEventURL . "\n", 3, "../logs/salonbook.log");
+			try {
+				$newEvent = $calendar->getCalendarEventEntry($calendarEventURL);
+			} catch (Zend_Gdata_App_Exception $e) {
+				error_log("Error retrieving a calendar entry: " . $e->getMessage() . "\n", 3, "../logs/salonbook.log");
+			}
+		}
+		
 		$eventTitle = "$customer ($service)";
 		$newEvent->title = $calendar->newTitle($eventTitle);
 		$newEvent->content = $calendar->newContent("$service");
@@ -70,12 +128,31 @@ class SalonBookModelCalendar extends JModel
 	
 		// Upload the event to the calendar server
 		// A copy of the event as it is recorded on the server is returned
-		$createdEvent = $calendar->insertEvent($newEvent);
-	
-		$output = "Calendar Event ID: " . $createdEvent->id->text . "\n";
-		error_log($output, 3, "../logs/salonbook.log");
-		
-		return $output;		
+		if ( $calendarEventURL == null )
+		{
+			error_log("inserting the calendar event..\n", 3, "../logs/salonbook.log");
+			$createdEvent = $calendar->insertEvent($newEvent);
+			
+			$output = "Calendar Event ID: " . $createdEvent->id->text . " EditLink: " . $createdEvent->getEditLink()->href . "\n";
+			error_log($output, 3, "../logs/salonbook.log");
+			
+			return $createdEvent->getEditLink()->href;
+		}
+		else
+		{	
+			error_log("updating the calendar event..\n", 3, "../logs/salonbook.log");
+			// if this is an update
+			try 
+			{
+				$newEvent->save();
+			} 
+			catch ( Zend_Gdata_App_Exception $e ) 
+			{
+				error_log("Error updating calendar entry: " . $e->getMessage() . "\n", 3, "../logs/salonbook.log");
+			}
+			
+			return $newEvent->getEditLink()->href;
+		}
 	}
 	
 	function saveAppointmentToGoogle($appointment_id)
@@ -97,7 +174,7 @@ class SalonBookModelCalendar extends JModel
 		$appointmentDate = $appointmentData[0]['appointmentDate'];
 		$startTime = $appointmentData[0]['startTime'];
 		
-		//TODO: read the configurable default duration (that was set up by the Site Administrator during installation)
+		//TODO: read the configurable default duration (that was set up by the Site Administrator during installation) - this is a fail-safe method, as this should have been caught long before here
 		$duration = ($appointmentData[0]['durationInMinutes'] > 0) ? $appointmentData[0]['durationInMinutes'] : 90;
 		$service = $appointmentData[0]['serviceName'];
 		
@@ -113,9 +190,7 @@ class SalonBookModelCalendar extends JModel
 			$calendarPassword = $appointmentData[0]['calendarPassword'];					
 		}
 	
-		error_log("go setup the connection...\n", 3, "../logs/salonbook.log");
-		// use the stylist data to figure out the correct calendar to post to
-		
+		// use the stylist data to figure out the correct calendar to post to		
 		$calendar = $this->setupCalendarConnection($calendarLogin, $calendarPassword);
 		$calFeed = $calendar->getCalendarListFeed();
 		$output = "here's the calendarFeed title [  " . $calFeed->title->text . "  ]\n";
@@ -133,7 +208,15 @@ class SalonBookModelCalendar extends JModel
 		$fullEndDateTimeString = $formattedEndDate." ".$formattedEndTime;
 		$endTimestamp = strtotime($fullEndDateTimeString);
 	
-		$this->createCalendarEvent ($calendar, $customer, $service, $appointmentDate, $startTimestamp, $formattedEndDate, $formattedEndTime);
+		// pass in any existing calendar event for this appointment so it can be updated instead of creating a new one
+		$calendarEventURL = $appointmentData[0]['calendarEventURL'];
+		$returnedEventURL = $this->createCalendarEvent ($calendar, $customer, $service, $appointmentDate, $startTimestamp, $formattedEndDate, $formattedEndTime, $calendarEventURL);
+		
+		$appointmentData[0]['calendarEventURL'] = $returnedEventURL;
+		
+		$session = JFactory::getSession();
+		$session->set('appointmentData', $appointmentData[0], 'SalonBook');
+		$appointmentModel->store();
 	}
 }
 ?>

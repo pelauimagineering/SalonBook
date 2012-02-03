@@ -14,7 +14,7 @@ JHtml::_('behavior.tooltip');
 	<div>
 		<input type="hidden" name="option" value="com_salonbook" />
 		<input type="hidden" name="task" value="" />
-		<input type="hidden" name="boxchecked" value="0" />
+		<input type="hidden" name="boxchecked" value="1" />
 		<input type="hidden" name="controller" value="salonbook" />
 		<?php echo JHtml::_('form.token'); ?>
 	</div>
