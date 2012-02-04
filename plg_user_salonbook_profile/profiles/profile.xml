@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+ 
+<form>
+	<fields name="salonbookprofile">
+		<fieldset name="salonbookprofile" label="PLG_USER_SALONBOOKPROFILE_SLIDER_LABEL">
+			<field
+				name="phone_mobile"
+				type="text"
+				id="phone_mobile"
+				description="PLG_USER_SALONBOOKPROFILE_FIELD_PHONE_MOBILE_MESSAGE"
+				filter="string"
+				label="PLG_USER_SALONBOOKPROFILE_FIELD_PHONE_MOBILE_LABEL"
+				message="PLG_USER_SALONBOOKPROFILE_FIELD_PHONE_MOBILE_MESSAGE"
+				size="32"
+			/>
+ 
+			<field
+				name="gender"
+				type="list"
+				id="gender"
+				description="PLG_USER_SALONBOOKPROFILE_FIELD_GENDER_MESSAGE"
+				filter="string"
+				label="PLG_USER_SALONBOOKPROFILE_FIELD_GENDER_LABEL"
+				message="PLG_USER_SALONBOOKPROFILE_FIELD_GENDER_MESSAGE"
+			>
+					<option value="Female">Female</option>
+					<option value="Male">Male</option>
+					<option value="Refused">Refused</option>
+			</field>
+
+			<field
+				name="postalcode"
+				type="text"
+				id="postalcode"
+				description="PLG_USER_SALONBOOKPROFILE_FIELD_POSTALCODE_MESSAGE"
+				filter="string"
+				label="PLG_USER_SALONBOOKPROFILE_FIELD_POSTALCODE_LABEL"
+				message="PLG_USER_SALONBOOKPROFILE_FIELD_POSTALCODE_MESSAGE"
+				size="20"
+			/>
+		</fieldset>
+	</fields>
+</form>
