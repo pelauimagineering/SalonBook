@@ -25,25 +25,14 @@ class SalonBookModelAppointments extends JModelItem
 		public $aNumber;
 		public $depositPaid;
 		public $_id;
-		
-		/**
-		 * Returns a reference to the SalonBook Table object, always creating it.
-		 *
-		 * @param	type	The table type to instantiate
-		 * @param	string	A prefix for the table class name. Optional.
-		 * @param	array	Configuration array for model. Optional.
-		 * @return	JTable	A database object
-		 * @since	1.6
-		 */
-		public function __getTable($type = 'SalonBook') 
-		{
-			return JTable::getInstance($type);
-		}
 
-		public function ___getTable($type = 'SalonBook', $prefix = 'SalonBookTable', $config = array())
+		/**
+		 * Load all configuration values into the session object
+		 */
+		public function loadConfigurationData()
 		{
-			return JTable::getInstance($type, $prefix, $config);
-		}
+			
+		} 
 		
 		public function getNewAppointment($date, $startTime, $stylist_id, $service_id)
 		{
@@ -266,5 +255,24 @@ class SalonBookModelAppointments extends JModelItem
 		
 			return true;
 		}
-		
+
+		/**
+		 * Removing an appointment means to set its status to Cancelled, and remove it from the Google calendar
+		 * 
+		 * @return int Number of rows that were updated. Success == a positive integer
+		 */
+		function cancelAppointment($appointment_id = 0)
+		{
+			$db = JFactory::getDBO();
+			$cancelQuery = "UPDATE `#__salonbook_appointments` A set status = ( SELECT S.id FROM `#__salonbook_status` S WHERE status LIKE 'Cancelled' ) WHERE A.id = '$appointment_id'";
+			
+			error_log($cancelQuery."\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			
+			$db->setQuery((string)$cancelQuery);
+			$db->query();
+
+			$this->rowCount = $db->getAffectedRows();
+			return $this->rowCount;
+			
+		}
 }

@@ -41,7 +41,26 @@ $session->set('appointmentData', $appointmentData, 'SalonBook');
 		
 		$("#sb_main_form").submit();
 	}
-		
+
+	function showCancelWarning(appointment_id)
+	{
+		answer = confirm("<?php echo JText::_('COM_SALONBOOK_LIST_CANCEL_WARNING_NO_REFUND') ?>");
+
+		if ( answer == true )
+		{
+			$('#id').val(appointment_id);
+			
+			$('#fieldName').val('id');
+			$('#fieldValue').val(appointment_id);
+			$('#nextViewType').val('html');
+			$('#nextViewModel').val('salonbook');
+			$('#task').val('cancelAppointment');
+			
+			$("#sb_main_form").submit();
+		}
+			
+	}
+	
 </script>
 
 
@@ -79,14 +98,16 @@ $session->set('appointmentData', $appointmentData, 'SalonBook');
 			
 			if ( $days > 2 && $now < $date2 )
 			{
-				$editButton = "<input type='button' name='edit' value='Change' onclick='prepareToEdit(" . $appointment['id'] . "); ' class='apptEditButton_change' />";
+				$editButton = "<input type='button' name='edit' value='" . JText::_('COM_SALONBOOK_LIST_BUTTON_CHANGE_TITLE') . "' onclick='prepareToEdit(" . $appointment['id'] . "); ' class='apptEditButton_change' />";
 			}
 			else
 			{
-				$editButton = "<input type='button' name='edit' value='Upcoming' class='apptEditButton_locked' disabled='disabled' />";
+				$editButton = "<input type='button' name='edit' value='" . JText::_('COM_SALONBOOK_LIST_BUTTON_LOCKED_TITLE') . "' class='apptEditButton_locked' disabled='disabled' />";
 			}
 			
-			echo "<div class='apptDetail'>" . $editButton . $appointment['serviceName'] . " with " . $appointment['stylistName'] . " on " . date("D M j", strtotime($appointment['appointmentDate']) ) . " at " . date("g:i a",strtotime($appointment['startTime'])) . " </div>";
+			$cancelButton = "<input type='button' name='edit' value='" . JText::_('COM_SALONBOOK_LIST_BUTTON_CANCEL_TITLE') . "' onclick='showCancelWarning(" . $appointment['id'] . "); ' class='apptEditButton_cancel' />";
+			
+			echo "<div class='apptDetail'>" . $editButton . $cancelButton . $appointment['serviceName'] . " with " . $appointment['stylistName'] . " on " . date("D M j", strtotime($appointment['appointmentDate']) ) . " at " . date("g:i a",strtotime($appointment['startTime'])) . " </div>";
 		}
 		
 		echo "<br/>";

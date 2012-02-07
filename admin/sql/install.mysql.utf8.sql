@@ -82,3 +82,16 @@ INSERT INTO `#__salonbook_status` (`status`) VALUES
 	('Completed'),
 	('Refunded'),
 	('Cancelled');
+	
+CREATE TABLE `#__salonbook_configuration` (
+	`key` varchar(50) NOT NULL,
+	`value` varchar(50) NULL,
+   PRIMARY KEY  (`key`)
+) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+
+INSERT INTO `#__salonbook_configuration` (`key`, `value`) VALUES
+	('cc_processor','InternetSecure'),
+	('break_time','15'),
+	('deposit_type','amount'),
+	('schedule_length','8'),
+	('change_allowed_after_period','2');

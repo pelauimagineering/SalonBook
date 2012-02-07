@@ -41,6 +41,12 @@ td#rightColumn
 	width: 120px;
 }
 
+.apptEditButton_cancel {
+	margin-right: 40px;
+	color: red;
+	width: 80px;
+}
+
 .apptDetail {
 	margin-bottom: 10px;
 }

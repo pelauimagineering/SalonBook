@@ -76,7 +76,7 @@ class SalonBookController extends JController
 			// we shouldn't be fetching data from the database AGAIN, only from the object we are passing around!!
 			error_log("LOOKUP or CREATE an appointment object\n", 3, "logs/salonbook.log");
 			
-			$model = new SalonBookModelAppointments();
+// 			$model = new SalonBookModelAppointments();
 			error_log("passed-in ID:" . $appointment_id . "\n", 3, "logs/salonbook.log");
 			
 			if ( $appointmentData['user'] == 0 )			
@@ -152,6 +152,40 @@ class SalonBookController extends JController
 		// load and add the next Model
 		$nextModel = $this->getModel($nextViewModel);
 		$view->setModel($nextModel, true);
+		
+		$view->display();
+	}
+	
+	/**
+	 * The user may cancel their appointment if is beyond the minimun cancellation-lead-time
+	 */
+	function cancelAppointment()
+	{
+		error_log("inside cancelAppointment()\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		
+		$model = new SalonBookModelAppointments();
+		
+		$appointment_id=JRequest::getVar('id', '0');
+		
+		if ( $appointment_id > 0 )
+		{
+			$success = $model->cancelAppointment($appointment_id);
+		}
+		
+		error_log("did the appointment cancel properly? : |" . $success . "| \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		
+		$view = &$this->getView('Cancellation', 'html');
+		
+		if ( $success > 0 )
+		{
+			// show a success message
+			$view->assign("success", true);		
+		}
+		else
+		{
+			// show a failure message
+			$view->assign("success", false);
+		}
 		
 		$view->display();
 	}

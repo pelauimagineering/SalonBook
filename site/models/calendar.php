@@ -52,7 +52,6 @@ class SalonBookModelCalendar extends JModel
 	 * 
 	 * @return Zend_Gdata_Calendar 
 	 */
-// 	function setupCalendarConnection($calendarLogin = 'admin@celebrityunisexsalon.com', $calendarPassword = 'JKX9DuR7eyBCEXEj')
 	function setupCalendarConnection($calendarLogin, $calendarPassword)
 	{
 		error_log("trying to setupCalendarConnection \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
