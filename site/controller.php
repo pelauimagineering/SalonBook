@@ -31,9 +31,6 @@ class SalonBookController extends JController
 {
 	protected $appointmentDetails;
 	
-	/** 
-	 * Tasks
-	 */
 	/**
 	 * Searches for, and removes a value from a single-dimensional array
 	 * 

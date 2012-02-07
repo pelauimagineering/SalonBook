@@ -22,6 +22,8 @@ $appointmentData = array(	'id' => 0,
 					);
 $session->set('appointmentData', $appointmentData, 'SalonBook');
 
+$maxBookings = $this->configOptions->get('max_user_scheduled_count', '1');
+
 ?>
 
 <script type="text/javascript" src="/components/com_salonbook/jquery-1.6.2.min.js"></script>
@@ -69,9 +71,6 @@ $session->set('appointmentData', $appointmentData, 'SalonBook');
 <form action="/index.php?Itemid=<?php echo JRequest::getVar('Itemid'); ?>" method="POST" id="sb_main_form">
 
 <?php
-	//TODO: $maxBookings should be pulled from an Admin-controllers config option
-	$maxBookings = 20;
-	
 	$resultsArray = $this->appointmentsList;
 	if ( count($resultsArray) < $maxBookings )
 	{ 			

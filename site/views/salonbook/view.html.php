@@ -28,7 +28,9 @@ class SalonBookViewSalonBook extends JView
 			$appointmentData = $appointmentModel->getAppointmentDetailsForUser($user_id);
 			$this->appointmentsList = $appointmentData;
 			
-             // Check for errors.
+			$this->configOptions = &JComponentHelper::getParams('com_salonbook');
+			
+			// Check for errors.
              if (count($errors = $this->get('Errors'))) 
              {
              	JError::raiseError(500, implode('<br />', $errors));

@@ -26,14 +26,6 @@ class SalonBookModelAppointments extends JModelItem
 		public $depositPaid;
 		public $_id;
 
-		/**
-		 * Load all configuration values into the session object
-		 */
-		public function loadConfigurationData()
-		{
-			
-		} 
-		
 		public function getNewAppointment($date, $startTime, $stylist_id, $service_id)
 		{
 			$user =& JFactory::getUser();

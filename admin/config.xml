@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+	<fieldset name="BASIC">
+		<field
+			name="deposit_type"
+			type="radio"
+			label="COM_SALONBOOK_CONFIG_DEPOSIT_TYPE_LABEL"
+			description="COM_SALONBOOK_CONFIG_DEPOSIT_TYPE_DESC"
+			default="amount">
+				<option value="amount">COM_SALONBOOK_CONFIG_DEPOSIT_TYPE_AMOUNT</option>
+				<option value="percentage">COM_SALONBOOK_CONFIG_DEPOSIT_TYPE_PERCENTAGE</option>
+		</field>
+
+		<field
+			name="cc_processor"
+			type="list"
+			multiple="true"
+			size="8"
+			label="COM_SALONBOOK_CONFIG_PAYMENT_PROCESSOR_LABEL"
+			description="COM_SALONBOOK_CONFIG_PAYMENT_PROCESSOR_DESC"
+			default="InternetSecure"
+			>
+				<option value="InternetSecure">InternetSecure</option>
+		</field>
+
+		<field
+			name="break_time"
+			type="text"
+			label="COM_SALONBOOK_CONFIG_BREAK_TIME_LABEL"
+			description="COM_SALONBOOK_CONFIG_BREAK_TIME_DESC"
+			default="15"
+			size="5"/>
+
+		<field
+			name="change_allowed_after_period"
+			type="text"
+			label="COM_SALONBOOK_CONFIG_CHANGE_PERIOD_LABEL"
+			description="COM_SALONBOOK_CONFIG_CHANGE_PERIOD_DESC"
+			default="2"
+			size="5"/>
+
+		<field
+			name="schedule_length"
+			type="text"
+			label="COM_SALONBOOK_CONFIG_SCHEDULE_LENGTH_LABEL"
+			description="COM_SALONBOOK_CONFIG_SCHEDULE_LENGTH_DESC"
+			default="8"
+			size="5"/>
+
+		<field
+			name="max_user_scheduled_count"
+			type="text"
+			label="COM_SALONBOOK_CONFIG_MAX_SCHEDULES_LABEL"
+			description="COM_SALONBOOK_CONFIG_MAX_SCHEDULES_DESC"
+			default="2"
+			size="5"/>
+
+	</fieldset>
+</config>

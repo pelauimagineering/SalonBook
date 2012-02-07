@@ -47,6 +47,8 @@ class SalonBooksViewSalonBooks extends JView
 		JToolBarHelper::deleteList(JText::_('COM_SALONBOOK_MANAGER_CONFIRM_APPOINTMENT_DELETION'), 'delete');	
 		JToolBarHelper::editList('edit');
 		JToolBarHelper::addNew('add');
+		
+		if (JFactory::getUser()->authorise('core.admin')) JToolBarHelper::preferences('com_salonbook');
 	}
 }
 ?>
