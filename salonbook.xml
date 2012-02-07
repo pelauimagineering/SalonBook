@@ -10,7 +10,7 @@
 	<copyright>Copyright ® 2012 - All Rights Reserved</copyright>
 	<license>License Info</license>
 	<!--  The version string is recorded in the components table -->
-	<version>0.8.9</version>
+	<version>0.8.9.1</version>
 	<!-- The description is optional and defaults to the name -->
 	<description>COM_SALONBOOK_DESCRIPTION</description>
  
@@ -70,6 +70,7 @@
 			in this section are copied from /admin/ in the package -->
 		<files folder="admin">
 			<!-- Admin Main File Copy Section -->
+			<filename>config.xml</filename>
 			<filename>index.html</filename>
 			<filename>salonbook.php</filename>
 			<filename>controller.php</filename>
