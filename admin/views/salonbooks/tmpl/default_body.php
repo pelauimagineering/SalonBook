@@ -23,7 +23,7 @@ defined('_JEXEC') or die('Restricted Access');
 			<?php echo JHtml::_('grid.id', $i, $item->id); // creates a checkbox ?>
 		</td>
 		<td>
-			<a href="<?php echo $link; ?>"><?php echo $item->appointmentDate; ?></a>
+			<a href="<?php echo $link; ?>"><?php echo date('D M d', strtotime($item->appointmentDate)); ?></a>
 		</td>
 		<td>
 			<?php 
