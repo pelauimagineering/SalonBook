@@ -12,16 +12,12 @@
 		</field>
 
 		<field
-			name="cc_processor"
-			type="list"
-			multiple="true"
-			size="8"
-			label="COM_SALONBOOK_CONFIG_PAYMENT_PROCESSOR_LABEL"
-			description="COM_SALONBOOK_CONFIG_PAYMENT_PROCESSOR_DESC"
-			default="InternetSecure"
-			>
-				<option value="InternetSecure">InternetSecure</option>
-		</field>
+			name="deposit_value"
+			type="text"
+			label="COM_SALONBOOK_CONFIG_DEPOSIT_VALUE_LABEL"
+			description="COM_SALONBOOK_CONFIG_DEPOSIT_VALUE_DESC"
+			default="25"
+			size="5"/>
 
 		<field
 			name="break_time"
@@ -53,6 +49,28 @@
 			label="COM_SALONBOOK_CONFIG_MAX_SCHEDULES_LABEL"
 			description="COM_SALONBOOK_CONFIG_MAX_SCHEDULES_DESC"
 			default="2"
+			size="5"/>
+
+	</fieldset>
+	<fieldset name="PAYMENTPROCESSOR">
+		<field
+			name="cc_processor"
+			type="list"
+			multiple="true"
+			size="8"
+			label="COM_SALONBOOK_CONFIG_PAYMENT_PROCESSOR_LABEL"
+			description="COM_SALONBOOK_CONFIG_PAYMENT_PROCESSOR_DESC"
+			default="InternetSecure"
+			>
+				<option value="InternetSecure">InternetSecure</option>
+		</field>
+		
+		<field
+			name="gateway_id"
+			type="text"
+			label="COM_SALONBOOK_CONFIG_INTERNETSECURE_GATEWAYID_LABEL"
+			description="COM_SALONBOOK_CONFIG_INTERNETSECURE_GATEWAYID_DESC"
+			default="00000"
 			size="5"/>
 
 	</fieldset>

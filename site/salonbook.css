@@ -88,11 +88,4 @@ td#rightColumn
 	font-size: large;
 }
 
-/* admin area */
-.salonbook_admin_tools #synch_users {
-	border: 1px solid #000000;
-	padding: 30px 30px 30px 30px;
-	background-color: #ff0000;
-	color: #ffffff;
-}
 

@@ -14,23 +14,18 @@ defined('_JEXEC') or die('Restricted Access');
 	</th>
 	<th width="100">
 		<?php echo JText::_('COM_SALONBOOK_SALONBOOK_APPOINTMENTS_DETAIL_TIME'); ?>
-		<!-- Start Time -->
 	</th>
 	<th width="100">
 		<?php echo JText::_('COM_SALONBOOK_SALONBOOK_APPOINTMENTS_DETAIL_CLIENT'); ?>
-		<!-- Client -->
 	</th>
 	<th width="100">
 		<?php echo JText::_('COM_SALONBOOK_SALONBOOK_APPOINTMENTS_DETAIL_SERVICE'); ?>
-		<!-- Service -->
 	</th>
 	<th width="100">
 		<?php echo JText::_('COM_SALONBOOK_SALONBOOK_APPOINTMENTS_DETAIL_STYLIST'); ?>
-		<!-- Stylist -->
 	</th>
 	<th width="100">
 		<?php echo JText::_('COM_SALONBOOK_SALONBOOK_APPOINTMENTS_DETAIL_STATUS'); ?>
-		<!-- Status -->
 	</th>
 	</tr>
 

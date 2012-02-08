@@ -18,6 +18,7 @@ class SalonBookViewConfirmation extends JView
  				$this->selectedTime = $this->get('SelectedTime');
 				
  				$this->appointmentData = $this->appointmentData;
+ 				$this->configOptions =& JComponentHelper::getParams('com_salonbook');
  				
                 // Check for errors.
                 if (count($errors = $this->get('Errors'))) 

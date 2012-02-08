@@ -11,14 +11,9 @@ $view = JRequest::getCmd('view');
 
 JSubMenuHelper::addEntry(JText::_('SALONBOOK_MENU_APPOINTMENTS'), 'index.php?option=com_salonbook&view=salonbooks',$view == 'salonbooks');
 JSubMenuHelper::addEntry(JText::_('SALONBOOK_MENU_CLIENTS'), 'index.php?option=com_salonbook&view=clients',$view == 'clients' );
-JSubMenuHelper::addEntry(JText::_('SALONBOOK_MENU_STAFF'), 'index.php?option=com_salonbook&view=clients',$view == 'clients' );
+JSubMenuHelper::addEntry(JText::_('SALONBOOK_MENU_STAFF'), 'index.php?option=com_salonbook&view=staff',$view == 'staff' );
 JSubMenuHelper::addEntry(JText::_('SALONBOOK_MENU_TOOLS'), 'index.php?option=com_salonbook&view=tools',$view == 'tools' );
-JSubMenuHelper::addEntry(JText::_('SALONBOOK_MENU_HELP'), 'index.php?option=com_salonbook&view=clients',$view == 'clients' );
 
-// Get an instance of the controller prefixed by SalonBook
-// $controller = JController::getInstance('SalonBook');
-
-//
 require_once( JPATH_COMPONENT.DS.'controller.php' );
  
 // Require specific controller if requested
@@ -36,8 +31,7 @@ $classname	= 'SalonBooksController'.$controller;
 $controller	= new $classname( );
 
 $theTask = JRequest::getCmd('task');
-error_log("using controller: " . $classname . " and task: " . $theTask . "\n", 3, "../logs/salonbook.log");
-//
+error_log("using controller: " . $classname . " and task: " . $theTask . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 
 // Perform the Request task
 $controller->execute(JRequest::getCmd('task'));

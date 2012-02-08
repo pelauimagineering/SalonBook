@@ -11,8 +11,20 @@ $appointment_id = $this->appointmentData['id'];
 
 $site_name = "";
 
-// determine if this is a new appointment, or an update
+// the actual value to be charged is set in the backend config options
+$depositType = $this->configOptions->get('deposit_type','amount');
+$depositValue = $this->configOptions->get('deposit_value', '23.99');
 
+if ( $depositType == "amount" )
+{
+	$depositDollarValue = $depositValue;
+}
+else
+{
+	//TODO: lookup individual service costs through the model
+	$serviceCost = 100;
+	$depositDollarValue = $serviceCost * $depositValue / 100;
+}
 ?>
 <script type="text/javascript" src="/components/com_salonbook/jquery-1.6.2.min.js"></script>
 <script type="text/javascript" src="/components/com_salonbook/salonui.js"></script>
@@ -95,8 +107,10 @@ $site_name = "";
 		productHeader = "Price::Qty::Code::Description::Flags";
 		// remove colons from the time before passing on
 		timeStr = timeStr.replace(":", " ");
+
+		dollarValue = "<?php echo number_format($depositDollarValue, 2, '.', ''); ?>";	// force to 2 decimal places i.e. 25.00
 		
-		product1 = "25.00::1::001::Appointment Booking at Celebrity Unisex Salon at " + timeStr + " on " + dateStr +"::{TEST}";
+		product1 = dollarValue + "::1::001::Appointment Booking at Celebrity Unisex Salon at " + timeStr + " on " + dateStr +"::{TEST}";
 		taxes = "1.95::1::tax::13% HST::{TEST}";
 		$("#productString").val( productHeader + "|" + product1 + "|" + taxes);
 	}
@@ -147,40 +161,9 @@ else
 	?>
 </div>
 <div id="paymentForm">
-	<?php
-	/*
-	<!-- PRODUCTION 
-	<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
-	<input type="hidden" name="cmd" value="_s-xclick">
-	<input type="hidden" name="hosted_button_id" value="G7WJABTGZ2792">
-	<table>
-	<tr><td><input type="hidden" name="on0" value="When"></td></tr><tr><td><input type="hidden" name="os0" id="scheduledTimeForPayment" maxlength="200"></td></tr>
-	<tr><td><input type="hidden" name="on1" value="orderNumber"></td></tr><tr><td><input type="hidden" name="os1" id="invoice" maxlength="200"></td></tr>
-	</table>
-	<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_paynow_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-	<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-	</form>	
-	-->
-	
-	<!-- DEVELOPMENT -->
-	<!-- 
-	<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">
-	<input type="hidden" name="cmd" value="_s-xclick">
-	<input type="hidden" name="hosted_button_id" value="LP2GCTSKPU3GQ">
-	<table>
-	<tr><td><input type="hidden" name="on0" value="Time"></td></tr><tr><td><input type="hidden" name="os0" id="scheduledTimeForPayment" maxlength="200"></td></tr>
-	<tr><td><input type="hidden" name="on1" value="Invoice"></td></tr><tr><td><input type="hidden" name="os1" id="invoice" maxlength="200"></td></tr>
-	</table>
-	<input type="image" src="https://www.sandbox.paypal.com/en_US/i/btn/btn_paynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-	<img alt="" border="0" src="https://www.sandbox.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">
-	</form>
-	-->
-	*/
-	?>
-		
 	<!-- InternetSecure -->
 	<form action="https://secure.internetsecure.com/process.cgi" method="post"> 
-		<input type="hidden" name="GatewayID" value="16079"> 
+		<input type="hidden" name="GatewayID" value="<?php echo $this->configOptions->get('gateway_id','0');?>">
 		<input type="hidden" name="language" value="English"> 
 		<input type="hidden" name="ReturnURL" id="returnUrl" value=""> 
 		<input type="hidden" name="xxxCancelURL" value="<?php echo $host; ?>index.php?option=com_salonbook&view=payment&task=showpaymentcancelled"> 

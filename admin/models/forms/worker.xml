@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	var $id = null;
+	
+	var $user_id = 0;
+	var $fisrtName = null;
+	var $lastName = null;
+	var $userName = null;
+	var $calendarLogin = null;
+	var $calendarPassword = null;
+	var $hairstyle = null;
+	var $notes = null;
+	var $completed_parsing = 0;
+ -->
+<form>
+	<fieldset>
+		<field
+			id="id"
+			name="id"
+			type="hidden"
+		/>
+		
+		<field
+			id="firstName"
+			name="firstName"
+			type="text"
+			label="First Name"
+			description="Enter the Staff Member's first name"
+			size="40"
+			class="inputbox"
+			default=""
+		/>
+		
+		<field
+			id="lastName"
+			name="lastName"
+			type="text"
+			label="Last Name"
+			description="Enter the Staff Member's last name"
+			size="40"
+			class="inputbox"
+			default=""
+		/>
+
+		<field
+			id="calendarLogin"
+			name="calendarLogin"
+			type="text"
+			label="Google Calendar Login"
+			description="enter the login info"
+			size="40"
+			class="inputbox"
+			default=""
+		/>
+
+		<field
+			id="calendarPassword"
+			name="calendarPassword"
+			type="password"
+			label="Google Calendar Password"
+			description="enter the password"
+			size="40"
+			class="inputbox"
+			default=""
+		/>		
+	</fieldset>
+</form>
+

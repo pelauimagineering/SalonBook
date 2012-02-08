@@ -2,6 +2,18 @@
   background: url('../images/sb_logo_48.png') 0 0 no-repeat;
 }
 .unpaid {
-	color: red;
+	color: #ff0000;
 	font-weight: bold;
+}
+
+.salonbook_admin_tools #synch_users {
+	border: 0px solid #000000;
+	padding: 30px 30px 30px 30px;
+	color: #ffffff;
+}
+
+.backendDateTime {
+	font-family:"Courier","monospace";
+	color: #666;
+	font-size: small;
 }

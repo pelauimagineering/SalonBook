@@ -8,7 +8,7 @@ jimport('joomla.database.table');
 /**
  * SalonBookUsers Table class
  */
-class TableUsers extends JTable
+class TableWorker extends JTable
 {
 	// properties
 	// primary key
@@ -29,9 +29,8 @@ class TableUsers extends JTable
 	 *
 	 * @param object Database connector object
 	 */
-	function TableUsers(&$db) 
+	function TableWorker(&$db) 
 	{
 		parent::__construct('#__salonbook_users', 'id', $db);
 	}
 }
-?>
