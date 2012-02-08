@@ -23,7 +23,7 @@ foreach($this->items as $i => $item):
 			<?php echo $item->calendarLogin; ?>
 		</td>
 		<td>
-			<?php echo $item->calendarPassword ?>
+			<input type="password" value="<?php echo $item->calendarPassword ?>" disabled="disabled" />
 		</td>
 	</tr>
 <?php 

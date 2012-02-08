@@ -51,6 +51,14 @@
 			default="2"
 			size="5"/>
 
+		<field
+			name="remove_unpaid_after_minutes"
+			type="text"
+			label="COM_SALONBOOK_CONFIG_REMOVE_UNPAID_AFTER_MINUTES_LABEL"
+			description="COM_SALONBOOK_CONFIG_REMOVE_UNPAID_AFTER_MINUTES_DESC"
+			default="2"
+			size="5"/>
+
 	</fieldset>
 	<fieldset name="PAYMENTPROCESSOR">
 		<field

@@ -147,17 +147,4 @@ function copyData()
 	</div>
 </form>
 
-<?php
-/*
-	var $appointmentDate = null;
-	var $startTime = null;
-	var $durationInMinutes = null;
-	var $user = null;
-	var $deposit_paid = null;
-	var $balance_due = null;
-	var $stylist = null;
-	var $service = null;
-	var $status = null;
-*/
-?>
 	

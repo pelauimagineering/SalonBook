@@ -19,6 +19,8 @@ class SalonBookViewTimeslots extends JView
 				$this->selectedDate = $this->appointmentData['appointmentDate'];
 				$this->selectedStartTime = $this->appointmentData['startTime'];
 				
+				$this->configOptions =& JComponentHelper::getParams('com_salonbook');
+				
                 // Check for errors.
                 if (count($errors = $this->get('Errors'))) 
                 {

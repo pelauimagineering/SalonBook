@@ -139,18 +139,18 @@ class SalonBooksModelSalonBook extends JModelAdmin
 	 */
 	function store()
 	{
-		error_log("inside store() \n", 3, "../logs/salonbook.log");
+		error_log("inside store() \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
 		$row =& $this->getTable();
 		
-		error_log("got a table\n", 3, "../logs/salonbook.log");
+		error_log("got a table\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		$data = JRequest::get('form');
 		
-		error_log("attempting to bind \n", 3, "../logs/salonbook.log");
+		error_log("attempting to bind \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		//bind the form data to the table
 		if (!$row->bind($data))
 		{
-			error_log("binding failed! \n", 3, "../logs/salonbook.log");
+			error_log("binding failed! \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			$this->setError($this->_db->getErrorMsg());
 			return false;
 		}
@@ -158,7 +158,7 @@ class SalonBooksModelSalonBook extends JModelAdmin
 		// make sure the appointment record is valid
 		if ( !$row->check())
 		{
-			error_log("bind check FAILED \n", 3, "../logs/salonbook.log");
+			error_log("bind check FAILED \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			$this->setError($this->_db->getErrorMsg());
 			return false;
 		}
@@ -166,15 +166,15 @@ class SalonBooksModelSalonBook extends JModelAdmin
 		// store the data
 		if ( !$row->store())
 		{
-			error_log("storing FAILED \n", 3, "../logs/salonbook.log");
+			error_log("storing FAILED \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			$this->setError($this->_db->getErrorMsg());
 			return false;
 		}
 		
 		$to_print = var_export($data, true);
-		error_log("FORM data:\n" . $to_print . "\n", 3, "../logs/salonbook.log");
+		error_log("FORM data:\n" . $to_print . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
-		error_log("Save worked. The new appt # is: " . $row->get('id') . "\n", 3, "../logs/salonbook.log");
+		error_log("Save worked. The new appt # is: " . $row->get('id') . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		$this->_data = $row;
 		$this->_id = $row->get('id');
 		
@@ -192,7 +192,7 @@ class SalonBooksModelSalonBook extends JModelAdmin
 		$cids = JRequest::getVar('cid', array(0), 'post', 'array');
 		
 		$to_print = var_export($cids, true);
-		error_log("trying to DELETE IDs " . $to_print . " \n", 3, "../logs/salonbook.log");
+		error_log("trying to DELETE IDs " . $to_print . " \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
 		$row =& $this->getTable();
 		
@@ -203,7 +203,7 @@ class SalonBooksModelSalonBook extends JModelAdmin
 		JLoader::register('SalonBooksModelUsers', JPATH_COMPONENT_ADMINISTRATOR.DS.'models'.DS.'users.php');
 		$userModel = new SalonBooksModelUsers();
 		
-		error_log("looping... \n", 3, "../logs/salonbook.log");
+		error_log("looping... \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
 		foreach($cids as $cid)
 		{
@@ -222,31 +222,31 @@ class SalonBooksModelSalonBook extends JModelAdmin
 					$userTable =& $userModel->getTable('users');
 					$userTable->load(array('user_id' => $stylist_id));
 					
-					error_log("trying to delete a calendar event with a URI of: " . $calendarEventURL . "\n", 3, "../logs/salonbook.log");
+					error_log("trying to delete a calendar event with a URI of: " . $calendarEventURL . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 					$calendarLogin = $userTable->get('calendarLogin');
 					$calendarPassword = $userTable->get('calendarPassword');
 					
-					error_log("calendar name/password: " . $calendarLogin . "/" . $calendarPassword . "\n", 3, "../logs/salonbook.log");
+					error_log("calendar name/password: " . $calendarLogin . "/" . $calendarPassword . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 					
 					$calendar = $calendarModel->setupCalendarConnection($calendarLogin, $calendarPassword);
 					
-					error_log("trying to delete a calendar event\n", 3, "../logs/salonbook.log");
+					error_log("trying to delete a calendar event\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 					$response = $calendarModel->deleteCalendarEntry($calendar, $calendarEventURL);
 				}
 				catch (Exception $e)
 				{
-					error_log("Deletion of the Google Calendar event for appointment # " . $cid . " has FAILED\n", 3, "../logs/salonbook.log");
+					error_log("Deletion of the Google Calendar event for appointment # " . $cid . " has FAILED\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 				}
 			}
 			
 			if ( !$row->delete($cid))
 			{
-				error_log("Deletion of Appointment # " . $cid . " has FAILED\n", 3, "../logs/salonbook.log");
+				error_log("Deletion of Appointment # " . $cid . " has FAILED\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 				$this->setError( $row->getErrorMsg());
 				return false;
 			}
 			
-			error_log("successful deletion of Appointment # " . $cid . " \n", 3, "../logs/salonbook.log");
+			error_log("successful deletion of Appointment # " . $cid . " \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			
 		}
 	
@@ -368,5 +368,32 @@ class SalonBooksModelSalonBook extends JModelAdmin
 		return $options;
 	}
 	
+	/**
+	 * Return the list of available Status names for Admin Users
+	 *
+	 * @return	string	An HTML option list
+	 */
+	public function getOptionListOfStatusNamesForAdmin()
+	{
+		// Create a new query object.
+		$db = JFactory::getDBO();
+		$query = $db->getQuery(true);
+	
+		$statusQuery = "SELECT S.id, S.status FROM #__salonbook_status S WHERE id > 0";
+		$db->setQuery((string)$statusQuery);
+		$db->query();
+	
+		$messages = $db->loadObjectList();
+		$options = array();
+		if ($messages)
+		{
+			foreach($messages as $message)
+			{
+				$options[] = JHtml::_('select.option', $message->id, $message->status);
+			}
+		}
+	
+		return $options;
+	}
 	
 }

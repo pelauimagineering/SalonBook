@@ -231,11 +231,13 @@ echo "<form action='/index.php?Itemid=" . JRequest::getVar("Itemid") . "' method
 <div id="main_display_area">
 <?php
 
-echo "<table border='10' colpadding='10' class='availabilityTable'>";
+echo "<table class='availabilityTable'>";
 echo "<tr><th>Date</th><th>Choose a start time</th></tr>";
 
 $start = strtotime('+1 day 00:00');
-$end = strtotime('+8 days 23:59');
+
+$schedule_length_in_days = $this->configOptions->get('schedule_length',1) * 7;
+$end = strtotime("+$schedule_length_in_days days 23:59");
 $currentDate = $start; 
 
 while($currentDate < $end) 

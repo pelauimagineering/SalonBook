@@ -49,7 +49,7 @@ CREATE TABLE  `#__salonbook_appointments` (
 	`stylist` INT NULL COMMENT  'foreign key',
 	`service` INT NULL COMMENT  'foreign key',
 	`payment_id` varchar(50) NULL, 
-	`status` INT NULL DEFAULT '1' COMMENT 'foreign key',
+	`status` INT NULL DEFAULT '0' COMMENT 'foreign key',
 	`calendarEventURL` VARCHAR( 255 ) NULL,
 ) ENGINE=MYISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
@@ -71,15 +71,23 @@ CREATE TABLE `#__salonbook_users` (
   UNIQUE KEY `user_id` (`user_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;
 
+DROP TABLE IF EXISTS `#__salonbook_status`;
+
 CREATE TABLE `#__salonbook_status` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL ,
   `status` varchar(25) NOT NULL,
    PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-INSERT INTO `#__salonbook_status` (`status`) VALUES
-	('In Progress'),
-	('Completed'),
-	('Refunded'),
-	('Cancelled');
+INSERT INTO `#__salonbook_status` (`id`,`status`) VALUES
+	('0','Waiting for Deposit'),
+	('1','In Progress'),
+	('2','Completed'),
+	('3','Refunded'),
+	('4','Cancelled');
+	
+
+
+	
+	
 	

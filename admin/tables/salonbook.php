@@ -22,7 +22,7 @@ class TableSalonBook extends JTable
 	var $balance_due = null;
 	var $stylist = null;
 	var $service = null;
-	var $status = 1;
+	var $status = 0;
 	var $calendarEventURL = null;
 	
 	/**

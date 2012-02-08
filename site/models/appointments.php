@@ -26,7 +26,21 @@ class SalonBookModelAppointments extends JModelItem
 		public $depositPaid;
 		public $_id;
 
-		public function getNewAppointment($date, $startTime, $stylist_id, $service_id)
+		/**
+		 * Create a new appointment in the system.
+		 * When called by the front-end no status will be passed, so the default of 'Waiting for Deposit' will be used.
+		 * This will then be updated later, once a payment has been made --OR-- deleted if too much time (admin-configurable) has passed
+		 * From the back-end, pass in a status value = 1 to bypass the automatic culling of un-paid appointments
+		 *
+		 * @param string $date
+		 * @param string $startTime
+		 * @param int $stylist_id
+		 * @param int $service_id
+		 * @param int $status = 0
+		 * 
+		 * @return number appointment_id
+		 */
+		public function getNewAppointment($date, $startTime, $stylist_id, $service_id, $status = '0')
 		{
 			$user =& JFactory::getUser();
 			
@@ -37,15 +51,20 @@ class SalonBookModelAppointments extends JModelItem
 			$db->query();
 			$durationInMinutes = $db->loadResult();
 			
+			// add the default break time to the end of the appointment to give the staff a chance to complete each customer and prepare for the next
+			$breakTime = $this->configOptions->get('break_time', '15');	// in minutes
+			
+			$durationInMinutes =+ $breakTime;
+			
 			$convertedTime =  date('H:i:s A', strtotime($startTime));
 			$convertedDate =  date('Y-m-d', strtotime($date));
 			
 			// a status of `1` is 'In Progress'
 			// do an insert query
-			$insertAppointmentQuery = "INSERT into `#__salonbook_appointments`(appointmentDate, startTime,durationInMinutes,user,deposit_paid,stylist, service, status) values('$convertedDate','$convertedTime',$durationInMinutes,$user->id,0,$stylist_id,$service_id,1)";
+			$insertAppointmentQuery = "INSERT into `#__salonbook_appointments`(appointmentDate, startTime,durationInMinutes,user,deposit_paid,stylist, service, status) values('$convertedDate','$convertedTime',$durationInMinutes,$user->id,0,$stylist_id,$service_id,$status)";
 			
 			$log_info = "\ninsert SQL: ". $insertAppointmentQuery . " \n";
-			error_log($log_info, 3, "logs/salonbook.log");
+			error_log($log_info, 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			
 			$db->setQuery((string)$insertAppointmentQuery);
 			$db->query();
@@ -64,7 +83,7 @@ class SalonBookModelAppointments extends JModelItem
 			$db = JFactory::getDBO();
 			$updateQuery = "UPDATE `#__salonbook_appointments` SET deposit_paid = '1', payment_id = '$txn_id' WHERE id='$orderNumber'";
 			
-			error_log($updateQuery."\n", 3, "logs/salonbook.log");
+			error_log($updateQuery."\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			
 			$db->setQuery((string)$updateQuery);
 			$db->query();
@@ -83,7 +102,7 @@ class SalonBookModelAppointments extends JModelItem
 			$db = JFactory::getDBO();
 			$updateQuery = "UPDATE `#__salonbook_appointments` SET deposit_paid = '1' WHERE id='$orderNumber'";
 			
-			error_log($updateQuery."\n", 3, "logs/salonbook.log");
+			error_log($updateQuery."\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			
 			$db->setQuery((string)$updateQuery);
 			$db->query();
@@ -119,7 +138,7 @@ class SalonBookModelAppointments extends JModelItem
 		 */
 		public function getAppointmentDetailsForID($id = 0)
 		{
-			error_log("looking up details for $id\n", 3, "logs/salonbook.log");
+			error_log("looking up details for $id\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			
 			// Load the data
 			if (empty( $this->_appointmentData ) && $id != 0 ) 
@@ -150,7 +169,7 @@ class SalonBookModelAppointments extends JModelItem
 				return 0;
 			}
 			
-			error_log("\nlooking up details for user $user_id\n", 3, "logs/salonbook.log");
+			error_log("\nlooking up details for user $user_id\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
 			// look up the details of the passed in appointment
 			$db = JFactory::getDBO();
@@ -171,14 +190,14 @@ class SalonBookModelAppointments extends JModelItem
 		 */
 		function store()
 		{
-			error_log("inside store ~ front the FRONT END \n", 3, "logs/salonbook.log");
+			error_log("inside store \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
 			$session = JFactory::getSession();
 			$data =& $session->get('appointmentData', array(), 'SalonBook');
 			
 			if ( empty($data) )
 			{	
-				error_log("no data passed into the store function\n", 3, "logs/salonbook.log");
+				error_log("no data passed into the store function\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 				return false;
 			}
 			
@@ -191,11 +210,11 @@ class SalonBookModelAppointments extends JModelItem
 			
 			$data['durationInMinutes'] = $durationInMinutes;
 			
-			error_log( "Trying to save the following to the database..\n" . var_export($data, true) ."\n", 3, "logs/salonbook.log");
+			error_log( "Trying to save the following to the database..\n" . var_export($data, true) ."\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 
 			if ( !$row = $this->getTable('SalonBook') )
 			{
-				error_log("Did NOT get a table!\n" . $this->_db->getErrorMsg() . "\n", 3, "logs/salonbook.log");
+				error_log("Did NOT get a table!\n" . $this->_db->getErrorMsg() . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 				$this->setError($this->_db->getErrorMsg());
 				return false;
 			}
@@ -206,45 +225,48 @@ class SalonBookModelAppointments extends JModelItem
 			{
 				$convertedTime = date('H:i', strtotime($startTime));
 				$data['startTime'] = $convertedTime;
-				error_log("changed from " . $startTime . " to " . $convertedTime, 3, "logs/salonbook.log");
+				error_log("changed from " . $startTime . " to " . $convertedTime, 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			}
 			
-			error_log("attempting to bind \n", 3, "logs/salonbook.log");
+			error_log("attempting to bind \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			//bind the form data to the table
 			//the object model has more fields on it than does the actual db table, so the bind command won't work
 			$ignoreList = array('stylistName', 'name', 'firstname', 'serviceName', 'email', 'calendarLogin', 'calendarPassword');
-			error_log( "Ignore these fields.. " . var_export($ignoreList, true) ."\n", 3, "logs/salonbook.log");
+			error_log( "Ignore these fields.. " . var_export($ignoreList, true) ."\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			
 			if (!$row->bind($data, $ignoreList))
 			{
-				error_log("binding failed! \n", 3, "logs/salonbook.log");
+				error_log("binding failed! \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 				$this->setError($this->_db->getErrorMsg());
 				return false;
 			}
 		
-			error_log("attempting to check \n", 3, "logs/salonbook.log");
+			error_log("attempting to check \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			// make sure the appointment record is valid
 			if ( !$row->check())
 			{
-				error_log("bind check FAILED \n", 3, "logs/salonbook.log");
+				error_log("bind check FAILED \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 				$this->setError($this->_db->getErrorMsg());
 				return false;
 			}
 		
-			error_log("attempting to store \n", 3, "logs/salonbook.log");
+			error_log("attempting to store \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			// store the data
 			if ( !$row->store())
 			{
-				error_log("storing FAILED \n", 3, "logs/salonbook.log");
+				error_log("storing FAILED \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 				$this->setError($this->_db->getErrorMsg());
 				return false;
 			}
 		
-			error_log("Save worked. The new appointment # is: " . $row->get('id') . "\n", 3, "logs/salonbook.log");
+			error_log("Save worked. The new appointment # is: " . $row->get('id') . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			$this->_data = $row;
 			$this->_id = $row->get('id');
 			$this->depositPaid = $row->get('deposit_paid');
 		
+			// cleanup old attempts
+			$this->removeOldAppointmentsWithoutDeposits();
+			
 			return true;
 		}
 
@@ -266,5 +288,28 @@ class SalonBookModelAppointments extends JModelItem
 			$this->rowCount = $db->getAffectedRows();
 			return $this->rowCount;
 			
+		}
+		
+		/**
+		 * Clenaup the appointments table by removing appointmentsstill stuck witht the 'Waiting for Deposit' status
+		 * after the time period specified in the config options.
+		 * In this context, 'removal' means setting the status to 'Cancelled'
+		 * This can be called every time a time a new appointment is added
+		 */
+		function removeOldAppointmentsWithoutDeposits()
+		{
+			$configOptions =& JComponentHelper::getParams('com_salonbook');
+			$removalTime = $configOptions->get('remove_unpaid_after_minutes',0);
+			
+			error_log("Clean up unpaid: removalTime = " . $removalTime."\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			if ( $removalTime > 0 )
+			{
+				$cancelQuery = "UPDATE `#__salonbook_appointments` A set status = ( SELECT S.id FROM `#__salonbook_status` S WHERE status LIKE 'Cancelled' ) WHERE A.status = '0' AND DATEDIFF(now(),A.created_when) > 0";
+				
+				error_log("Clean up unpaid: " . $cancelQuery."\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+				
+				$this->_db->setQuery((string)$cancelQuery);
+				$this->_db->query();
+			}
 		}
 }

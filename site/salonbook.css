@@ -3,14 +3,25 @@ ul#salon_list
 	list-style: none;
 }
 
+
 table
 {
-	border-collapse:collapse;
+	
 }
 
-table,th,td
+table,th,tr,td
 {
-border: 0px solid #ffffff;
+	border: 0px none #ffffff;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+th {
+	padding-bottom: 10px;
+}
+
+td {
+	padding-bottom: 5px;
 }
 
 table#navFooterTable
@@ -54,9 +65,15 @@ td#rightColumn
 /* timeslots UI */
 /* p {margin-left:20px;} */
 #main_display_area {
-	width: 240px;
+	width: 280px;
 	color: black;
 	float: left;
+}
+.availabilityTable {
+	border-style: none;
+	background-color: white;
+	border-color: white;
+	margin-bottom: 15px;
 }
 #selectedTimeslot {
 	color:green;
@@ -67,6 +84,9 @@ td#rightColumn
 #displayAreaSelectedTimeslot {
 	float:left;
 	margin-left:40px;
+}
+.time_selector {
+	margin-left:25px;
 }
 
 /* confirm and pay */

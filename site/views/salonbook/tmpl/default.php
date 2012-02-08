@@ -23,7 +23,7 @@ $appointmentData = array(	'id' => 0,
 $session->set('appointmentData', $appointmentData, 'SalonBook');
 
 $maxBookings = $this->configOptions->get('max_user_scheduled_count', '1');
-
+$cancellationAllowedMinDays = $this->configOptions->get('change_allowed_after_period',2);
 ?>
 
 <script type="text/javascript" src="/components/com_salonbook/jquery-1.6.2.min.js"></script>
@@ -95,7 +95,7 @@ $maxBookings = $this->configOptions->get('max_user_scheduled_count', '1');
 			$theDiff = strtotime($appointment['appointmentDate']) - time();		
 			$days = $theDiff / 60 / 60 / 24;
 			
-			if ( $days > 2 && $now < $date2 )
+			if ( $days > $cancellationAllowedMinDays && $now < $date2 )
 			{
 				$editButton = "<input type='button' name='edit' value='" . JText::_('COM_SALONBOOK_LIST_BUTTON_CHANGE_TITLE') . "' onclick='prepareToEdit(" . $appointment['id'] . "); ' class='apptEditButton_change' />";
 			}
