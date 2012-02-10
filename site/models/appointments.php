@@ -51,11 +51,6 @@ class SalonBookModelAppointments extends JModelItem
 			$db->query();
 			$durationInMinutes = $db->loadResult();
 			
-			// add the default break time to the end of the appointment to give the staff a chance to complete each customer and prepare for the next
-			$breakTime = $this->configOptions->get('break_time', '15');	// in minutes
-			
-			$durationInMinutes =+ $breakTime;
-			
 			$convertedTime =  date('H:i:s A', strtotime($startTime));
 			$convertedDate =  date('Y-m-d', strtotime($date));
 			

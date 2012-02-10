@@ -2,20 +2,38 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+// visual calendar
+require_once JPATH_COMPONENT_SITE . DS. 'calendar'.DS.'calendar.php';
+
 $service_id = JRequest::getInt('service_id');
 $stylist_id = JRequest::getInt('stylist_id');
 ?>
 <link rel="stylesheet" href="/components/com_salonbook/salonbook.css" type="text/css" />
+<link rel="stylesheet" href="<?php echo 'components'.DS.'com_salonbook'.DS.'calendar'.DS.'style.css'?>" type="text/css" />
+<?php ///components/com_salonbook/jquery-1.6.2.min.js ?>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 
-<script type="text/javascript" src="/components/com_salonbook/jquery-1.6.2.min.js"></script>
 <script type="text/javascript" src="/components/com_salonbook/salonui.js"></script>
 
 <!-- scripts -->
 <script>
+	function setPreviouslySelectedDateAndTime()
+	{
+		previousDate = '<?php echo $this->selectedDate ?>';
+		previousTime = '<?php echo $this->selectedStartTime ?>';
+		
+		// trigger the fetching of times for that date
+		if ( previousDate )
+		{
+			calDateSelected(previousDate, previousTime);
+		}
+	}
+	
 	function checkToEnableNextButton()
 	{
+//		alert('checking...');
 		// if a timeslot has been chosen (i.e. the field is not empty), then enable the NEXT button
-		dateSelected = $("#selected_startTime").val() + $("#selected_date").val() + $("#selected_timeslot").val();
+		dateSelected = $('#hiddenSelectedDate').val();
 		if ( dateSelected.length > 0 )
 		{
 			$('#nextButton').attr("disabled", false);
@@ -32,51 +50,39 @@ $stylist_id = JRequest::getInt('stylist_id');
 	
 	$(document).ready(function()
 	{
+//		alert('loaded');
+		if ( 1 == <?php echo empty($this->selectedDate) ? 0 : 1; ?> )
+		{
+			setPreviouslySelectedDateAndTime();
+		}
+		else
+		{
+			$('#stepHeaderTitle').css("visibility", "hidden");
+			$('#time_selector_control').css("display", "none");
+		}
+		
 		// disable moving on until something is selected
 		checkToEnableNextButton();
-		
+				
 		// hide the date value that has been properly formatted for the database, but will not be shown to the user in favour of the 'prettyDate' format
 		$('.hiddenDate').css("display", "none");
 		
-		/* attach a submit handler to the form */
-		$("#form_page01").submit(function(event) {
-
-			/* stop form from submitting normally */
-			event.preventDefault(); 
-
-			/* get some values from elements on the page: */
-			var $form = $( this ),
-				term = $form.find( 'input[name="service_selection"]' ).val(),
-				url = $form.attr( 'action' );
-
-			/* Send the data using post and put the results in a div */
-			$.post( url, { s: term },
-			function( data ) {
-				// var content = $( data ).find( '#content' );
-				var content = $( data );
-				$( "#contentBody" ).empty().append( content );
-				}
-			);			
-		});
-
 		/* handler for the select drop down */ 
 		$('.time_selector').change(function()
-		{			
+		{
+//			alert('this far, at least ' + dateValue);
+					
 			str = $(this).find("option:selected").text();
 			
 			strVal = $(this).find("option:selected").val();	// timeslot id
 			
-			// read the date from a div area with a matching id
-			strTimestamp = this.id;
-			
-			dateSelector = 'date_selector_'+strTimestamp;
-			dateValue = $('span[id="'+dateSelector+'"]').text();
+			dateValue = $('#hiddenSelectedDate').val();
 			newDate = Date.parse(dateValue);
 			dateName = newDate.toString('dd-mm-yyyy');
 			dateName = dateName.substr(0,15);
 			
 			// output the selected timeslot so the user can easily see what was chosen			
-			// if the user doesn't want one of the times shown... show nothing, and disable moving on
+			// if the user doesn't want one of the times shown... disable moving on
 			
 			if ( str.indexOf("--") >= 0 )
 			{
@@ -92,8 +98,10 @@ $stylist_id = JRequest::getInt('stylist_id');
 			}
 			else
 			{
+//				alert('show result');
 				// show the Next button and selected timeslot
 				$("#displayAreaSelectedTimeslot").css("display", "inline");
+				$('#stepHeaderTitle').css("visibility", "visible");
 
 				$("#selectedTimeslot").text( str + " " + dateName );
 				
@@ -103,16 +111,10 @@ $stylist_id = JRequest::getInt('stylist_id');
 				$("#selected_timeslot").val( strVal );
 			}
 
-			// copy to the Paypal button
-			// $("#scheduledTimeForPayment").val( str + " " + dateName );
-			
-			// reset all of the others
-			$('.time_selector').not('[id="' + strTimestamp + '"]').find("option[value='-1']").attr('selected', true);
-			
-			// test to see if the user should be able to continue
-			checkToEnableNextButton();			
+			// allow the user should be able to continue
+			checkToEnableNextButton();
+					
 		});
-		
 		
 	});
 	
@@ -137,241 +139,195 @@ $stylist_id = JRequest::getInt('stylist_id');
 		$('#nextViewModel').val('confirmation');
 		$('#task').val('updateAppointment');
 
+		// clear the data, in case we return to this page, the user will simply have to re-select a date and time
+		$('#hiddenSelectedDate').val('');
+		checkToEnableNextButton();
+		
 		return true;
 	}
+
+	// highlight the date selected by the user on the calendar, then call the server for a list of timeslots for that day
+	function calDateSelected(theDate, theTime)
+	{	
+//		alert('calDateSelected|' + theDate);
+			
+		//remove the highlighting class from all calendar elements
+		$("div#calendar ul li").removeClass("working");
+
+		// find the correct calendar pane
+		calendarDateID = "#li-"+theDate;
+
+//		alert(calendarDateID);
 		
+		// set the highlight
+		$(calendarDateID).addClass("working");
+		
+		$('#hiddenSelectedDate').val(theDate);
+		
+		ajxFetchAvailableTimes(theDate, theTime);
+	}
+
+	/**
+	 *	Used when updating details of an existing appointment
+	 */
+	function ajxFetchAvailableTimes(theDate, theTime)
+	{
+		$("div#loading").text("Loading...");
+		
+		$.post("index.php", { option:"com_salonbook", task:"availabletimes", view: "timeslots", format: "raw", aDate: theDate, aTime: theTime  },
+			function(data)
+			{
+				// return values: an empty string indicates failure
+				if ( data == "" )
+				{
+//					alert('failed');
+					// no availability
+					noAvailabilityMesage = "<?php echo JText::_('COM_SALONBOOK_TIMESLOTS_NO_AVAILABILITY'); ?>";
+					$('#mainMessage').text(noAvailabilityMesage);
+					$('#mainMessage').css("display", "inline");
+
+					$('div#loading').text("failed");
+					$('div#loading').css("display", "inline");
+				}
+				else
+				{
+//					alert('something else..' + data);
+					$('div#loading').text("");
+					$('#stepHeaderTitle').css("display", "inline");
+
+					// remove the old list of selections
+					$('#time_selector_control').html('');
+					
+					// display the newly filled select box to the user
+					$('#time_selector_control').append(data);
+					$('#time_selector_control').css("display", "inline");
+
+					$('.time_selector').trigger('change');
+					
+					successMesage = "<?php echo JText::_('COM_SALONBOOK_UPDATE_SUCCESS_MESSAGE'); ?>";
+					$('#mainMessage').text(successMesage);
+					$('#mainMessage').css("display", "inline");
+					$('#updateSuccessMessage').css("display", "inline");
+				}
+		  	}, "text"
+		);
+		
+	}
+
+	/**
+	 *	Display a different month on the calendar
+	 */
+	function ajxShowCalendarMonth(theMonth,theYear)
+	{
+		// the user can pass in 'next' or 'prev' to view another month
+		// a call will be made to the server to fetch the new page in the <div id='calendar'></div> block
+
+		// read the configOptions value to make sure the user is not booking an appointment too far in advance (switch option from weeks to months 1,2,3)
+		$.post("index.php", { option:"com_salonbook", task:"showCalendar", view: "timeslots", format: "raw", theMonth: theMonth, theYear: theYear  },
+				function(data)
+				{
+					// return values: an empty string indicates failure
+					if ( data == "" )
+					{
+//						alert('failed');
+						// no availability
+						noAvailabilityMesage = "<?php echo JText::_('COM_SALONBOOK_TIMESLOTS_NO_AVAILABILITY'); ?>";
+						$('#mainMessage').text(noAvailabilityMesage);
+						$('#mainMessage').css("display", "inline");
+
+						$('div#loading').text("failed");
+						$('div#loading').css("display", "inline");
+					}
+					else
+					{
+//						alert('something else..' + data);
+						$('div#loading').text("");
+						$('#stepHeaderTitle').css("visibility", "hidden");
+						// if everything is okay display the select box to the user
+						$('#calendar').html(data);
+
+//						$('.time_selector').trigger('change');
+						
+						successMesage = "<?php echo JText::_('COM_SALONBOOK_UPDATE_SUCCESS_MESSAGE'); ?>";
+						$('#mainMessage').text("some message");
+						$('#mainMessage').css("display", "inline");
+						$('#updateSuccessMessage').css("display", "inline");
+					}
+			  	}, "text"
+			);
+			
+	}
 </script>
 
 <!-- page content -->
-<hr/>
-<?php
-echo "<form action='/index.php?Itemid=" . JRequest::getVar("Itemid") . "' method='POST' id='sb_main_form' onsubmit='return passthroughData()'>";
+<div id="SalonBookContent">
+<h1>Select a date, then an open timeslot</h1> 
 
-?>
-<div id="stepHeaderTitle">
-<h1>Choose an open time slot</h1>
-</div>
+<br/>
+<form action='/index.php' method='POST' id='sb_main_form' onsubmit='return passthroughData()'>
 
 <?php
-	// show the next 7 days as the default, but allow the option of seeing more
-
-	// Array: dailySlotsAvailable
-	$dailySlotsAvailable = array();
-	// read start-of-day and end-of-day times from the configuration file 
-	// 8:00 AM = 16 , 7:00 PM = 38
-	$firstSlot = 16;
-	$lastSlot = 38;
-
-	for ($slotPosition=$firstSlot; $slotPosition <= $lastSlot; $slotPosition++)
-	{
-		$dailySlotsAvailable[] = $slotPosition;
-	}
+	// display calendar
+	$calendar = new Calendar();
+	$calendar->showToday(true);
 	
-	function slotNumber2Time ($slotNumber)
-	{
-		$theHour = intval($slotNumber / 2);
-		if ( $theHour == $slotNumber / 2 )
-		{
-			$theMinute = "00";
-		}
-		else
-		{
-			$theMinute = "30";
-		}
-		
-		if ($theHour > 12)
-		{
-			$theHour -= 12;
-		}
-		
-		return $theHour . ":" . $theMinute;
-	}
-	
-	
-	// function: timeSlotsUsedByEvent
-	// @params: calendar Event
-	// @return: array of time slot numbers (0=12:00 - 12:30AM, 1= 12:30 AM - 1:00 AM)
-	function timeSlotsUsedByEvent ($anEvent)
-	{
-		error_log("\n anEvent: " . $anEvent->startTime . "\n", 3, "../logs/salonbook.log");
-		
-		// open up the event to look at the startTime -> endTime to calculate timeslots used
-		
-		$theStart =  strtotime($anEvent->startTime);
-		error_log("\n startTime of anEvent is " . $theStart . "\n", 3, "../logs/salonbook.log");
-		
-		$minutes = idate('H', $theStart) * 60;
-		$minutes += idate('i', $theStart);
-		$startSlotNumber = intval($minutes / 30);
-		
-		$duration = $anEvent->durationInMinutes;
-		$theEnd = strtotime("+ $duration minutes", $theStart);
-		
-		error_log("\n endTime of anEvent is " . $theEnd . "\n", 3, "../logs/salonbook.log");
-		
-		$minutes = idate('H', $theEnd) * 60;
-		$minutes += idate('i', $theEnd);
-		// calculate the end time as if they finished a minute earlier
-		// this allows an appointment from 2:00 to 2:30 to appear as (29 minutes) so it only occupies a single timeslot
-		$endSlotNumber = intval(($minutes - 1) / 30);	
-		
-		// calculate all of the slots used for this appointment. It will always be a simple sequence of integers from the first to the last slot
-		for ( $newSlot=$startSlotNumber; $newSlot <= $endSlotNumber; $newSlot++)
-		{
-			$slotsArray[] = $newSlot;
-		}
-	
-		return $slotsArray;
-	}
-		
+	$datesArray = array('type'=>array('link'=>array('href'=>'javascript:calDateSelected')));
+	echo $calendar->show(null, null, $datesArray);
 ?>
-
-
-
-<div id="main_display_area">
-<?php
-
-echo "<table class='availabilityTable'>";
-echo "<tr><th>Date</th><th>Choose a start time</th></tr>";
-
-$start = strtotime('+1 day 00:00');
-
-$schedule_length_in_days = $this->configOptions->get('schedule_length',1) * 7;
-$end = strtotime("+$schedule_length_in_days days 23:59");
-$currentDate = $start; 
-
-while($currentDate < $end) 
-{ 
-	echo "<tr>";
-	echo "<td>";
-	
-	// for each day, find all events
-	// use $this->busySlots; then remove from the $dailySlotsAvailable array
-	
-	//$feed = $this->availableSlots;
-	$feed = $this->busySlots;
-	error_log("the busy feed has " . count($feed) . " items \n", 3, "logs/salonbook.log");
-	$dailyResults = $feed;
-	// echo " : " . count($dailyResults) > 0 ? " *" : " ";
-	
-	// set up the default available time slots
-	$slotsOpenForBookingToday = $dailySlotsAvailable;
-	$dailyUsedSlots = array();
+	<div id="stepHeaderTitle">
+		<h2>Choose an open slot</h2>
+		<div id="loading"></div>
+		<br/>
+		<br/>
+		<select class='time_selector' name='time_selector' id='time_selector_control'></select>
 		
-	// if events were found, then caluate the timeslots used by each,
-	// then calculate the available slots, and have them ready for display to the user
-	if ( count($feed) > 0 )
-	{
-	    foreach ($feed as $event) 
-		{
-			// $id = substr($event->id, strrpos($event->id, '/')+1);
-			$id = $event->id;
+		<div id="displayAreaSelectedTimeslot">
+			<h2><span id="selectedTimeslot"></span>&nbsp;&nbsp;
+				<input type=submit id="nextButton" value='Next >' class='goToNextPage' name="add">
+			</h2>
+		</div>
 		
-			// check that the event is for the currentDate
-			if ( $event->appointmentDate == date('Y-m-d', $currentDate) )
-			{
-				// process each event looking for timeslots used
-				$usedSlots = timeSlotsUsedByEvent( $event );				
-			}
-			else
-			{
-				// nothing was found 
-				$usedSlots = array();
-			}
+	</div>
+
+	<input type="button" value="&lt; Back" class="goBackAPage" id="timeslotBackButton" onclick="javascript:history.go(-1)"> &nbsp; &nbsp; 
+	
+	<div id="main_display_area">
+
+	
+		<input type="hidden" id="hiddenSelectedDate" name="hiddenSelectedDate" value="" />
+	
+		<input type="hidden" name='currentPage' value='3'>
 		
-			$dailyUsedSlots = array_merge($dailyUsedSlots, $usedSlots);
-	    }
-	}
-	
-	$slotsOpenForBookingToday = array_diff($dailySlotsAvailable, $dailyUsedSlots);
-	
-	// highlight dates with LIMITED availability
-	$prettyDate = date("D M j", $currentDate);
-	$thisDate = date("Y-m-j", $currentDate);
-	echo "<span class='hiddenDate' id='date_selector_$currentDate'>$thisDate</span>";
-	if ( count($dailyUsedSlots) > 0 )
-	{
-		echo "&nbsp;&nbsp;<b>" . $prettyDate . "</b>&nbsp;&nbsp;";
-	}
-	else
-	{
-		echo $prettyDate;
-	}
-
-	echo "</td>";
-	echo "<td>";
-
-	// now print a list of all available slots for that day
-	// Choose a start time but only if there are indeed times availabe for that day, else show a 'Sorry..' message
-	echo "<select class='time_selector' name='time_selector_$currentDate' id='$currentDate'>"; 
-	echo "<option value='-1' name='-1'> -- </option>";
-	foreach ($slotsOpenForBookingToday as $slotNumber)
-	{
-		$slotTime = slotNumber2Time($slotNumber);
-		$ampm = ($slotNumber < 24) ? "am" : "pm";
-		echo "<option value='$slotNumber' name='$slotNumber' ";
-		$displayTime = $slotTime . ' ' . $ampm;
-		$selectedTime = date('g:i a', strtotime($this->selectedStartTime));
-		if ( $displayTime == $selectedTime && $thisDate == date("Y-m-j", strtotime($this->selectedDate)) )
-		{
-			echo " selected ";
-		}
-		echo ">$slotTime $ampm</option>";
+		<input type="hidden" name="product_id" value="8" />
+		<input type="hidden" name="add" value="1"/>
+		<input type="hidden" name="ctrl" value="product"/>
+		<input type="hidden" name="task" value="updatecart"/>
+		<input type="hidden" name="Itemid" value="<?php echo JRequest::getVar("Itemid"); ?>" />
 		
-	}
-	echo "</select>";
-	echo "</td>";
-	echo "</tr>";
+		<input type="hidden" name="selected_startTime" id="selected_startTime" value="<?php echo $this->selectedStartTime; ?>"/>
+		<input type="hidden" name="selected_date" id="selected_date" value="<?php echo $this->selectedDate; ?>"/>
+		<input type="hidden" name="selected_timeslot" id="selected_timeslot" value=""/>
 	
-	// move on to the next date
-	$currentDate = strtotime("+1 day", $currentDate);
-   
-}
-
-echo "</table>";
-?>
-	<!-- 
-		<tr><td colspan=2><input type='button' value='See more dates' disabled='disabled'></td></tr>
-	-->
-
-
-	<input type="hidden" name='currentPage' value='3'>
-	<input type="button" value='< Back' class='goBackAPage' onclick="javascript:history.go(-1)"> &nbsp; &nbsp; 
-	<!--input type=submit id="nextButton" value='Next >' class='goToNextPage' name="add"-->
+		<input type="hidden" name="service_id" id="service_id" value="<?php echo $service_id; ?>" />
+		<input type="hidden" name="stylist_id" id="stylist_id" value="<?php echo $stylist_id; ?>" />
 	
-	<input type="hidden" name="product_id" value="8" />
-	<input type="hidden" name="add" value="1"/>
-	<input type="hidden" name="ctrl" value="product"/>
-	<input type="hidden" name="task" value="updatecart"/>
-	
-	<input type="hidden" name="selected_startTime" id="selected_startTime" value="<?php echo $this->selectedStartTime; ?>"/>
-	<input type="hidden" name="selected_date" id="selected_date" value="<?php echo $this->selectedDate; ?>"/>
-	<input type="hidden" name="selected_timeslot" id="selected_timeslot" value=""/>
-
-	<input type="hidden" name="service_id" id="service_id" value="<?php echo $service_id; ?>" />
-	<input type="hidden" name="stylist_id" id="stylist_id" value="<?php echo $stylist_id; ?>" />
-
-	<input type="hidden" name="option" value="com_salonbook" />
-	<input type="hidden" name="controller" value="salonbook" />
-	<input type="hidden" name="task" id="task" value="" />
-	<input type="hidden" name="view" value="confirmation" />
-	<input type="hidden" name="id" id="id" value="<?php echo JRequest::getVar('id'); ?>" />
-	<input type="hidden" name="fieldName[0]" id="fieldName0" value="" />
-	<input type="hidden" name="fieldValue[0]" id="fieldValue0" value="" />
-	<input type="hidden" name="fieldName[1]" id="fieldName1" value="" />
-	<input type="hidden" name="fieldValue[1]" id="fieldValue1" value="" />
-	<input type="hidden" name="nextViewType" id="nextViewType" value="" />
-	<input type="hidden" name="nextViewModel" id="nextViewModel" value="" />	
+		<input type="hidden" name="option" value="com_salonbook" />
+		<input type="hidden" name="controller" value="salonbook" />
+		<input type="hidden" name="task" id="task" value="" />
+		<input type="hidden" name="view" value="confirmation" />
+		<input type="hidden" name="id" id="id" value="<?php echo JRequest::getVar('id'); ?>" />
+		<input type="hidden" name="fieldName[0]" id="fieldName0" value="" />
+		<input type="hidden" name="fieldValue[0]" id="fieldValue0" value="" />
+		<input type="hidden" name="fieldName[1]" id="fieldName1" value="" />
+		<input type="hidden" name="fieldValue[1]" id="fieldValue1" value="" />
+		<input type="hidden" name="nextViewType" id="nextViewType" value="" />
+		<input type="hidden" name="nextViewModel" id="nextViewModel" value="" />	
+			
+		<?php echo JHtml::_('form.token'); ?>
 		
-	<?php echo JHtml::_('form.token'); ?>
+	</div>
 	
+	
+
+</form>
 </div>
-
-
-<div id="displayAreaSelectedTimeslot">
-	<h1><span id="selectedTimeslot"></span>&nbsp;&nbsp;
-			<input type=submit id="nextButton" value='Next >' class='goToNextPage' name="add">
-	</h1>
-</div>
-
-<?php echo "</form>" ?>

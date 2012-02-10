@@ -1,0 +1,195 @@
+* {
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+:focus{
+	outline: none;
+}
+
+html,body{
+	margin:0px;
+	padding:0px;
+}
+
+div#calendar{
+	width:524px;
+	margin:0px auto;
+	padding:0px;
+	clear:both;
+	position:relative;
+	
+	border:0px dashed orange;
+	float:left;
+}
+
+
+
+/***********************************TOP NAVIGATION*****************************************/
+div#calendar div#navi{
+	width:524px;
+	margin:auto;
+	position:relative;
+	height:30px;
+	text-align: center;
+	color:#000;	
+	font-weight: bold;
+	font-size: large;
+}
+
+div#calendar div#navi div#prev{
+	position:absolute;
+	top:0px;
+	left:0px;
+}
+div#calendar div#navi div#next{
+	position:absolute;
+	top:0px;
+	right:0px;
+}
+
+div#calendar .clear { /* generic container (i.e. div) for floating buttons */
+    overflow: hidden;
+    width: 100%;
+}
+
+div#calendar a.button {
+    background: transparent url('bg_button_a.gif') no-repeat scroll top right;
+    color: #444;
+    display: block;
+    float: left;
+    font: normal 12px arial, sans-serif;
+    height: 24px;
+    margin-right: 6px;
+    padding-right: 18px; /* sliding doors padding */
+    text-decoration: none;
+}
+
+div#calendar a.button span {
+    background: transparent url('bg_button_span.gif') no-repeat;
+    display: block;
+    line-height: 14px;
+    padding: 5px 0 5px 18px;
+} 
+
+div#calendar a.button:active {
+    background-position: bottom right;
+    color: #000;
+    outline: none; /* hide dotted outline in Firefox */
+}
+
+div#calendar a.button:active span {
+    background-position: bottom left;
+    padding: 6px 0 4px 18px; /* push text down 1px */
+} 
+
+/*********************************** DATES *****************************************/
+div#calendar ul{
+	list-style: none;
+	float:left;
+	padding:0px;
+	margin:0px;
+}
+
+div#calendar ul li{
+	display:block;
+	width:69px;
+	height:55px;	
+	margin:0px 0px 1px 1px;
+	padding-left: 5px;
+	padding-top: 5px;
+	font-size:20px;
+	font-weight:bold;
+	
+	list-style: none;
+	float:left;
+	background-color:#999999;
+	color:#FFFFFF;
+}
+
+div#calendar ul li a{
+	color:#FFFFFF;
+	text-decoration:none;
+}
+
+div#calendar ul li a:link,div#calendar ul li a:visited{
+	color:#FFFFFF;
+}
+
+/*
+div#calendar ul li a:hover,div#calendar ul li a:active{
+	color:#DDDDDD;
+}
+*/
+
+
+div#calendar ul li a:hover,div#calendar ul li a:active {
+	color:#000;
+	background-color:#999;
+}
+
+
+div#calendar ul li.today.blockedDate a:hover,div#calendar ul li.working a:active{
+	color:#ffffff;
+	background-color:#983428;
+}
+
+div#calendar ul li.title{
+	background-color:#FFF;
+	color:#000;
+	height:20px;	
+	padding-left: 5px;
+	padding-top: 5px;
+	font-size:12px;
+}
+
+
+
+/* change cell colors for blocked dates */
+div#calendar ul li.end.blockedDate, div#calendar ul li.common.blockedDate, div#calendar ul li.blockedDate {
+	background-color:#CEAD71;		
+}
+div#calendar ul li.inactive, div#calendar ul li.inactive.blockedDate {
+	background-color:#CCCCCC;
+	color:#999999;
+}
+/* disable links for blocked dates */
+div#calendar ul li.end.blockedDate, div#calendar ul li.common.blockedDate, div#calendar ul li.blockedDate {
+}
+
+div#calendar ul li.today{
+	background-color:#983428;
+	color:#FFF;
+}
+
+/* user has clicked on this date */
+div#calendar ul li.end.working, div#calendar ul li.common.working, div#calendar ul li.working {
+	background-color:#E3F0D2;
+	color: #fff;		
+}
+
+div#calendar ul li.end.working a, div#calendar ul li.common.working a, div#calendar ul li.working a {
+	color:#000000;
+}
+div#calendar ul li.blockedDate a.common:hover {
+	background-color:#CEAD71;
+}
+div#calendar ul li.today a.common:hover {
+	background-color:#983428;
+}
+div#calendar ul li.blockedDate a.common:hover {
+	color:#fff;
+}
+
+/* --------------- */
+
+
+div#calendar ul li.start{
+	margin-left:0px;
+}
+
+div.seperator{
+	height::1px;
+	width:100%;
+	border-bottom:1px solid #FF0000;
+	margin:0px;
+}

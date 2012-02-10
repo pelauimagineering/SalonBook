@@ -25,7 +25,7 @@ class SalonBooksViewSalonBook extends JView
 		$stylists = $this->get('OptionListOfStylists');
 		$services = $this->get('OptionListOfServices');
 		$clients = $this->get('OptionListOfClients');
-		$statusNames = $this->get('OptionListOfStatusNamesForAdmin');
+		$statusNames = $this->get('OptionListOfStatusNames');
 		
 		// Check for errors.
 		if (count($errors = $this->get('Errors'))) 

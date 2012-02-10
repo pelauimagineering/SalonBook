@@ -39,6 +39,11 @@ td#rightColumn
 	text-align: center;
 }
 
+/* component content */
+#SalonBookContent {
+	width: 720px;
+}
+
 /* Booking Wizard */
 .apptEditButton_change {
 	margin-right: 40px;
@@ -80,19 +85,30 @@ td#rightColumn
 }
 #stepHeaderTitle {
 	color:black;
+	text-align:center;
+	width: 180px;
+	float:left;
+	height:430px;
+
+	border:0px dotted red;
+	background-color: white;
 }
 #displayAreaSelectedTimeslot {
 	float:left;
 	margin-left:40px;
+	/* sit at bottom of it's container */
+	margin-top:230px;
+	text-align:center;
 }
 .time_selector {
-	margin-left:25px;
+	margin-left:0px;
 }
 
 /* confirm and pay */
 #mainContent {
 	width: 300px;
 	float: left;
+	clear:both;
 }
 
 #paymentForm {
@@ -108,4 +124,14 @@ td#rightColumn
 	font-size: large;
 }
 
+#nextButton {
+	margin-top: 60px;
+	clear:both;
+}
 
+.goBackAPage#timeslotBackButton {
+	float:left;
+	position:relative;
+	left:0px;
+	top:0px;
+}

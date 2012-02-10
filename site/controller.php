@@ -494,5 +494,219 @@ class SalonBookController extends JController
 		$view = &$this->getView('Salonbook', 'raw');
 		$view->display();				
 	}
+	
+	/**
+	 * Timeslot calculations
+	 */
+
+	/**
+	 * Helper function
+	 *
+	 * @param int $slotNumber
+	 *
+	 * @return string a date/time in the form "6:30"
+	 */
+	function slotNumber2Time ($slotNumber)
+	{
+		$theHour = intval($slotNumber / 2);
+		if ( $theHour == $slotNumber / 2 )
+		{
+			$theMinute = "00";
+		}
+		else
+		{
+			$theMinute = "30";
+		}
+	
+		if ($theHour > 12)
+		{
+			$theHour -= 12;
+		}
+	
+		return $theHour . ":" . $theMinute;
+	}
+	
+	/**
+	 * Calculate the slots occupied by a known event
+	 *
+	 * @param int $anEvent
+	 * @return array timeslots
+	 */
+	function timeSlotsUsedByEvent ($anEvent)
+	{
+		error_log("\n anEvent: " . $anEvent->startTime . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+	
+		$theStart =  strtotime($anEvent->startTime);
+		error_log("\n startTime of anEvent is " . date('g:i a',$theStart) . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+	
+		$minutes = idate('H', $theStart) * 60;
+		$minutes += idate('i', $theStart);
+		$startSlotNumber = intval($minutes / 30);
+	
+		// add the default break time to the end of the appointment to give the staff a chance to complete each customer and prepare for the next
+		$configOptions =& JComponentHelper::getParams('com_salonbook');
+		$breakTime = $configOptions->get('break_time', '17');	// in minutes		
+		$duration = $anEvent->durationInMinutes + $breakTime;
+		$theEnd = strtotime("+ $duration minutes", $theStart);
+	
+		error_log("\n endTime of anEvent (includng break) is " . date('g:i a',$theEnd) . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+	
+		$minutes = idate('H', $theEnd) * 60;
+		$minutes += idate('i', $theEnd);
+		// calculate the end time as if they finished a minute earlier
+		// this allows an appointment from 2:00 to 2:30 to appear as (29 minutes) so it only occupies a single timeslot
+		$endSlotNumber = intval(($minutes - 1) / 30);
+	
+		// calculate all of the slots used for this appointment. It will always be a simple sequence of integers from the first to the last slot
+		for ( $newSlot=$startSlotNumber; $newSlot <= $endSlotNumber; $newSlot++)
+		{
+			$slotsArray[] = $newSlot;
+		}
+	
+		return $slotsArray;
+	}
+	
+	/**
+	 * Build an array of available start times for the date passed in (and the service/stylist requested)
+	 *
+	 * @param string $aDate
+	 * @return string An HTML selection object
+	 */
+	function availabletimes()
+	{
+		$aDate = JRequest::getVar('aDate','');
+		$aTime = JRequest::getVar('aTime','10:00 am');
+	
+		error_log("finding availabletimes for Time: $aTime \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		error_log("finding availabletimes for Date: $aDate \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+	
+// 		$datesArray = array('8:00 am', '10:30 am', '1:30 pm', '4:00 pm');
+	
+		// TODO: place this in a singleton. It need not run all the time.
+		$dailySlotsAvailable = array();
+		// read start-of-day and end-of-day times from the configuration file
+		// 8:00 AM = 16 , 7:00 PM = 38
+		$firstSlot = 16;
+		$lastSlot = 38;
+		
+		for ($slotPosition=$firstSlot; $slotPosition <= $lastSlot; $slotPosition++)
+		{
+			$dailySlotsAvailable[] = $slotPosition;
+		}
+		
+		$currentDate = strtotime($aDate);
+		
+		// for each day, find all events
+		// use $this->busySlots; then remove from the $dailySlotsAvailable array
+	
+		$model = $this->getModel('timeslots');
+		$feed = $model->getBusySlotsQuery($aDate);
+		
+		error_log("the busy feed has " . count($feed) . " items \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		$dailyResults = $feed;
+	
+		// set up the default available time slots
+		$slotsOpenForBookingToday = $dailySlotsAvailable;
+		$dailyUsedSlots = array();
+	
+		// if events were found, then caluate the timeslots used by each,
+		// then calculate the available slots, and have them ready for display to the user
+		if ( count($feed) > 0 )
+		{
+			foreach ($feed as $event)
+			{
+				// $id = substr($event->id, strrpos($event->id, '/')+1);
+				$id = $event->id;
+	
+				// check that the event is for the currentDate
+				if ( $event->appointmentDate == date('Y-m-d', $currentDate) )
+				{
+					// process each event looking for timeslots used
+					$usedSlots = $this->timeSlotsUsedByEvent( $event );
+				}
+				else
+				{
+					// nothing was found
+					$usedSlots = array();
+				}
+	
+				$dailyUsedSlots = array_merge($dailyUsedSlots, $usedSlots);
+			}
+		}
+	
+		$slotsOpenForBookingToday = array_diff($dailySlotsAvailable, $dailyUsedSlots);
+	
+		// highlight dates with LIMITED availability
+		/*
+		$prettyDate = date("D M j", $currentDate);
+		$thisDate = date("Y-m-j", $currentDate);
+		$returnValue .= "<span class='hiddenDate' id='date_selector_$currentDate'>$thisDate</span>";
+		if ( count($dailyUsedSlots) > 0 )
+		{
+			$returnValue .= "&nbsp;&nbsp;<b>" . $prettyDate . "</b>&nbsp;&nbsp;";
+		}
+		else
+		{
+			$returnValue .= $prettyDate;
+		}
+		
+		$returnValue .= "</span>";
+		*/
+		
+		// now print a list of all available slots for that day
+		// Choose a start time but only if there are indeed times availabe for that day, else show a 'Sorry..' message
+
+		$returnValue = "<option value='-1' name='-1'> -- </option>";
+		
+// 		error_log("trying to match aTime " . date('g:i a', strtotime($aTime)) . " or selectedTime " . date('g:i a', strtotime($this->selectedStartTime)) .  "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		error_log("trying to match aTime " . date('g:i a', strtotime($aTime)) . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		foreach ($slotsOpenForBookingToday as $slotNumber)
+		{
+			$slotTime = $this->slotNumber2Time($slotNumber);
+			$ampm = ($slotNumber < 24) ? "am" : "pm";
+			$returnValue .= "<option value='$slotNumber' name='$slotNumber' ";
+			$displayTime = $slotTime . ' ' . $ampm;
+			$selectedTime = date('g:i a', strtotime($aTime));
+			if ( $displayTime === $selectedTime )
+			{
+				$returnValue .= " selected ";
+			}
+			$returnValue .= ">$slotTime $ampm</option>";
+		
+		}
+	
+		$aTime = 0;
+		
+// 		error_log("selction elements " . $returnValue . " \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		echo $returnValue;
+	}	
+
+	/**
+	 * Display another month of the calendar
+	 * 
+	 * @param int theMonth
+	 * @param int theYear
+	 * 
+	 * @return HTML
+	 */
+	public function showCalendar()
+	{
+		// get vars
+		$theMonth = JRequest::getVar('theMonth',date('m'));	
+		$theYear = JRequest::getVar('theYear', date('Y'));
+		
+		error_log("theMonth/theYear" . $theMonth . "/" . $theYear . " \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		
+		// register Calendar class
+		JLoader::register('Calendar',  JPATH_COMPONENT_SITE.DS.'calendar'.DS.'calendar.php');
+		
+		// display calendar
+		$calendar = new Calendar();
+		$calendar->showToday(true);
+		
+		$datesArray = array('type'=>array('link'=>array('href'=>'javascript:calDateSelected')));
+		echo $calendar->show($theMonth, $theYear, $datesArray);
+		
+	}
 }
 ?>

@@ -159,7 +159,7 @@ class SalonBookModelTimeslots extends JModelItem
 		// function: getBusySlotsQuery
 		// @params: startDate, endDate
 		// @return: array for slots already booked for a given set of (consecutive) days
-		public function getBusySlotsQuery()
+		public function getBusySlotsQuery($aDate=null)
 		{
 			/*
 			`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
@@ -171,6 +171,11 @@ class SalonBookModelTimeslots extends JModelItem
 			`balance_due` FLOAT NULL ,
 			`stylist` INT NULL COMMENT  'foreign key'
 			*/
+			
+			if ( $aDate == null )
+			{
+				return null;			
+			}
 			
 			// find the current users' hairstyle
 			$user =& JFactory::getUser();
@@ -189,16 +194,17 @@ class SalonBookModelTimeslots extends JModelItem
 			// startTime
 			// duraionInMinutes
 			
-			error_log("INSIDE: getAvailableSlotsQuery startDate:" . $startDate . " endDate: $endDate \n", 3, "../logs/salonbook.log");
+			error_log("INSIDE: getAvailableSlotsQuery for Date:" . $aDate . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			
 			// $query->setStartMin($currentDate);
 			// $endOfDay = strtotime("23:59", $currentDate);
 			// $query->setStartMax($endOfDay);
 			$db = JFactory::getDBO();
 			// $endOfDayOnLastDay = strtotime("23:59", $endDate);
-			$busyTimesQuery = "SELECT * FROM `#__salonbook_appointments` WHERE deposit_paid = '1' AND user = '$current_user_id' AND appointmentDate >= '$startDate' AND appointmentDate <= '$endDate' ";	
+// 			$busyTimesQuery = "SELECT * FROM `#__salonbook_appointments` WHERE deposit_paid = '1' AND status='1' AND user = '$current_user_id' AND appointmentDate >= '$startDate' AND appointmentDate <= '$endDate' ";	
+			$busyTimesQuery = "SELECT * FROM `#__salonbook_appointments` WHERE deposit_paid = '1' AND status='1' AND appointmentDate = '$aDate' ";
 			
-			error_log("the busyTimesQuery sql: " . $busyTimesQuery . "\n", 3, "../logs/salonbook.log");
+			error_log("the busyTimesQuery sql: " . $busyTimesQuery . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			
 			$db->setQuery((string)$busyTimesQuery);
 			$this->busyTimes = $db->loadObjectList();
