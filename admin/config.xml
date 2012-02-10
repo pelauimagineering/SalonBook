@@ -59,8 +59,73 @@
 			default="2"
 			size="5"/>
 
+		<field
+			name="default_timeslot_length"
+			type="text"
+			label="COM_SALONBOOK_CONFIG_DEFAULT_TIMESLOT_LENGTH_LABEL"
+			description="COM_SALONBOOK_CONFIG_DEFAULT_TIMESLOT_LENGTH_DESC"
+			default="30"
+			size="5"/>
+
+		<field
+			name="default_appointment_length"
+			type="text"
+			label="COM_SALONBOOK_CONFIG_DEFAULT_APPOINTMENT_LENGTH_LABEL"
+			description="COM_SALONBOOK_CONFIG_DEFAULT_APPOINTMENT_LENGTH_DESC"
+			default="90"
+			size="5"/>
+
+		<field
+			name="daily_start_timeslot"
+			type="list"
+			multiple="false"
+			size="1"
+			label="COM_SALONBOOK_CONFIG_DAILY_START_TIMESLOT_LABEL"
+			description="COM_SALONBOOK_CONFIG_DAILY_START_TIMESLOT_DESC"
+			default="16"
+			>
+				<option value="14">7:00 am</option>
+				<option value="15">7:30 am</option>
+				<option value="16">8:00 am</option>
+				<option value="17">8:30 am</option>
+				<option value="18">9:00 am</option>
+				<option value="19">9:30 am</option>
+				<option value="20">10:00 am</option>
+		</field>
+		
+		<field
+			name="daily_end_timeslot"
+			type="list"
+			multiple="false"
+			size="1"
+			label="COM_SALONBOOK_CONFIG_DAILY_END_TIMESLOT_LABEL"
+			description="COM_SALONBOOK_CONFIG_DAILY_END_TIMESLOT_DESC"
+			default="34"
+			>
+				<option value="32">4:00 pm</option>
+				<option value="33">4:30 pm</option>
+				<option value="34">5:00 pm</option>
+				<option value="35">5:30 pm</option>
+				<option value="36">6:00 pm</option>
+				<option value="37">6:30 pm</option>
+				<option value="38">7:00 pm</option>
+				<option value="39">7:30 pm</option>
+				<option value="40">8:00 pm</option>
+		</field>
+
 	</fieldset>
 	<fieldset name="PAYMENTPROCESSOR">
+	
+		<field
+			name="cc_processor_test_mode"
+			type="radio"
+			label="COM_SALONBOOK_CONFIG_TEST_MODE_LABEL"
+			description="COM_SALONBOOK_CONFIG_TEST_MODE_DESC"
+			default="test">
+				<option value="test">COM_SALONBOOK_CONFIG_TEST_MODE_TYPE_TEST</option>
+				<option value="production">COM_SALONBOOK_CONFIG_TEST_MODE_TYPE_PRODUCTION</option>
+		</field>
+	
 		<field
 			name="cc_processor"
 			type="list"

@@ -574,8 +574,13 @@ class SalonBookController extends JController
 	 */
 	function availabletimes()
 	{
+		$configOptions =& JComponentHelper::getParams('com_salonbook');
+		
 		$aDate = JRequest::getVar('aDate','');
 		$aTime = JRequest::getVar('aTime','10:00 am');
+		
+		$defaultDuration = $configOptions->get('default_appointment_length', '90');
+		$duration = JRequest::getVar('duration',$defaultDuration);	// in minutes
 	
 		error_log("finding availabletimes for Time: $aTime \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		error_log("finding availabletimes for Date: $aDate \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
@@ -586,8 +591,9 @@ class SalonBookController extends JController
 		$dailySlotsAvailable = array();
 		// read start-of-day and end-of-day times from the configuration file
 		// 8:00 AM = 16 , 7:00 PM = 38
-		$firstSlot = 16;
-		$lastSlot = 38;
+		
+		$firstSlot = $configOptions->get('daily_start_timeslot', '16');	// in minutes
+		$lastSlot = $configOptions->get('daily_end_timeslot', '36');	// in minutes
 		
 		for ($slotPosition=$firstSlot; $slotPosition <= $lastSlot; $slotPosition++)
 		{
@@ -656,10 +662,10 @@ class SalonBookController extends JController
 		// now print a list of all available slots for that day
 		// Choose a start time but only if there are indeed times availabe for that day, else show a 'Sorry..' message
 
-		$returnValue = "<option value='-1' name='-1'> -- </option>";
+		$returnValue = "<option value='-1' name='-1'> -- </option>\n";
 		
-// 		error_log("trying to match aTime " . date('g:i a', strtotime($aTime)) . " or selectedTime " . date('g:i a', strtotime($this->selectedStartTime)) .  "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
-		error_log("trying to match aTime " . date('g:i a', strtotime($aTime)) . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+// 		error_log("trying to match aTime " . date('g:i a', strtotime($aTime)) . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		/*
 		foreach ($slotsOpenForBookingToday as $slotNumber)
 		{
 			$slotTime = $this->slotNumber2Time($slotNumber);
@@ -674,10 +680,73 @@ class SalonBookController extends JController
 			$returnValue .= ">$slotTime $ampm</option>";
 		
 		}
-	
-		$aTime = 0;
+		*/
 		
-// 		error_log("selction elements " . $returnValue . " \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		//
+		error_log("insert " . $duration . " into this array\n " . var_export($slotsOpenForBookingToday, true) . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		
+		$minutesPerTimeslot = $configOptions->get('default_timeslot_length', '30');	// in minutes
+		
+		$durationInSlots = ceil($duration / $minutesPerTimeslot);
+		
+		for ( $x=0; $x < count($slotsOpenForBookingToday); $x++ )
+// 		$slotArrayKeys = array_keys($slotsOpenForBookingToday);
+// 		for ( $x=0; $x < count($slotArrayKeys); $x++ )
+		{
+// 			$key = $slotArrayKeys[$x];
+			$thisSlotNumber = $slotsOpenForBookingToday[$x];
+// 			$thisSlotNumber = $slotsOpenForBookingToday->$key;
+			error_log("thisSlotNumber = " . $thisSlotNumber . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			
+			
+			// check to see if the next $durationInSlots are free
+			$durationAvailable = false;
+			for ( $test = 0; $test < $durationInSlots; $test++ )
+			{
+				try 
+				{
+					$nextSlotNumber = $slotsOpenForBookingToday[$x+$test+1];
+// 					$nextKey = $slotArrayKeys[$x+$test+1];
+// 					$nextSlotNumber = $slotsOpenForBookingToday->$nextKey;
+					$durationAvailable = true;
+				} 
+				catch (Exception $e) 
+				{
+					// end of the day
+					$nextSlotNumber = 0;
+				}
+				
+				if ( $nextSlotNumber == 0 )
+				{
+					$durationAvailable = false;
+					break;
+				}
+			}
+
+			error_log("thisSlotNumber = " . $thisSlotNumber . " NextSlotNumber = " . $nextSlotNumber . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			
+			if ( $durationAvailable == true && $thisSlotNumber )
+			{
+				// show this timeslot
+				$slotTime = $this->slotNumber2Time($thisSlotNumber);
+				$ampm = ($thisSlotNumber < 24) ? "am" : "pm";
+				$returnValue .= "<option value='$thisSlotNumber' name='$thisSlotNumber' ";
+				$displayTime = $slotTime . ' ' . $ampm;
+				$selectedTime = date('g:i a', strtotime($aTime));
+				if ( $displayTime === $selectedTime )
+				{
+					$returnValue .= " selected ";
+				}
+				$returnValue .= ">$slotTime $ampm</option>\n";
+				
+			}
+			
+		}
+		//
+
+		error_log("returnValue = " . $returnValue . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		
+// 		$aTime = 0;
 		echo $returnValue;
 	}	
 
