@@ -30,7 +30,6 @@ class SalonBooksViewTools extends JView
 			return false;
 		}
 		// Assign data to the view
-		// $this->items = $items;
 		$this->pagination = $pagination;
  		
 		$this->addToolBar();
@@ -43,6 +42,8 @@ class SalonBooksViewTools extends JView
 	{
 		JHtml::stylesheet('com_salonbook/admin.stylesheet.css', array(), true, false, false);
 		JToolBarHelper::title(JText::_('COM_SALONBOOK_MANAGER_TOOLS'),'salonbook');
+		
+		if (JFactory::getUser()->authorise('core.admin')) JToolBarHelper::preferences('com_salonbook');
 	}
 	
 }

@@ -109,9 +109,14 @@ else
 		timeStr = timeStr.replace(":", " ");
 
 		dollarValue = "<?php echo number_format($depositDollarValue, 2, '.', ''); ?>";	// force to 2 decimal places i.e. 25.00
+
+		<?php 
+		$configOptions =& JComponentHelper::getParams('com_salonbook');
+		$testMode = $configOptions->get('cc_processor_test_mode','test');
+		?>
 		
-		product1 = dollarValue + "::1::001::Appointment Booking at Celebrity Unisex Salon at " + timeStr + " on " + dateStr +"::{TEST}";
-		taxes = "1.95::1::tax::13% HST::{TEST}";
+		product1 = dollarValue + "::1::001::Appointment Booking at Celebrity Unisex Salon at " + timeStr + " on " + dateStr +"::{<?php echo strtoupper($testMode)?>}";
+		taxes = "1.95::1::tax::13% HST::{<?php echo strtoupper($testMode)?>}";
 		$("#productString").val( productHeader + "|" + product1 + "|" + taxes);
 	}
 </script>

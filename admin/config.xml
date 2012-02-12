@@ -146,5 +146,14 @@
 			default="00000"
 			size="5"/>
 
+		<field
+			name="manual_processing_url"
+			type="text"
+			label="COM_SALONBOOK_CONFIG_MANUAL_PAYMENT_PROCESSING_LABEL"
+			description="COM_SALONBOOK_CONFIG_MANUAL_PAYMENT_PROCESSING_DESC"
+			size="80"
+			default="https://www.internetsecure.com/merchants/meradmin.asp?Page=5013"
+			/>
+
 	</fieldset>
 </config>
