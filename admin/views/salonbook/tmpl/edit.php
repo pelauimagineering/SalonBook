@@ -129,6 +129,26 @@ function copyData()
 				}
 				echo "</select>";
 			}
+			else if ( $field->name == "jform[created_by_staff]" )
+			{
+				echo $field->label;
+				echo "<select id='created_by_staff' name='created_by_staff' class='inputbox'>";
+				for ($x=0; $x<2; $x++)
+				{
+				if ( $this->appointment->created_by_staff == 1 && $x==1)
+					{
+					$selected = "selected";
+				}
+					else
+					{
+					$selected = "";
+				}
+			
+				$textLabel = ($x == 0) ? "Customer" : "Staff";
+				echo "<option value='" . $x . "' " . $selected . ">" . $textLabel . "</option>";
+			}
+			echo "</select>";
+			}
 			else
 			{
 				echo $field->label;

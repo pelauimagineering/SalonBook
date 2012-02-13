@@ -1,9 +1,14 @@
 .icon-48-salonbook {
   background: url('../images/sb_logo_48.png') 0 0 no-repeat;
 }
+
 .unpaid {
 	color: #ff0000;
 	font-weight: bold;
+}
+
+.staff_entered {
+	color: green;
 }
 
 .salonbook_admin_tools #synch_users #process_payment_manually {

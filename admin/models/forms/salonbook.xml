@@ -66,6 +66,17 @@
 			class="inputbox"
 			default=""
 		/>	
+		<field
+			name="created_by_staff"
+			type="list"
+			label="COM_SALONBOOK_SALONBOOK_APPOINTMENTS_DETAIL_CREATED_BY_STAFF"
+			description="COM_SALONBOOK_SALONBOOK_APPOINTMENTS_DETAIL_CREATED_BY_STAFF_DESC"
+			class="inputbox"
+			size="1"
+			default="1">
+				<option value="0">Customer</option>
+				<option value="1">Staff</option>
+		</field>	
 		
 	</fieldset>
 </form>

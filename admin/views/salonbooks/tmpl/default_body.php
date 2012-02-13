@@ -13,6 +13,11 @@ defined('_JEXEC') or die('Restricted Access');
 		$class = "";
 	}	
 	
+	if ( $item->created_by_staff == 1 )
+	{
+		$class .= " staff_entered";
+	}
+	
 	$link = JRoute::_( 'index.php?option=com_salonbook&view=salonbook&layout=edit&task=edit&cid[]='. $item->id );
 	?>
 	<tr class="row<?php echo $i % 2; echo " " . $class; ?>">

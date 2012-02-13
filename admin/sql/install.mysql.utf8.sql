@@ -40,6 +40,7 @@ DROP TABLE IF EXISTS `#__salonbook_appointments`;
 CREATE TABLE  `#__salonbook_appointments` (
 	`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 	`created_when` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
+	`created_by_staff` BINARY NOT NULL DEFAULT '0',
 	`appointmentDate` DATE NULL ,
 	`startTime` TIME NULL ,
 	`durationInMinutes` INT NULL ,

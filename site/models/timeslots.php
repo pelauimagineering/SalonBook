@@ -161,17 +161,6 @@ class SalonBookModelTimeslots extends JModelItem
 		// @return: array for slots already booked for a given set of (consecutive) days
 		public function getBusySlotsQuery($aDate=null)
 		{
-			/*
-			`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-			`date` DATE NOT NULL ,
-			`startTime` TIME NULL ,
-			`duration` INT NULL COMMENT  'foreign key',
-			`user` INT NOT NULL COMMENT  'foreign key',
-			`deposit_paid` BINARY NOT NULL DEFAULT  '0',
-			`balance_due` FLOAT NULL ,
-			`stylist` INT NULL COMMENT  'foreign key'
-			*/
-			
 			if ( $aDate == null )
 			{
 				return null;			
@@ -181,29 +170,14 @@ class SalonBookModelTimeslots extends JModelItem
 			$user =& JFactory::getUser();
 			$current_user_id = $user->id;
 			
-			// $startDate = strtotime('+1 day 00:00');
-			// $endDate = strtotime('+8 days 23:59');
-			
 			$startDate = date("Y-m-d", strtotime('+1 day 00:00'));
-			// $startTime = date("H:i", $startDate);
 			
 			$endDate = date("Y-m-d", strtotime('+8 days 23:59'));
-			// $endTime = date("H:i", $endDate);
 			 
-			// appointmentDate
-			// startTime
-			// duraionInMinutes
-			
 			error_log("INSIDE: getAvailableSlotsQuery for Date:" . $aDate . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			
-			// $query->setStartMin($currentDate);
-			// $endOfDay = strtotime("23:59", $currentDate);
-			// $query->setStartMax($endOfDay);
 			$db = JFactory::getDBO();
-			// $endOfDayOnLastDay = strtotime("23:59", $endDate);
-// 			$busyTimesQuery = "SELECT * FROM `#__salonbook_appointments` WHERE deposit_paid = '1' AND status='1' AND user = '$current_user_id' AND appointmentDate >= '$startDate' AND appointmentDate <= '$endDate' ";	
-			$busyTimesQuery = "SELECT * FROM `#__salonbook_appointments` WHERE deposit_paid = '1' AND status='1' AND appointmentDate = '$aDate' ";
-			
+			$busyTimesQuery = "SELECT * FROM `#__salonbook_appointments` WHERE appointmentDate = '$aDate' AND ( deposit_paid = '1' OR status='1' OR (status='0' AND created_by_staff='1') ) ";
 			error_log("the busyTimesQuery sql: " . $busyTimesQuery . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			
 			$db->setQuery((string)$busyTimesQuery);

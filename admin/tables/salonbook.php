@@ -14,6 +14,7 @@ class TableSalonBook extends JTable
 	// primary key
 	var $id = null;
 	
+	var $created_by_staff = 0;
 	var $appointmentDate = null;
 	var $startTime = null;
 	var $durationInMinutes = null;
