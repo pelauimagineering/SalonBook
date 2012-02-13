@@ -20,6 +20,14 @@
 			size="5"/>
 
 		<field
+			name="tax_rate"
+			type="text"
+			label="COM_SALONBOOK_CONFIG_TAX_RATE_LABEL"
+			description="COM_SALONBOOK_CONFIG_TAX_RATE_DESC"
+			default="13"
+			size="5"/>
+
+		<field
 			name="break_time"
 			type="text"
 			label="COM_SALONBOOK_CONFIG_BREAK_TIME_LABEL"
@@ -113,6 +121,15 @@
 				<option value="40">8:00 pm</option>
 		</field>
 
+		<!--  Send Reminder emails x daysAhead -->
+		<field
+			name="reminder_email_days_ahead"
+			type="text"
+			label="COM_SALONBOOK_CONFIG_REMINDER_DAYS_LABEL"
+			description="COM_SALONBOOK_CONFIG_REMINDER_DAYS_DESC"
+			default="3"
+			size="5"/>
+			
 	</fieldset>
 	<fieldset name="PAYMENTPROCESSOR">
 	

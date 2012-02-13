@@ -286,7 +286,7 @@ class SalonBookModelAppointments extends JModelItem
 		}
 		
 		/**
-		 * Clenaup the appointments table by removing appointmentsstill stuck witht the 'Waiting for Deposit' status
+		 * Clean up the appointments table by removing appointments still stuck with the 'Waiting for Deposit' status
 		 * after the time period specified in the config options.
 		 * In this context, 'removal' means setting the status to 'Cancelled'
 		 * This can be called every time a time a new appointment is added
@@ -306,5 +306,36 @@ class SalonBookModelAppointments extends JModelItem
 				$this->_db->setQuery((string)$cancelQuery);
 				$this->_db->query();
 			}
+		}
+
+		public function appointmentsScheduledAhead($numberOfDayAhead = 3)
+		{
+			$futureDate = date('Y-m-d', strtotime("+$numberOfDayAhead days 00:00"));
+			// run a query
+			$lookAheadQuery = "SELECT * FROM `#__salonbook_appointments` WHERE appointmentDate = '$futureDate' AND ( deposit_paid = '1' OR status='1' OR (status='0' AND created_by_staff='1') )";
+			// return a list
+			error_log("Look for future appointments: " . $lookAheadQuery."\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			$this->_db->setQuery((string)$lookAheadQuery);
+			$this->_db->query();
+			
+			$appointmentList = $this->_db->loadAssocList();
+			error_log("List of appointments: " . $appointmentList."\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			return $appointmentList;
+		}
+		
+		function detailsForMail($appointment_id)
+		{
+			$detailQuery = "SELECT A.*, U.email, S.name as serviceName, SU.firstName as stylistFirstName
+							FROM #__salonbook_appointments A, #__users U, #__salonbook_services S, #__salonbook_users SU
+							WHERE A.user = U.id
+							AND A.service = S.id
+							AND A.stylist = SU.user_id
+							AND A.id > 60
+							AND ( deposit_paid = '1' OR status='1' OR (status='0' AND created_by_staff='1') )";
+			$this->_db->setquery($detailQuery);
+			$this->_db->query();
+			
+			$details = $this->_db->loadAssocList();
+			return $details;
 		}
 }

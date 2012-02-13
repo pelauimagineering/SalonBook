@@ -25,6 +25,11 @@ http://localhost/index.php?option=com_salonbook&view=payment&task=internetsecure
 */
 
 /**
+ * reminder emails
+ * http://localhost/index.php?option=com_salonbook&view=payment&task=sendReminderEmails
+ */
+
+/**
  * Salon Book Component Controller
  */
 class SalonBookController extends JController
@@ -211,6 +216,41 @@ class SalonBookController extends JController
 		$view->display();
 	}
 	
+	
+	/**
+	 * This method can be called by an external process to send reminder messages. The 'daysAhead' parameter will be 
+	 * used to calculate which appointments will have reminders sent.
+	 * 
+	 * If no parameter is sent, a default of 3 will be used.
+	 *  
+	 * @param int $daysAhead
+	 */
+	function sendReminderEmails()
+	{
+		$configOptions =& JComponentHelper::getParams('com_salonbook');
+		$daysAhead = $configOptions->get('reminder_email_days_ahead',3);
+				
+		//$daysAhead = 12; //TODO: remove after testing!
+		
+		error_log("inside sendReminderEmail...Looking ahead " . $daysAhead . " days\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		
+		JLoader::register('SalonBookModelAppointments',  JPATH_COMPONENT_SITE.'/models/appointments.php');		
+		$appointmentModel = $this->getModel('appointments','SalonBookModel');
+		
+		$messageList = $appointmentModel->appointmentsScheduledAhead($daysAhead);
+		
+		$mailer = new SalonBookModelEmail();
+		
+		if ( $mailer )
+		{
+			$mailer->sendReminders($messageList);
+		}
+	}
+	
+	/**
+	 * Send an email after the user attempts to pay the deposit
+	 * @param boolean $success
+	 */
 	function sendPaymentConfirmationEmail($success)
 	{
 		error_log("\ninside sendPaymentConfirmationEmail...\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");

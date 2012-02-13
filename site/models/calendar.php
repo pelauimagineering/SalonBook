@@ -164,9 +164,9 @@ class SalonBookModelCalendar extends JModel
 	
 	function saveAppointmentToGoogle($appointment_id)
 	{
-		error_log("\ninside saveAppointmentToGoogle...\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		error_log("inside saveAppointmentToGoogle...\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 	
-		JLoader::register('SalonBookModelAppointments',  JPATH_COMPONENT_SITE.'/models/appointments.php');		
+		JLoader::register('SalonBookModelAppointments',  JPATH_COMPONENT_SITE.DS.'models'.DS.'appointments.php');		
 		$appointmentModel = new SalonBookModelAppointments();
 		$appointmentData = $appointmentModel->getAppointmentDetailsForID($appointment_id);
 	

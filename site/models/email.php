@@ -68,9 +68,35 @@ class SalonBookModelEmail extends JModelItem
 		$this->mailer->setBody($this->message);		
 	}
 	
+	
+	/**
+	 * Send reminder messages to the list of appointments that have been passed to us
+	 * 
+	 *  @param array $appointmentList
+	 */
+	function sendReminders($appointmentList)
+	{
+		error_log("inside sendReminders...\nFor list " . var_export($appointmentList[0], true) . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		
+		// get appointment details and email address
+		JLoader::register('SalonBookModelAppointments',  JPATH_COMPONENT_SITE.DS.'models'.DS.'appointments.php');
+		$appointmentModel = new SalonBookModelAppointments();
+		
+		foreach ($appointmentList as $appointment)
+		{
+			$mailingInfo = $appointmentModel->detailsForMail($appointment[0]['id']);
+		
+			error_log("mailingInfo... " . var_export($mailingInfo, true) . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			
+			$this->setSuccessMessage($mailingInfo);
+		
+			$this->sendMail();
+		}
+	}
+	
 	function __construct()
 	{
-		error_log("\n constructing an email...\n", 3, "logs/salonbook.log");
+		error_log("\n constructing an email...\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
 		$this->mailer =& JFactory::getMailer();
 		

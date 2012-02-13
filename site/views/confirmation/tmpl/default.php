@@ -14,6 +14,7 @@ $site_name = "";
 // the actual value to be charged is set in the backend config options
 $depositType = $this->configOptions->get('deposit_type','amount');
 $depositValue = $this->configOptions->get('deposit_value', '23.99');
+$taxRate = $this->configOptions->get('tax_rate', '13');
 
 if ( $depositType == "amount" )
 {
@@ -109,6 +110,7 @@ else
 		timeStr = timeStr.replace(":", " ");
 
 		dollarValue = "<?php echo number_format($depositDollarValue, 2, '.', ''); ?>";	// force to 2 decimal places i.e. 25.00
+		taxValue = "<?php echo number_format($depositDollarValue*$taxRate/100, 2, '.', '');?>";
 
 		<?php 
 		$configOptions =& JComponentHelper::getParams('com_salonbook');
@@ -116,7 +118,7 @@ else
 		?>
 		
 		product1 = dollarValue + "::1::001::Appointment Booking at Celebrity Unisex Salon at " + timeStr + " on " + dateStr +"::{<?php echo strtoupper($testMode)?>}";
-		taxes = "1.95::1::tax::13% HST::{<?php echo strtoupper($testMode)?>}";
+		taxes = taxValue + "::1::tax::13% HST::{<?php echo strtoupper($testMode)?>}";
 		$("#productString").val( productHeader + "|" + product1 + "|" + taxes);
 	}
 </script>
