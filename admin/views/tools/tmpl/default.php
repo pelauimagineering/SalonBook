@@ -36,4 +36,20 @@ $updateCount = ($this->countUsersUpdated > 0) ? $this->countUsersUpdated : 0;
 			<?php echo JText::_('COM_SALONBOOK_MANUAL_CC_LABEL')?>
 		</a>
 	</div>
+	
+	<!--  display link to send reminder emails -->
+	<br/>
+	<?php 
+	$configOptions =& JComponentHelper::getParams('com_salonbook');
+	$reminderDaysAhead = $configOptions->get('reminder_email_days_ahead','3');
+	
+	$reminderForDay = date('l',strtotime("+$reminderDaysAhead days"));
+	$reminderEmailURL = "/index.php?option=com_salonbook&view=payment&task=sendReminderEmails";
+	?>
+	<div id="process_payment_manually">
+		<a href="<?php echo $reminderEmailURL ?>" target="_blank">
+			<?php echo JText::sprintf('COM_SALONBOOK_MANUAL_REMINDER_EMAIL_LABEL',$reminderDaysAhead, $reminderForDay)?>
+		</a>
+	</div>
+
 </div>

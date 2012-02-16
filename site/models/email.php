@@ -39,11 +39,11 @@ class SalonBookModelEmail extends JModelItem
 		// look up the details
 		$stylistName = $appointmentData[0]['stylistName'];
 		$serviceName = $appointmentData[0]['serviceName'];
-		$appointmentDate = $appointmentData[0]['appointmentDate'];
-		$startTime = $appointmentData[0]['startTime'];
+		$appointmentDate = date('l F j',strtotime($appointmentData[0]['appointmentDate']));
+		$startTime = date('g:i a', strtotime($appointmentData[0]['startTime']));
 		$this->email = $appointmentData[0]['email'];
 		
-		$this->message = JText::sprintf('COM_SALONBOOK_EMAIL_BODY_SUCCESS', $serviceName, $stylistName, $appointmentDate, date("H:i", $startTime));
+		$this->message = JText::sprintf('COM_SALONBOOK_EMAIL_BODY_SUCCESS', $serviceName, $stylistName, $appointmentDate, $startTime);
 		$this->mailer->setBody($this->message);		
 	}
 	
@@ -56,7 +56,7 @@ class SalonBookModelEmail extends JModelItem
 		$startTime = $appointmentData[0]['startTime'];
 		$this->email = $appointmentData[0]['email'];
 		
-		$this->message = JText::sprintf('COM_SALONBOOK_EMAIL_BODY_DETAILS_UPDATED', $serviceName, $stylistName, $appointmentDate, date("H:i", $startTime));
+		$this->message = JText::sprintf('COM_SALONBOOK_EMAIL_BODY_DETAILS_UPDATED', $serviceName, $stylistName, $appointmentDate, date('g:i a', $startTime));
 		$this->mailer->setBody($this->message);		
 	}
 	
@@ -84,7 +84,7 @@ class SalonBookModelEmail extends JModelItem
 		
 		foreach ($appointmentList as $appointment)
 		{
-			$mailingInfo = $appointmentModel->detailsForMail($appointment[0]['id']);
+			$mailingInfo = $appointmentModel->detailsForMail($appointment['id']);
 		
 			error_log("mailingInfo... " . var_export($mailingInfo, true) . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			

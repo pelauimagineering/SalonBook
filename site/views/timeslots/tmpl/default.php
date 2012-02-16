@@ -10,9 +10,8 @@ $stylist_id = JRequest::getInt('stylist_id');
 ?>
 <link rel="stylesheet" href="/components/com_salonbook/salonbook.css" type="text/css" />
 <link rel="stylesheet" href="<?php echo 'components'.DS.'com_salonbook'.DS.'calendar'.DS.'style.css'?>" type="text/css" />
-<?php ///components/com_salonbook/jquery-1.6.2.min.js ?>
 <script type="text/javascript" src="/components/com_salonbook/jquery-1.6.2.min.js"></script>
-<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<!--  script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script -->
 
 <script type="text/javascript" src="/components/com_salonbook/salonui.js"></script>
 
@@ -32,7 +31,6 @@ $stylist_id = JRequest::getInt('stylist_id');
 	
 	function checkToEnableNextButton()
 	{
-//		alert('checking...');
 		// if a timeslot has been chosen (i.e. the field is not empty), then enable the NEXT button
 		dateSelected = $('#hiddenSelectedDate').val();
 		if ( dateSelected.length > 0 )
@@ -51,7 +49,6 @@ $stylist_id = JRequest::getInt('stylist_id');
 	
 	$(document).ready(function()
 	{
-//		alert('loaded');
 		if ( 1 == <?php echo empty($this->selectedDate) ? 0 : 1; ?> )
 		{
 			setPreviouslySelectedDateAndTime();
@@ -70,9 +67,7 @@ $stylist_id = JRequest::getInt('stylist_id');
 		
 		/* handler for the select drop down */ 
 		$('.time_selector').change(function()
-		{
-//			alert('this far, at least ' + dateValue);
-					
+		{					
 			str = $(this).find("option:selected").text();
 			
 			strVal = $(this).find("option:selected").val();	// timeslot id
@@ -99,7 +94,6 @@ $stylist_id = JRequest::getInt('stylist_id');
 			}
 			else
 			{
-//				alert('show result');
 				// show the Next button and selected timeslot
 				$("#displayAreaSelectedTimeslot").css("display", "inline");
 				$('#stepHeaderTitle').css("visibility", "visible");
@@ -150,16 +144,12 @@ $stylist_id = JRequest::getInt('stylist_id');
 	// highlight the date selected by the user on the calendar, then call the server for a list of timeslots for that day
 	function calDateSelected(theDate, theTime)
 	{	
-//		alert('calDateSelected|' + theDate);
-			
 		//remove the highlighting class from all calendar elements
 		$("div#calendar ul li").removeClass("working");
 
 		// find the correct calendar pane
 		calendarDateID = "#li-"+theDate;
 
-//		alert(calendarDateID);
-		
 		// set the highlight
 		$(calendarDateID).addClass("working");
 		
@@ -179,9 +169,8 @@ $stylist_id = JRequest::getInt('stylist_id');
 			function(data)
 			{
 				// return values: an empty string indicates failure
-				if ( data == "" )
+				if ( data == null )
 				{
-//					alert('failed');
 					// no availability
 					noAvailabilityMesage = "<?php echo JText::_('COM_SALONBOOK_TIMESLOTS_NO_AVAILABILITY'); ?>";
 					$('#mainMessage').text(noAvailabilityMesage);
@@ -192,12 +181,12 @@ $stylist_id = JRequest::getInt('stylist_id');
 				}
 				else
 				{
-//					alert('something else..' + data);
+					// remove the old list of selections
+					$('#time_selector_control').html('');
+
 					$('div#loading').text("");
 					$('#stepHeaderTitle').css("display", "inline");
 
-					// remove the old list of selections
-					$('#time_selector_control').html('');
 					
 					// display the newly filled select box to the user
 					$('#time_selector_control').append(data);
@@ -230,7 +219,6 @@ $stylist_id = JRequest::getInt('stylist_id');
 					// return values: an empty string indicates failure
 					if ( data == "" )
 					{
-//						alert('failed');
 						// no availability
 						noAvailabilityMesage = "<?php echo JText::_('COM_SALONBOOK_TIMESLOTS_NO_AVAILABILITY'); ?>";
 						$('#mainMessage').text(noAvailabilityMesage);
@@ -241,14 +229,11 @@ $stylist_id = JRequest::getInt('stylist_id');
 					}
 					else
 					{
-//						alert('something else..' + data);
 						$('div#loading').text("");
 						$('#stepHeaderTitle').css("visibility", "hidden");
 						// if everything is okay display the select box to the user
 						$('#calendar').html(data);
 
-//						$('.time_selector').trigger('change');
-						
 						successMesage = "<?php echo JText::_('COM_SALONBOOK_UPDATE_SUCCESS_MESSAGE'); ?>";
 						$('#mainMessage').text("some message");
 						$('#mainMessage').css("display", "inline");
@@ -327,8 +312,5 @@ $stylist_id = JRequest::getInt('stylist_id');
 		<?php echo JHtml::_('form.token'); ?>
 		
 	</div>
-	
-	
-
 </form>
 </div>

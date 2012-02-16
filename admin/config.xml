@@ -130,6 +130,13 @@
 			default="3"
 			size="5"/>
 			
+		<field
+			name="timeoff_user"
+			type="user"
+			label="COM_SALONBOOK_TIMEOFF_USER_LABEL" 
+			description="COM_SALONBOOK_TIMEOFF_USER_DESC" 
+			/>
+			
 	</fieldset>
 	<fieldset name="PAYMENTPROCESSOR">
 	

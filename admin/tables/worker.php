@@ -10,10 +10,10 @@ jimport('joomla.database.table');
  */
 class TableWorker extends JTable
 {
-	// properties
 	// primary key
 	var $id = null;
 	
+	// properties
 	var $user_id = 0;
 	var $firstName = null;
 	var $lastName = null;

@@ -95,7 +95,7 @@ class SalonBookModelAppointments extends JModelItem
 		public function getMarkAppointmentDepositPaidFromInternetSecure($orderNumber)
 		{
 			$db = JFactory::getDBO();
-			$updateQuery = "UPDATE `#__salonbook_appointments` SET deposit_paid = '1' WHERE id='$orderNumber'";
+			$updateQuery = "UPDATE `#__salonbook_appointments` SET deposit_paid = '1', status = '1' WHERE id='$orderNumber'";
 			
 			error_log($updateQuery."\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			
@@ -325,7 +325,7 @@ class SalonBookModelAppointments extends JModelItem
 		
 		function detailsForMail($appointment_id)
 		{
-			$detailQuery = "SELECT A.*, U.email, S.name as serviceName, SU.firstName as stylistFirstName
+			$detailQuery = "SELECT A.*, U.email, S.name as serviceName, SU.firstName as stylistName
 							FROM #__salonbook_appointments A, #__users U, #__salonbook_services S, #__salonbook_users SU
 							WHERE A.user = U.id
 							AND A.service = S.id

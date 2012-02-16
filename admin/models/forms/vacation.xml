@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	time off is represented by booking the staff member with  special 'client' for a service called 'time off'
+-->
+<form>
+	<fieldset>
+		<field
+			id="id"
+			name="id"
+			type="hidden"
+			label="ID"
+			default="0"
+		/>
+
+		<field
+			id="stylist"
+			name="stylist"
+			label="Staff Stylist"
+			type="sql"
+			query="SELECT id as value, name as stylist FROM #__users U JOIN #__user_usergroup_map G on U.id = G.user_id WHERE G.group_id IN (3,4,5,6,7)"
+		/>
+			
+		<field
+			id="user"
+			name="user"
+			type="hidden"
+			size="5"
+			class="inputbox"
+			default="48"
+		/>
+		
+		<field
+			id="service"
+			name="service"
+			type="list"
+			label="Service"
+			size="1"
+			class="inputbox" >
+				<option value="0">Time Off</option>
+		</field>
+		
+		<field
+			id="appointmentDate"
+			name="appointmentDate"
+			type="calendar"
+			label="Date"
+			class="inputbox"
+		/>
+
+		<field
+			id="startTime"
+			name="startTime"
+			type="list"
+			label="Out from"
+			description="What time will the stylist be away from the shop"
+			size="1"
+			class="inputbox" >
+			<option value="08:00:00"> 8:00 am</option>
+			<option value="09:00:00"> 9:00 am</option>
+			<option value="10:00:00">10:00 am</option>
+			<option value="11:00:00">11:00 am</option>
+			<option value="12:00:00">12:00 pm</option>
+			<option value="13:00:00"> 1:00 pm</option>
+			<option value="14:00:00"> 2:00 pm</option>
+			<option value="15:00:00"> 3:00 pm</option>
+			<option value="16:00:00"> 4:00 pm</option>
+			<option value="17:00:00"> 5:00 pm</option>
+			<option value="18:00:00"> 6:00 pm</option>
+			<option value="19:00:00"> 7:00 pm</option>
+			<option value="20:00:00"> 8:00 pm</option>
+		</field>			
+
+		<field
+			id="durationInMinutes"
+			name="durationInMinutes"
+			type="hidden"
+			label="Length of time off (hours)"
+			size="5"
+			class="inputbox"
+			default=""
+		/>		
+		
+		<field
+			id="returnTime"
+			name="returnTime"
+			type="list"
+			label="Return at"
+			description="What time will the stylist return to the shop"
+			size="1"
+			class="inputbox" >
+			<option value="08:00:00"> 8:00 am</option>
+			<option value="09:00:00"> 9:00 am</option>
+			<option value="10:00:00">10:00 am</option>
+			<option value="11:00:00">11:00 am</option>
+			<option value="12:00:00">12:00 pm</option>
+			<option value="13:00:00"> 1:00 pm</option>
+			<option value="14:00:00"> 2:00 pm</option>
+			<option value="15:00:00"> 3:00 pm</option>
+			<option value="16:00:00"> 4:00 pm</option>
+			<option value="17:00:00"> 5:00 pm</option>
+			<option value="18:00:00"> 6:00 pm</option>
+			<option value="19:00:00"> 7:00 pm</option>
+			<option value="20:00:00"> 8:00 pm</option>
+		</field>			
+		
+	</fieldset>
+</form>
+

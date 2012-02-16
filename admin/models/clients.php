@@ -15,6 +15,9 @@ class SalonBooksModelClients extends JModelList
 	 */
 	protected function getListQuery()
 	{
+		$configOptions =& JComponentHelper::getParams('com_salonbook');
+		$timeoffUser = $configOptions->get('timeoff_user',0);
+		
 		// Create a new query object.		
 		$db = JFactory::getDBO();
 		$query = $db->getQuery(true);
@@ -29,7 +32,9 @@ class SalonBooksModelClients extends JModelList
 						LEFT JOIN #__user_profiles P ON A.user = P.user_id 
 							AND P.profile_key LIKE 'salonbookprofile.phone_mobile' 
 						AND A.appointmentDate > now()
+						WHERE A.user != $timeoffUser 
 						ORDER BY clientName, A.appointmentDate ASC"
+				
 		);
 		
 		return $query;
