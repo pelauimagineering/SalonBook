@@ -3,7 +3,7 @@
 defined('_JEXEC') or die('Restricted access');
 JHtml::_('behavior.tooltip');
 ?>
-<script type="text/javascript" src="/components/com_salonbook/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <form action="index.php" method="post" name="adminForm" id="salonbook-form">
 	<fieldset class="adminform">
 		<legend><?php echo JText::_( 'COM_SALONBOOK_TIMEOFF_DETAILS' ); ?></legend>

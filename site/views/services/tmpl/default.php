@@ -5,7 +5,7 @@ defined('_JEXEC') or die('Restricted access');
 $stylist_id = $this->appointmentData['stylist'];
 ?>
 <!-- functions -->
-<script type="text/javascript" src="/components/com_salonbook/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script type="text/javascript" src="/components/com_salonbook/salonui.js"></script>
 <script>
 	function passthroughData()

@@ -10,7 +10,7 @@
 	<copyright>Copyright ® 2012 - All Rights Reserved</copyright>
 	<license>License Info</license>
 	<!--  The version string is recorded in the components table -->
-	<version>0.9.8</version>
+	<version>0.9.9</version>
 	<!-- The description is optional and defaults to the name -->
 	<description>COM_SALONBOOK_DESCRIPTION</description>
  
@@ -45,7 +45,6 @@
 		<filename>controller.php</filename>
 		<filename>salonui.js</filename>
 		<filename>datejs.js</filename>
-		<filename>jquery-1.6.2.min.js</filename>
 		<folder>views</folder>
 		<folder>models</folder>
 		<folder>language</folder>

@@ -2,7 +2,7 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-$namesArray = split(" ",$this->loggedInUserName);
+$namesArray = preg_split('/ /',$this->loggedInUserName);
 $firstName = $namesArray[0];
 
 // prepare to create a new appointment object
@@ -26,7 +26,7 @@ $maxBookings = $this->configOptions->get('max_user_scheduled_count', '1');
 $cancellationAllowedMinDays = $this->configOptions->get('change_allowed_after_period',2);
 ?>
 
-<script type="text/javascript" src="/components/com_salonbook/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <link rel="stylesheet" href="/components/com_salonbook/salonbook.css" type="text/css" />
 
 <script>
