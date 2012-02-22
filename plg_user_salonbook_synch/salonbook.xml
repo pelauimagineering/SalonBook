@@ -2,12 +2,12 @@
 <install version="1.5" type="plugin" group="user" method="upgrade">
 	<name>Salonbook User Synch</name>
 	<author>Darren Baptiste</author>
-	<creationDate>January 2012</creationDate>
+	<creationDate>February 2012</creationDate>
 	<copyright>(C) 2012 pélau imagineering</copyright>
 	<license>GNU/GPL</license>
 	<authorEmail>darren@pelau.com</authorEmail>
 	<authorUrl>www.pelau.com</authorUrl>
-	<version>1.0.3</version>
+	<version>1.1</version>
 	<description>Synchronizes the Salonbook Users table when Joomla users are updated</description>
 	<files>
 	    <filename plugin="salonbook">salonbook.php</filename>

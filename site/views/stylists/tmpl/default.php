@@ -26,7 +26,7 @@ function passthroughData()
 }
 </script>
 <!-- Stylesheets -->
-<link rel="stylesheet" href="/components/com_salonbook/pages/salon.css" type="text/css" />
+<link rel="stylesheet" href="/components/com_salonbook/salonbook.css" type="text/css" />
 
 <hr/>
 <h1>Who is your preferred stylist for this appointment?</h1>

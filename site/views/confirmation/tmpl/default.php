@@ -23,6 +23,7 @@ if ( $depositType == "amount" )
 else
 {
 	//TODO: lookup individual service costs through the model
+	// NOT YET IMPLEMENTED!!
 	$serviceCost = 100;
 	$depositDollarValue = $serviceCost * $depositValue / 100;
 }

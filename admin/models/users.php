@@ -32,7 +32,12 @@ class SalonBooksModelUsers extends JModelItem
 	// remove user
 	protected function getRemoveUser($id)
 	{
+		$db = JFactory::getDBO();
 		
+		$deleteUserQuery = "DELETE `#__salonbook_users` WHERE user_id = $id ";
+		$db->setQuery((string)$deleteUserQuery);
+		
+		$db->query();
 	}
 	
 	// update user
@@ -45,6 +50,8 @@ class SalonBooksModelUsers extends JModelItem
 	// @params	$id	[Optional] id of a single user
 	// 			If a valid id was sent, only copy the user specified.
 	//			If none was sent, copy all users
+	//
+	// Modified to always update regardless of the 'completed_parsing' flag
 	public function getCopyUsers($id=0)
 	{
 		error_log("\ninside users->getCopyUsers...\n", 3, "../logs/salonbook.log");
@@ -71,10 +78,11 @@ class SalonBooksModelUsers extends JModelItem
 							WHERE ";
 		if ( $id > 0 )
 		{
-			$updateQuery .= " (user_id = $id) AND ";
+// 			$updateQuery .= " (user_id = $id) AND ";
+			$updateQuery .= " (user_id = $id)";
 		}
 
-		$updateQuery .= " (completed_parsing = 0);"; 
+// 		$updateQuery .= " (completed_parsing = 0);"; 
 		$db->setQuery((string)$updateQuery);
 		error_log("\ninside users->getCopyUsers..." . $updateQuery . "\n", 3, "../logs/salonbook.log");
 		

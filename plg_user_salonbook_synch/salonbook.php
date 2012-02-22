@@ -78,9 +78,8 @@ class plgUserSalonbook extends JPlugin
 		$app = JFactory::getApplication();
 
 		// only the $user['id'] exists and carries valid information
-
-		// Call a function in the external app to delete the user
-		// ThirdPartyApp::deleteUser($user['id']);
+		$model = new SalonBooksModelUsers;
+		$model->getRemoveUser($user['id']);
 	}
 }
 ?>

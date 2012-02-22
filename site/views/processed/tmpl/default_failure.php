@@ -7,7 +7,7 @@ defined('_JEXEC') or die('Restricted access');
 <script type="text/javascript" src="/components/com_salonbook/salonui.js"></script>
 
 <!-- Stylesheets -->
-<link rel="stylesheet" href="/components/com_salonbook/pages/salon.css" type="text/css" />
+<link rel="stylesheet" href="/components/com_salonbook/salonbook.css" type="text/css" />
 
 <hr/>
 

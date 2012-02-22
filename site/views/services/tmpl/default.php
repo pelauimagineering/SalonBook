@@ -26,7 +26,7 @@ $stylist_id = $this->appointmentData['stylist'];
 </script>
 
 <!-- Stylesheets -->
-<link rel="stylesheet" href="/components/com_salonbook/pages/salon.css" type="text/css" />
+<link rel="stylesheet" href="/components/com_salonbook/salonbook.css" type="text/css" />
 
 <hr/>
 <h1>Select the service you need</h1>

@@ -11,8 +11,7 @@ table
 
 table,th,tr,td
 {
-	border: 0px none #ffffff;
-	padding-left: 10px;
+	padding-left: 0px;
 	padding-right: 10px;
 }
 
@@ -27,16 +26,23 @@ td {
 table#navFooterTable
 {
 	width: 100%;
+	border:solid 0px #fff !important;
+}
+
+table#navFooterTable tr, table#navFooterTable tr td
+{
+	border: none;
 }
 
 td#leftColumn
 {
-	text-align: center;
+	text-align: left;
 }
 
 td#rightColumn
 {
-	text-align: center;
+	margin-left: 40px;
+	text-align: left;
 }
 
 /* component content */

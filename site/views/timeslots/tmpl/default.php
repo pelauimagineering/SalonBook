@@ -31,8 +31,8 @@ $stylist_id = JRequest::getInt('stylist_id');
 	function checkToEnableNextButton()
 	{
 		// if a timeslot has been chosen (i.e. the field is not empty), then enable the NEXT button
-		dateSelected = $('#hiddenSelectedDate').val();
-		if ( dateSelected.length > 0 )
+		timeSelected = $('#selected_timeslot').val();
+		if ( timeSelected.length > 0 )
 		{
 			$('#nextButton').attr("disabled", false);
 			$("#displayAreaSelectedTimeslot").css("display", "inline");
