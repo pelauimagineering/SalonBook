@@ -74,15 +74,12 @@ class SalonBooksModelUsers extends JModelItem
 		$updateQuery = "UPDATE `#__salonbook_users` 
 							SET firstName =  COALESCE(LEFT(userName, POSITION(' ' IN userName)), userName),
 							    lastName = SUBSTRING(userName FROM POSITION(' ' IN userName)),
-							    completed_parsing = 1
-							WHERE ";
+							    completed_parsing = 1 ";
 		if ( $id > 0 )
 		{
-// 			$updateQuery .= " (user_id = $id) AND ";
-			$updateQuery .= " (user_id = $id)";
+			$updateQuery .= " WHERE (user_id = $id)";
 		}
 
-// 		$updateQuery .= " (completed_parsing = 0);"; 
 		$db->setQuery((string)$updateQuery);
 		error_log("\ninside users->getCopyUsers..." . $updateQuery . "\n", 3, "../logs/salonbook.log");
 		
