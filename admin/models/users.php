@@ -25,7 +25,7 @@ class SalonBooksModelUsers extends JModelItem
 	protected function getAddUser($id, $name, $password, $isStaff)
 	{
 		// use only the id to look up and copy the data between the tables
-		error_log("adding the latest site User to Salonbook. ID# " . $id, 3, "../logs/salonbook.log");
+		error_log("adding the latest site User to Salonbook. ID# " . $id, 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		$this->getCopyUsers($id);		
 	}
 	
@@ -54,7 +54,7 @@ class SalonBooksModelUsers extends JModelItem
 	// Modified to always update regardless of the 'completed_parsing' flag
 	public function getCopyUsers($id=0)
 	{
-		error_log("\ninside users->getCopyUsers...\n", 3, "../logs/salonbook.log");
+		error_log("\ninside users->getCopyUsers...\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
 		$db = JFactory::getDBO();
 		
@@ -63,9 +63,9 @@ class SalonBooksModelUsers extends JModelItem
 		{
 			$copyUsersQuery .= "WHERE id = $id ";
 		}
-		$copyUsersQuery .= "ON DUPLICATE KEY UPDATE `completed_parsing` = 1; ";
+		$copyUsersQuery .= "ON DUPLICATE KEY UPDATE completed_parsing = 1, userName = VALUES(userName) ; ";
 		$db->setQuery((string)$copyUsersQuery);
-		error_log("\ninside users->getCopyUsers..." . $copyUsersQuery . "\n", 3, "../logs/salonbook.log");
+		error_log("\ninside users->getCopyUsers... " . $copyUsersQuery . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
 		$db->query();
 		$this->countUsersInserted = $db->getAffectedRows();
@@ -79,12 +79,26 @@ class SalonBooksModelUsers extends JModelItem
 		{
 			$updateQuery .= " WHERE (user_id = $id)";
 		}
-
+		 
 		$db->setQuery((string)$updateQuery);
-		error_log("\ninside users->getCopyUsers..." . $updateQuery . "\n", 3, "../logs/salonbook.log");
+		error_log("\ninside users->getCopyUsers..." . $updateQuery . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
 		$db->query();
 		$this->countUsersUpdated = $db->getAffectedRows();
+		
+
+		$updateQuery = "UPDATE `#__salonbook_users` SET firstName =  GREATEST(firstName,userName) WHERE firstName LIKE '' ";
+		if ( $id > 0 )
+		{
+			$updateQuery .= " AND (user_id = $id)";
+		}
+
+		$db->setQuery((string)$updateQuery);
+		error_log("\ninside users->getCopyUsers... catch users with only a single name " . $updateQuery . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		
+		$db->query();
+		$this->countUsersUpdated = $db->getAffectedRows();
+		
 		
 	}	
 }
