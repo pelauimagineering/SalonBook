@@ -87,28 +87,30 @@ $cancellationAllowedMinDays = $this->configOptions->get('change_allowed_after_pe
 	{ 			
 		echo "<h2>You may be able to make changes to an existing appointment.</h2>";
 		
-		foreach ($this->appointmentsList as &$appointment)
+		if ( $this->appointmentsList )
 		{
-			// allow edits if the appointment is more than 2 days from now
-			$now = new DateTime();
-			$date2 = new DateTime($appointment['appointmentDate']);
-			$theDiff = strtotime($appointment['appointmentDate']) - time();		
-			$days = $theDiff / 60 / 60 / 24;
-			
-			if ( $days > $cancellationAllowedMinDays && $now < $date2 )
+			foreach ($this->appointmentsList as &$appointment)
 			{
-				$editButton = "<input type='button' name='edit' value='" . JText::_('COM_SALONBOOK_LIST_BUTTON_CHANGE_TITLE') . "' onclick='prepareToEdit(" . $appointment['id'] . "); ' class='apptEditButton_change' />";
-			}
-			else
-			{
-				$editButton = "<input type='button' name='edit' value='" . JText::_('COM_SALONBOOK_LIST_BUTTON_LOCKED_TITLE') . "' class='apptEditButton_locked' disabled='disabled' />";
-			}
+				// allow edits if the appointment is more than 2 days from now
+				$now = new DateTime();
+				$date2 = new DateTime($appointment['appointmentDate']);
+				$theDiff = strtotime($appointment['appointmentDate']) - time();		
+				$days = $theDiff / 60 / 60 / 24;
 			
-			$cancelButton = "<input type='button' name='edit' value='" . JText::_('COM_SALONBOOK_LIST_BUTTON_CANCEL_TITLE') . "' onclick='showCancelWarning(" . $appointment['id'] . "); ' class='apptEditButton_cancel' />";
+				if ( $days > $cancellationAllowedMinDays && $now < $date2 )
+				{
+					$editButton = "<input type='button' name='edit' value='" . JText::_('COM_SALONBOOK_LIST_BUTTON_CHANGE_TITLE') . "' onclick='prepareToEdit(" . $appointment['id'] . "); ' class='apptEditButton_change' />";
+				}
+				else
+				{
+					$editButton = "<input type='button' name='edit' value='" . JText::_('COM_SALONBOOK_LIST_BUTTON_LOCKED_TITLE') . "' class='apptEditButton_locked' disabled='disabled' />";
+				}
 			
-			echo "<div class='apptDetail'>" . $editButton . $cancelButton . $appointment['serviceName'] . " with " . $appointment['stylistName'] . " on " . date("D M j", strtotime($appointment['appointmentDate']) ) . " at " . date("g:i a",strtotime($appointment['startTime'])) . " </div>";
-		}
-		
+				$cancelButton = "<input type='button' name='edit' value='" . JText::_('COM_SALONBOOK_LIST_BUTTON_CANCEL_TITLE') . "' onclick='showCancelWarning(" . $appointment['id'] . "); ' class='apptEditButton_cancel' />";
+			
+				echo "<div class='apptDetail'>" . $editButton . $cancelButton . $appointment['serviceName'] . " with " . $appointment['stylistName'] . " on " . date("D M j", strtotime($appointment['appointmentDate']) ) . " at " . date("g:i a",strtotime($appointment['startTime'])) . " </div>";
+			}
+		}		
 		echo "<br/>";
 	}
 ?>
