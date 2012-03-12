@@ -128,9 +128,18 @@ class SalonBookModelCalendar extends JModel
 	
 		$when = $calendar->newWhen();
 	
-		$timezoneOffset = '-05';	// -05 during the summer, -04 during the winter		
-		$when->startTime = "{$appointmentDate}T{$startTime}:00.000{$timezoneOffset}:00";
-		$when->endTime = "{$endDate}T{$formattedEndTime}:00.000{$timezoneOffset}:00";
+		// to avoid conversion errors
+		date_default_timezone_set('America/Toronto');
+		
+		$timezoneToronto = new DateTimeZone('America/Toronto');
+		$torontoTime = new DateTime();
+		$timezoneOffset =( $timezoneToronto->getOffset($torontoTime) ) / 3600;
+		
+		$formattedTimezoneOffset = sprintf("%+03d",$timezoneOffset);
+		
+		$when->startTime = "{$appointmentDate}T{$startTime}:00.000{$formattedTimezoneOffset}:00";
+		$when->endTime = "{$endDate}T{$formattedEndTime}:00.000{$formattedTimezoneOffset}:00";
+		
 		$newEvent->when = array($when);
 	
 		// Upload the event to the calendar server
@@ -141,7 +150,7 @@ class SalonBookModelCalendar extends JModel
 			$createdEvent = $calendar->insertEvent($newEvent);
 			
 			$output = "Calendar Event ID: " . $createdEvent->id->text . " EditLink: " . $createdEvent->getEditLink()->href . "\n";
-			error_log($output, 3, "../logs/salonbook.log");
+			error_log($output, 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			
 			return $createdEvent->getEditLink()->href;
 		}
