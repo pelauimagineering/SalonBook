@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<access component="com_salonbook">
+	<fieldset label="APPOINTMENTS">
+		<action
+			name="create.own"
+			title="COM_SALONBOOK_APPOINTMENTS_CREATE_OWN"
+			description="COM_SALONBOOK_APPOINTMENTS_CREATE_OWN_DESC"/>
+
+		<action
+			name="create"
+			title="COM_SALONBOOK_APPOINTMENTS_CREATE"
+			description="COM_SALONBOOK_APPOINTMENTS_CREATE_DESC"/>
+
+		<action
+			name="edit"
+			title="COM_SALONBOOK_APPOINTMENTS_EDIT"
+			description="COM_SALONBOOK_APPOINTMENTS_EDIT_DESC"/>
+
+		<action
+			name="delete"
+			title="COM_SALONBOOK_APPOINTMENTS_DELETE"
+			description="COM_SALONBOOK_APPOINTMENTS_DELETE_DESC"
+			guest="false"/>
+	</fieldset>
+
+	<fieldset label="CALENDAR">
+		<action
+			name="edit.own"
+			title="COM_SALONBOOK_CALENDAR_EDIT_OWN"
+			description="COM_SALONBOOK_CALENDAR_EDIT_OWN_DESC"
+			guest="false"/>
+
+		<action
+			name="edit"
+			title="COM_SALONBOOK_CALENDAR_EDIT"
+			description="COM_SALONBOOK_CALENDAR_EDIT_DESC"
+			guest="false"/>
+
+	</fieldset>
+	
+	<fieldset label="TIMEOFF">
+		<action
+			name="create"
+			title="COM_SALONBOOK_TIMEOFF_CREATE"
+			description="COM_SALONBOOK_TIMEOFF_CREATE_DESC"
+			guest="false"/>
+
+		<action
+			name="edit"
+			title="COM_SALONBOOK_TIMEOFF_EDIT"
+			description="COM_SALONBOOK_TIMEOFF_EDIT_DESC"
+			guest="false"/>
+
+		<action
+			name="delete"
+			title="COM_SALONBOOK_TIMEOFF_DELETE"
+			description="COM_SALONBOOK_TIMEOFF_DELETE_DESC"
+			guest="false"/>
+	</fieldset>
+
+	<fieldset label="TOOLS">
+		<action
+			name="delete"
+			title="COM_SALONBOOK_TOOLS_ACCESS"
+			description="COM_SALONBOOK_TOOLS_ACCESS_DESC"
+			guest="false"/>
+	</fieldset>
+	
+</access>
