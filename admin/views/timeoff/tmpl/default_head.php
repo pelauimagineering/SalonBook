@@ -11,10 +11,10 @@ defined('_JEXEC') or die('Restricted Access');
 		<input type="checkbox" name="toggle" value="" onclick="checkAll(<?php echo count($this->items); ?>);" />
 	</th>			
 	<th width="100">
-		<?php echo JText::_('COM_SALONBOOK_TIMEOFF_DATE'); ?>
+		<?php echo JText::_('COM_SALONBOOK_TIMEOFF_STAFF_MEMBER'); ?>
 	</th>
 	<th width="100">
-		<?php echo JText::_('COM_SALONBOOK_TIMEOFF_STAFF_MEMBER'); ?>
+		<?php echo JText::_('COM_SALONBOOK_TIMEOFF_DATE'); ?>
 	</th>
 	<th width="100">
 		<?php echo JText::_('COM_SALONBOOK_TIMEOFF_FROM_TIME'); ?>

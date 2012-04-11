@@ -26,8 +26,9 @@ class SalonBooksModelTimeoff extends JModelList
 		$query->select("A.id, concat(U.firstName, ' ', U.lastName) as stylist, A.appointmentDate as theDate, A.startTime, A.durationInMinutes as duration");
 		$query->from("#__salonbook_appointments A JOIN #__salonbook_users U ON A.stylist = U.user_id");
 		$query->where("A.user = $timeoffUser AND A.appointmentDate > now()");
+		$query->order("A.appointmentDate");
 		
-		error_log("Vacation data: " . $query->dump() . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		error_log("Timeoff data: " . $query->dump() . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
 		return $query;
 	}
