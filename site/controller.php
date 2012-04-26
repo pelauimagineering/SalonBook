@@ -230,20 +230,25 @@ class SalonBookController extends JController
 		$configOptions =& JComponentHelper::getParams('com_salonbook');
 		$daysAhead = $configOptions->get('reminder_email_days_ahead',3);
 				
-		//$daysAhead = 12; //TODO: remove after testing!
-		
-		error_log("inside sendReminderEmail...Looking ahead " . $daysAhead . " days\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		error_log("inside sendReminderEmails...Looking ahead " . $daysAhead . " days\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
 		JLoader::register('SalonBookModelAppointments',  JPATH_COMPONENT_SITE.'/models/appointments.php');		
 		$appointmentModel = $this->getModel('appointments','SalonBookModel');
-		
-		$messageList = $appointmentModel->appointmentsScheduledAhead($daysAhead);
 		
 		$mailer = new SalonBookModelEmail();
 		
 		if ( $mailer )
 		{
-			$mailer->sendReminders($messageList);
+			$messageList = $appointmentModel->appointmentsScheduledAhead($daysAhead);
+			if ( count($messageList) > 0 )
+			{
+				error_log("inside sendReminderEmails ... sending " . count($messageList) . " messages\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+				$mailer->sendReminders($messageList);
+			}
+			else 
+			{
+				error_log("inside sendReminderEmails ... 0 messages to send\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			}
 		}
 	}
 	

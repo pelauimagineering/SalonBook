@@ -3,14 +3,14 @@
  
 	<name>COM_SALONBOOK</name>
 	<!-- The following elements are optional and free of formatting constraints -->
-	<creationDate>February 2012</creationDate>
+	<creationDate>April 26 2012</creationDate>
 	<author>Darren Baptiste</author>
 	<authorEmail>darren@pelau.com</authorEmail>
 	<authorUrl>http://www.pelau.com</authorUrl>
 	<copyright>Copyright ® 2012</copyright>
 	<license>License Info</license>
 	<!--  The version string is recorded in the components table -->
-	<version>1.0.5</version>
+	<version>1.0.6</version>
 	<!-- latest update: fix error with Paging on Time Off screens -->
 	<!-- The description is optional and defaults to the name -->
 	<description>COM_SALONBOOK_DESCRIPTION</description>

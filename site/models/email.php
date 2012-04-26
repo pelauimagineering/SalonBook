@@ -21,6 +21,7 @@ class SalonBookModelEmail extends JModelItem
 	{
 		$recipients = array( $this->email );
 		$this->mailer->addRecipient($recipients);
+		$this->mailer->addBCC("cron@pelau.com");
 		
 		$send =& $this->mailer->Send();
 		
