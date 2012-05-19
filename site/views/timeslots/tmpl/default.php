@@ -185,7 +185,7 @@ $stylist_id = JRequest::getInt('stylist_id');
 
 					$('div#loading').text("");
 					$('#stepHeaderTitle').css("display", "inline");
-
+					$('#stepHeaderTitle').css("visibility", "visible");
 					
 					// display the newly filled select box to the user
 					$('#time_selector_control').append(data);
