@@ -330,7 +330,7 @@ class SalonBookModelAppointments extends JModelItem
 							WHERE A.user = U.id
 							AND A.service = S.id
 							AND A.stylist = SU.user_id
-							AND A.id > 60
+							AND A.id = '$appointment_id'
 							AND ( deposit_paid = '1' OR status='1' OR (status='0' AND created_by_staff='1') )";
 			$this->_db->setquery($detailQuery);
 			$this->_db->query();
