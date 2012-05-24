@@ -223,7 +223,7 @@ class SalonBookModelAppointments extends JModelItem
 				error_log("changed from " . $startTime . " to " . $convertedTime, 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			}
 			
-			error_log("attempting to bind \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			// error_log("attempting to bind \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			//bind the form data to the table
 			//the object model has more fields on it than does the actual db table, so the bind command won't work
 			$ignoreList = array('stylistName', 'name', 'firstname', 'serviceName', 'email', 'calendarLogin', 'calendarPassword');

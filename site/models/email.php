@@ -19,9 +19,10 @@ class SalonBookModelEmail extends JModelItem
 	
 	function sendMail()
 	{
+		$recipients = NULL;	// clear out whatever addresses may be left from the last batch sent out
 		$recipients = array( $this->email );
 		$this->mailer->addRecipient($recipients);
-		$this->mailer->addBCC("cron@pelau.com");
+		// $this->mailer->addBCC("cron@pelau.com");
 		
 		$send =& $this->mailer->Send();
 		

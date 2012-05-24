@@ -627,8 +627,8 @@ class SalonBookController extends JController
 		$defaultDuration = $configOptions->get('default_appointment_length', '90');
 		$duration = JRequest::getVar('duration',$defaultDuration);	// in minutes
 	
-		error_log("finding availabletimes for Time: $aTime \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
-		error_log("finding availabletimes for Date: $aDate \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		// error_log("finding availabletimes for Time: $aTime \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		// error_log("finding availabletimes for Date: $aDate \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 	
 		// TODO: place this in a singleton. It need not run all the time.
 		$dailySlotsAvailable = array();
@@ -690,7 +690,7 @@ class SalonBookController extends JController
 
 		$returnValue = "<option value='-1' name='-1'> -- </option>\n";
 		
-		error_log("insert " . $duration . " into this array\n " . var_export($slotsOpenForBookingToday, true) . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		// error_log("insert " . $duration . " into this array\n " . var_export($slotsOpenForBookingToday, true) . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
 		$minutesPerTimeslot = $configOptions->get('default_timeslot_length', '30');	// in minutes
 		
@@ -699,7 +699,7 @@ class SalonBookController extends JController
 		for ( $x=0; $x < count($slotsOpenForBookingToday); $x++ )
 		{
 			$thisSlotNumber = $slotsOpenForBookingToday[$x];
-			error_log("thisSlotNumber = " . $thisSlotNumber . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			// error_log("thisSlotNumber = " . $thisSlotNumber . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			
 			
 			// check to see if the next $durationInSlots are free
@@ -724,7 +724,7 @@ class SalonBookController extends JController
 				}
 			}
 
-			error_log("thisSlotNumber = " . $thisSlotNumber . " NextSlotNumber = " . $nextSlotNumber . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			// error_log("thisSlotNumber = " . $thisSlotNumber . " NextSlotNumber = " . $nextSlotNumber . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			
 			if ( $durationAvailable == true && $thisSlotNumber )
 			{
@@ -744,7 +744,7 @@ class SalonBookController extends JController
 			
 		}
 
-		error_log("returnValue = " . $returnValue . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		// error_log("returnValue = " . $returnValue . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
 		echo $returnValue;
 	}	
