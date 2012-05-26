@@ -41,7 +41,7 @@ class SalonBooksControllerSalonBook extends SalonBooksController
 	 */
 	function save()
 	{
-		error_log("tried to call SAVE() \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		// error_log("tried to call SAVE() \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
 		$model = $this->getModel('salonbook');
 		
@@ -66,22 +66,22 @@ class SalonBooksControllerSalonBook extends SalonBooksController
 		{
 			$msg = JText::_('Appointment saved');
 			
-			error_log("START calendar work\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			// error_log("START calendar work\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			
 			JLoader::register('SalonBookModelCalendar',  JPATH_COMPONENT_SITE.'/models/calendar.php');
-			error_log("Completed registering Calendar class \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			// error_log("Completed registering Calendar class \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			
 			// look up details and decide the contents of the message based on success/failure of the payment
 			$calendarModel = new SalonBookModelCalendar();
-			error_log("Got a Calendar class MODEL to work with \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			// error_log("Got a Calendar class MODEL to work with \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			
- 			error_log("Go add a cal event using the model... \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+ 			// error_log("Go add a cal event using the model... \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			$calendarModel->saveAppointmentToGoogle($newInvoiceNumber);
 			
-			error_log("END calendar imports\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			// error_log("END calendar imports\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			
 			JLoader::register('SalonBookModelAppointments',  JPATH_COMPONENT_SITE.'/models/appointments.php');
-			error_log("Completed registering Appointments helper class \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			// error_log("Completed registering Appointments helper class \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			
 			$appointmentModel = $this->getModel('appointments','SalonBookModel');
 			

@@ -185,7 +185,7 @@ class SalonBookModelAppointments extends JModelItem
 		 */
 		function store()
 		{
-			error_log("inside store \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			// error_log("inside store \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
 			$session = JFactory::getSession();
 			$data =& $session->get('appointmentData', array(), 'SalonBook');
@@ -205,7 +205,7 @@ class SalonBookModelAppointments extends JModelItem
 			
 			$data['durationInMinutes'] = $durationInMinutes;
 			
-			error_log( "Trying to save the following to the database..\n" . var_export($data, true) ."\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			// error_log( "Trying to save the following to the database..\n" . var_export($data, true) ."\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 
 			if ( !$row = $this->getTable('SalonBook') )
 			{
@@ -227,7 +227,7 @@ class SalonBookModelAppointments extends JModelItem
 			//bind the form data to the table
 			//the object model has more fields on it than does the actual db table, so the bind command won't work
 			$ignoreList = array('stylistName', 'name', 'firstname', 'serviceName', 'email', 'calendarLogin', 'calendarPassword');
-			error_log( "Ignore these fields.. " . var_export($ignoreList, true) ."\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			// error_log( "Ignore these fields.. " . var_export($ignoreList, true) ."\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			
 			if (!$row->bind($data, $ignoreList))
 			{
@@ -236,7 +236,7 @@ class SalonBookModelAppointments extends JModelItem
 				return false;
 			}
 		
-			error_log("attempting to check \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			// error_log("attempting to check \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			// make sure the appointment record is valid
 			if ( !$row->check())
 			{
@@ -245,7 +245,7 @@ class SalonBookModelAppointments extends JModelItem
 				return false;
 			}
 		
-			error_log("attempting to store \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			// error_log("attempting to store \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			// store the data
 			if ( !$row->store())
 			{
@@ -296,12 +296,12 @@ class SalonBookModelAppointments extends JModelItem
 			$configOptions =& JComponentHelper::getParams('com_salonbook');
 			$removalTime = $configOptions->get('remove_unpaid_after_minutes',0);
 			
-			error_log("Clean up unpaid: removalTime = " . $removalTime."\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			error_log("Clean up unpaid: removalTime = " . $removalTime." minutes.\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			if ( $removalTime > 0 )
 			{
 				$cancelQuery = "UPDATE `#__salonbook_appointments` A set status = ( SELECT S.id FROM `#__salonbook_status` S WHERE status LIKE 'Cancelled' ) WHERE A.status = '0' AND DATEDIFF(now(),A.created_when) > 0";
 				
-				error_log("Clean up unpaid: " . $cancelQuery."\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+				// error_log("Clean up unpaid: " . $cancelQuery."\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 				
 				$this->_db->setQuery((string)$cancelQuery);
 				$this->_db->query();
@@ -314,12 +314,13 @@ class SalonBookModelAppointments extends JModelItem
 			// run a query
 			$lookAheadQuery = "SELECT * FROM `#__salonbook_appointments` WHERE appointmentDate = '$futureDate' AND ( deposit_paid = '1' OR status='1' OR (status='0' AND created_by_staff='1') )";
 			// return a list
-			error_log("Look for future appointments: " . $lookAheadQuery."\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			error_log("Look for appointments on " . $futureDate."\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			
 			$this->_db->setQuery((string)$lookAheadQuery);
 			$this->_db->query();
 			
 			$appointmentList = $this->_db->loadAssocList();
-			error_log("List of appointments: " . $appointmentList."\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			// error_log("List of appointments: " . $appointmentList."\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			return $appointmentList;
 		}
 		

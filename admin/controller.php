@@ -21,7 +21,7 @@ class SalonBooksController extends JController
 	 */
 	function display($cachable = false) 
 	{
-		error_log("called for task:  " . JRequest::getVar('task', 'unknown-task') . "\n" , 3, "../logs/salonbook.log");
+		// error_log("called for task:  " . JRequest::getVar('task', 'unknown-task') . "\n" , 3, "../logs/salonbook.log");
 		
  		// call parent behavior
 		parent::display($cachable);

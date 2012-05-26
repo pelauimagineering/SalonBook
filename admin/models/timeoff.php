@@ -28,7 +28,7 @@ class SalonBooksModelTimeoff extends JModelList
 		$query->where("A.user = $timeoffUser AND A.appointmentDate > now()");
 		$query->order("A.appointmentDate");
 		
-		error_log("Timeoff data: " . $query->dump() . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		// error_log("Timeoff data: " . $query->dump() . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
 		return $query;
 	}

@@ -65,7 +65,7 @@ class SalonBooksModelUsers extends JModelItem
 		}
 		$copyUsersQuery .= "ON DUPLICATE KEY UPDATE completed_parsing = 1, userName = VALUES(userName) ; ";
 		$db->setQuery((string)$copyUsersQuery);
-		error_log("\ninside users->getCopyUsers... " . $copyUsersQuery . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		// error_log("\ninside users->getCopyUsers... " . $copyUsersQuery . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
 		$db->query();
 		$this->countUsersInserted = $db->getAffectedRows();
@@ -81,7 +81,7 @@ class SalonBooksModelUsers extends JModelItem
 		}
 		 
 		$db->setQuery((string)$updateQuery);
-		error_log("\ninside users->getCopyUsers..." . $updateQuery . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		// error_log("\ninside users->getCopyUsers..." . $updateQuery . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
 		$db->query();
 		$this->countUsersUpdated = $db->getAffectedRows();
@@ -94,7 +94,7 @@ class SalonBooksModelUsers extends JModelItem
 		}
 
 		$db->setQuery((string)$updateQuery);
-		error_log("\ninside users->getCopyUsers... catch users with only a single name " . $updateQuery . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		// error_log("\ninside users->getCopyUsers... catch users with only a single name " . $updateQuery . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
 		$db->query();
 		$this->countUsersUpdated = $db->getAffectedRows();

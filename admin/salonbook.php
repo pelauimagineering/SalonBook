@@ -32,7 +32,7 @@ $classname	= 'SalonBooksController'.$controller;
 $controller	= new $classname( );
 
 $theTask = JRequest::getCmd('task');
-error_log("using controller: " . $classname . " and task: " . $theTask . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+// error_log("using controller: " . $classname . " and task: " . $theTask . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 
 // Perform the Request task
 $controller->execute(JRequest::getCmd('task'));

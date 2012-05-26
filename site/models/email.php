@@ -28,11 +28,12 @@ class SalonBookModelEmail extends JModelItem
 		
 		if ( $send !== true ) {
 		    // echo 'Error sending email: ' . $send->message;
-			error_log("\n Error sending email:" . $send->message . "\n", 3, "logs/salonbook.log");
+			error_log("\n Error sending email:" . $send->message . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log"););
 		} else {
 		    // echo 'Mail sent';
-		    $emailList = var_export($recipients,true);
-			error_log("\n Email sent to:" . $emailList . "\n", 3, "logs/salonbook.log");
+		    // $emailList = var_export($recipients,true);
+			$emailList = implode(",", $recipients);
+			error_log("\n Email sent to:" . $emailList . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log"););
 		}
 	}
 	
@@ -78,7 +79,7 @@ class SalonBookModelEmail extends JModelItem
 	 */
 	function sendReminders($appointmentList)
 	{
-		error_log("inside sendReminders...\nFor list " . var_export($appointmentList[0], true) . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		// error_log("inside sendReminders...\nFor list " . var_export($appointmentList[0], true) . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
 		// get appointment details and email address
 		JLoader::register('SalonBookModelAppointments',  JPATH_COMPONENT_SITE.DS.'models'.DS.'appointments.php');
@@ -88,7 +89,7 @@ class SalonBookModelEmail extends JModelItem
 		{
 			$mailingInfo = $appointmentModel->detailsForMail($appointment['id']);
 		
-			error_log("mailingInfo... " . var_export($mailingInfo, true) . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			//error_log("mailingInfo... " . var_export($mailingInfo, true) . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			
 			$this->setSuccessMessage($mailingInfo);
 		
@@ -98,7 +99,7 @@ class SalonBookModelEmail extends JModelItem
 	
 	function __construct()
 	{
-		error_log("\n constructing an email...\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		// error_log("\n constructing an email...\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
 		$this->mailer =& JFactory::getMailer();
 		

@@ -54,7 +54,7 @@ class SalonBookModelCalendar extends JModel
 	 */
 	function setupCalendarConnection($calendarLogin, $calendarPassword)
 	{
-		error_log("trying to setupCalendarConnection \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		// error_log("trying to setupCalendarConnection \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 	
 		JLoader::register('Zend_Loader', JPATH_ROOT.DS.'includes'.DS.'Zend'.DS.'Loader.php');
 		
@@ -69,7 +69,7 @@ class SalonBookModelCalendar extends JModel
 		$client = Zend_Gdata_ClientLogin::getHttpClient($calendarLogin, $calendarPassword, $gcal);
 		$calendar = new Zend_Gdata_Calendar($client);
 		
-		error_log("We have a calendar object for " . $calendarLogin . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		// error_log("We have a calendar object for " . $calendarLogin . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
 		return $calendar;
 	}
@@ -88,11 +88,11 @@ class SalonBookModelCalendar extends JModel
 	 */	
 	function createCalendarEvent ($calendar, $customer_id, $customer_name, $service, $appointmentDate, $startTimestamp, $formattedEndDate, $formattedEndTime, $calendarEventURL = null)	
 	{
-		error_log("createCalendarEvent \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		// error_log("createCalendarEvent \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
 		if ( $calendarEventURL == null )
 		{
-			error_log("creating a brand new calendar event\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			// error_log("creating a brand new calendar event\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			$newEvent = $calendar->newEventEntry();
 		}
 		else
@@ -113,7 +113,7 @@ class SalonBookModelCalendar extends JModel
 		$user =& JFactory::getUser();
 		$db = JFactory::getDBO();
 		$phoneQuery = "SELECT profile_value FROM #__user_profiles WHERE user_id = $customer_id AND profile_key = 'salonbookprofile.phone_mobile'";
-		error_log("phone # query: " . $phoneQuery . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		// error_log("phone # query: " . $phoneQuery . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
 		$db->setQuery((string)$phoneQuery);
 		$db->query();
@@ -146,7 +146,7 @@ class SalonBookModelCalendar extends JModel
 		// A copy of the event as it is recorded on the server is returned
 		if ( $calendarEventURL == null )
 		{
-			error_log("inserting the calendar event..\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			// error_log("inserting the calendar event..\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			$createdEvent = $calendar->insertEvent($newEvent);
 			
 			$output = "Calendar Event ID: " . $createdEvent->id->text . " EditLink: " . $createdEvent->getEditLink()->href . "\n";
@@ -173,7 +173,7 @@ class SalonBookModelCalendar extends JModel
 	
 	function saveAppointmentToGoogle($appointment_id)
 	{
-		error_log("inside saveAppointmentToGoogle...\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		// error_log("inside saveAppointmentToGoogle...\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 	
 		JLoader::register('SalonBookModelAppointments',  JPATH_COMPONENT_SITE.DS.'models'.DS.'appointments.php');		
 		$appointmentModel = new SalonBookModelAppointments();
@@ -184,7 +184,7 @@ class SalonBookModelCalendar extends JModel
 	
 		// extract the interesting details needed to create a Google Calendar event
 		$stylistName = $appointmentData[0]['stylistName'];
-		error_log("Stylist: " . $stylistName . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		// error_log("Stylist: " . $stylistName . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
 		$customer_name = $appointmentData[0]['name'];
 		$appointmentDate = $appointmentData[0]['appointmentDate'];
@@ -202,7 +202,7 @@ class SalonBookModelCalendar extends JModel
 		$calendar = $this->setupCalendarConnection($calendarLogin, $calendarPassword);
 		$calFeed = $calendar->getCalendarListFeed();
 		$output = "here's the calendarFeed title [  " . $calFeed->title->text . "  ]\n";
-		error_log($output, 3, JPATH_ROOT.DS."logs".DS."salonbook.log");	
+		// error_log($output, 3, JPATH_ROOT.DS."logs".DS."salonbook.log");	
 	
 		// calendar math
 		$fullStartDateTimeString = "$appointmentDate"." "."$startTime";

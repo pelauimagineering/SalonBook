@@ -28,7 +28,7 @@ class SalonBooksViewVacation extends JView
 		$vacation = $this->get('VacationDetails');
  
 		$this->vacation->returnTime = '17:00:00';
-		error_log("Vacation object: " . var_export($vacation, true) . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		// error_log("Vacation object: " . var_export($vacation, true) . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
 		
 		// Check for errors.

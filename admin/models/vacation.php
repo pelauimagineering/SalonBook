@@ -86,7 +86,7 @@ class SalonBooksModelVacation extends JModelAdmin
 					" FROM #__salonbook_appointments A ".	
 					" WHERE A.id = ".$this->_id;
 			
-			error_log("Vacation query: " . $query . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			// error_log("Vacation query: " . $query . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			
 			$this->_db->setQuery( $query );
 			$this->_data = $this->_db->loadObject();
@@ -94,7 +94,7 @@ class SalonBooksModelVacation extends JModelAdmin
 		if (!$this->_data) {
 			$this->_data = $this->getTable();
 			
-			error_log("Vacation data: " . var_export($this->_data, true) . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			// error_log("Vacation data: " . var_export($this->_data, true) . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		}
 		return $this->_data;
 	}
