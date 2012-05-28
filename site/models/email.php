@@ -28,12 +28,12 @@ class SalonBookModelEmail extends JModelItem
 		
 		if ( $send !== true ) {
 		    // echo 'Error sending email: ' . $send->message;
-			error_log("\n Error sending email:" . $send->message . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log"););
+			error_log("\n Error sending email:" . $send->message . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		} else {
 		    // echo 'Mail sent';
 		    // $emailList = var_export($recipients,true);
 			$emailList = implode(",", $recipients);
-			error_log("\n Email sent to:" . $emailList . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log"););
+			error_log("\n Email sent to:" . $emailList . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		}
 	}
 	
@@ -90,6 +90,9 @@ class SalonBookModelEmail extends JModelItem
 			$mailingInfo = $appointmentModel->detailsForMail($appointment['id']);
 		
 			//error_log("mailingInfo... " . var_export($mailingInfo, true) . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			
+			// clear any old recipients
+			$this->email = NULL;
 			
 			$this->setSuccessMessage($mailingInfo);
 		
