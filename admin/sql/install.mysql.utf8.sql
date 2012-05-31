@@ -10,12 +10,19 @@ CREATE TABLE `#__salonbook_services` (
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
  
 INSERT INTO `#__salonbook_services` (`name`, `durationInMinutes`, `duration`) VALUES
-	('Shampoo',30, 0 ),
+	('Timeoff', 1440, 6),
+	('Shampoo', 30, 0 ),
 	('Twist', 60, 2),
-	('Re-tightening', 60, 2),
+	('Sisterlocks', 180, 5),
 	('Braid', 120, 4),
-	('Wash and Style', 60, 2),
-	('Wash and Roller-set', 90, 3);
+	('Traditional Locks', 60, 2),
+	('Styling', 60, 2),
+	('Treatments', 90, 3),
+	('Colour', 60, 2),
+	('Consultation - Sisterlocks', 30, 0),
+	('Consultation - Traditional Locks', 30, 0),
+	('Consultation - Other', 30, 0);
+	
 	
 DROP TABLE IF EXISTS `#__salonbook_durations`;
 
@@ -34,7 +41,8 @@ INSERT INTO `#__salonbook_durations` (`displayName`, `durationInMinutes`) VALUES
 	('2 hours', 120),
 	('3 hours', 180),
 	('1 day', 1440);
-	
+
+
 DROP TABLE IF EXISTS `#__salonbook_appointments`;
 
 CREATE TABLE  `#__salonbook_appointments` (
@@ -51,7 +59,7 @@ CREATE TABLE  `#__salonbook_appointments` (
 	`service` INT NULL COMMENT  'foreign key',
 	`payment_id` varchar(50) NULL, 
 	`status` INT NULL DEFAULT '0' COMMENT 'foreign key',
-	`calendarEventURL` VARCHAR( 255 ) NULL,
+	`calendarEventURL` VARCHAR( 255 ) NULL
 ) ENGINE=MYISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `#__salonbook_users`;

@@ -139,14 +139,25 @@ class SalonBooksModelSalonBook extends JModelAdmin
 	 */
 	function store()
 	{
-		error_log("inside store() \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		// error_log("inside store() \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
 		$row =& $this->getTable();
 		
-		error_log("got a table\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		// error_log("got a table\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		$data = JRequest::get('form');
 		
-		error_log("attempting to bind \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		// lookup the duration for the selected service and store that in the appointment
+		$db = JFactory::getDBO();
+		
+		$service_id = $data['service'];
+		$durationQuery = "select D.durationInMinutes from #__salonbook_services S join #__salonbook_durations D on S.duration = D.id where S.id = $service_id";
+		$db->setQuery((string)$durationQuery);
+		$db->query();
+		$durationInMinutes = $db->loadResult();
+		$data['durationInMinutes'] = $durationInMinutes;
+		
+		// error_log("adding a DURATION of $durationInMinutes to the form data \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		
 		//bind the form data to the table
 		if (!$row->bind($data))
 		{
@@ -171,10 +182,10 @@ class SalonBooksModelSalonBook extends JModelAdmin
 			return false;
 		}
 		
-		$to_print = var_export($data, true);
-		error_log("FORM data:\n" . $to_print . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+ 		// $to_print = var_export($data, true);
+ 		// error_log("FORM data:\n" . $to_print . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
-		error_log("Save worked. The new appt # is: " . $row->get('id') . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		// error_log("Saved in salonbook.php. The new appt # is: " . $row->get('id') . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		$this->_data = $row;
 		$this->_id = $row->get('id');
 		
@@ -304,7 +315,7 @@ class SalonBooksModelSalonBook extends JModelAdmin
 			foreach($messages as $message) 
 			{
 				$toDisplay = $message->name . "&nbsp; &nbsp; &nbsp; &nbsp;" . $message->displayName;
-				$options[] = JHtml::_('select.option', $message->id, $message->name);
+				$options[] = JHtml::_('select.option', $message->id, $toDisplay);
 			}
 		}
 

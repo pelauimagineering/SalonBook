@@ -28,7 +28,7 @@ class SalonBooksModelSalonBooks extends JModelList
 						"AND A.appointmentDate > DATE_SUB(now(), INTERVAL 7 DAY) " .
 						"AND U.user_id <> " . $timeoffUser 
 					);
-		$query->order("A.appointmentDate ASC");
+		$query->order("A.appointmentDate ASC, A.startTime ASC");
 		
 		
 		return $query;

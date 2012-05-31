@@ -53,12 +53,21 @@ class SalonBooksControllerVacation extends SalonBooksController
 	
 		$post = JInput::get('post');
 	
-		$success = $model->store($post);
+		$appointmentID = $model->store($post);
 		
-		if ( $success )
+		if ( $appointmentID > 0 )
 		{
+			// $success = apptID
+			//TODO: update Google calendar
+// 			JLoader::register('SalonBookModelAppointments',  JPATH_COMPONENT_SITE.'/models/appointments.php');
+			// error_log("An apptID was returned: " . $appointmentID . ". Create Google calendar objects now...\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			
+			JLoader::register('SalonBookModelCalendar',  JPATH_COMPONENT_SITE.'/models/calendar.php');
+			$calendarModel = new SalonBookModelCalendar();
+			$calendarModel->saveAppointmentToGoogle($appointmentID);
+			
 			$link = 'index.php?option=com_salonbook&view=timeoff';
-			$this->setRedirect($link, $msg);
+ 			$this->setRedirect($link, $msg);
 		}
 	}
 	

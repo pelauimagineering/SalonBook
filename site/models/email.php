@@ -27,11 +27,9 @@ class SalonBookModelEmail extends JModelItem
 		$send =& $this->mailer->Send();
 		
 		if ( $send !== true ) {
-		    // echo 'Error sending email: ' . $send->message;
 			error_log("\n Error sending email:" . $send->message . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		} else {
 		    // echo 'Mail sent';
-		    // $emailList = var_export($recipients,true);
 			$emailList = implode(",", $recipients);
 			error_log("\n Email sent to:" . $emailList . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		}

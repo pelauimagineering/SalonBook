@@ -10,7 +10,7 @@ JHtml::_('behavior.tooltip');
 <script>
 function copyData()
 {
-	// move the selected date and user to the hidden fields needed to save the save
+	// move the selected date and user to the hidden fields needed to save list data types
 	dateSelected = $('#jform_appointmentDate').val();
 	if ( dateSelected.length > 0 )
 	{
@@ -22,6 +22,12 @@ function copyData()
 	{
 		$('#hid_user').val(userSelected);
 	}
+
+	timeSelected = $('#jform_startTime').val();
+	if ( timeSelected.length > 0 )
+	{
+		$('#hid_startTime').val(timeSelected);
+	}
 	
 	return true;
 }
@@ -30,6 +36,10 @@ function copyData()
 	<fieldset class="adminform">
 		<legend><?php echo JText::_( 'COM_SALONBOOK_SALONBOOK_DETAILS' ); ?></legend>
 		<ul class="adminformlist">
+		<?php
+			echo "<input type='hidden' id='hid_startTime' name='startTime' value='" . $this->appointment->startTime . "' />";
+		?>
+		
 <?php foreach($this->form->getFieldset() as $field): ?>
 			<li><?php 
 			if ( $field->name == "jform[appointmentDate]" )
@@ -38,13 +48,6 @@ function copyData()
 				echo $this->form->getInput('appointmentDate'); 
 				// add a hidden field that will be the source during the actual bind process
 				echo "<input type='hidden' id='hid_appointmentDate' name='appointmentDate' value='" . $this->appointment->appointmentDate . "' />";
-			}
-			else if ( $field->name == "jform[startTime]" )
-			{
-				echo $field->label;
-				// format the time as HH:mm
-				$startTime = strtotime($this->appointment->startTime);
-				echo "<input type='text' name='startTime' value='" . date("H:i", $startTime) . "' />";
 			}
 			else if ( $field->name == "jform[stylist]" )
 			{
@@ -125,6 +128,12 @@ function copyData()
 					{
 						$selected = "";
 					}
+					
+					// the default selection for new Appointments made by Staff is 'In Progress' (id=1)
+					if ( $this->appointment->id == NULL && $lineItem->value == 1 )
+					{
+						$selected = "selected";
+					}
 			
 					echo "<option value='" . $lineItem->value . "' " . $selected . " >" . $lineItem->text . "</option>";
 				}
@@ -136,16 +145,30 @@ function copyData()
 				echo "<select id='created_by_staff' name='created_by_staff' class='inputbox'>";
 				for ($x=0; $x<2; $x++)
 				{
-				if ( $this->appointment->created_by_staff == 1 && $x==1)
+					if ( $x == 0 )
 					{
-					$selected = "selected";
-				}
+						if ( $this->appointment->id == NULL || $this->appointment->created_by_staff == 1  )
+						{
+							$selected = "";
+						}
+						else if ( $this->appointment->created_by_staff == 0 )
+						{
+							$selected = "selected";
+						}
+					}
 					else
 					{
-					$selected = "";
-				}
+						if ( $this->appointment->id == NULL || $this->appointment->created_by_staff == 1  )
+						{
+							$selected = "selected";
+						}
+						else if ( $this->appointment->created_by_staff == 0 )
+						{
+							$selected = "";
+						}
+					}
 			
-				$textLabel = ($x == 0) ? "Customer" : "Staff";
+ 				$textLabel = ($x == 0) ? "Customer" : "Staff";
 				echo "<option value='" . $x . "' " . $selected . ">" . $textLabel . "</option>";
 			}
 			echo "</select>";

@@ -7,11 +7,23 @@
 	<author>Darren Baptiste</author>
 	<authorEmail>darren@pelau.com</authorEmail>
 	<authorUrl>http://www.pelau.com</authorUrl>
-	<copyright>Copyright ® 2012</copyright>
+	<copyright>Copyright 2012</copyright>
 	<license>License Info</license>
 	<!--  The version string is recorded in the components table -->
-	<version>1.1.1</version>
-	<!-- latest update: remove typos from from previous logging fix; remove old recipients when sending emails -->
+	<version>1.1.2</version>
+	<!-- latest update: 
+		display code version number inside the Administrator
+		Use a 12-hour clock in Admin interface
+		Change the default of source of appointment in backend to Staff 
+		BUG: must allow transfer of appointments from one stylist to another 
+		NEW: display duration of each Service beside the name 
+		BUG: Avalon can't book new Time Off appointments for herself 
+		Appointments should remain in "Waiting for Deposit" status for a maximum of 1 day - add deletion to a daily cron job 
+		Display a time picker to the New Appointment form
+		On admin side: Set new appointments to 'Created by Staff' 
+		Add message: PLEASE NOTE: You MUST pay the deposit for your appointment to be booked. 
+		
+  	-->
 	<!-- The description is optional and defaults to the name -->
 	<description>COM_SALONBOOK_DESCRIPTION</description>
  
@@ -73,6 +85,7 @@
 			<filename>index.html</filename>
 			<filename>salonbook.php</filename>
 			<filename>controller.php</filename>
+			<filename>version.php</filename>
 			<folder>controllers</folder>
 			<folder>models</folder>
 			<folder>sql</folder>
@@ -85,4 +98,10 @@
 		</languages>
 	</administration>
  
+	<!-- UPDATESERVER DEFINITION -->
+		<updateservers>
+			<!-- Note: No spaces or linebreaks allowed between the server tags -->
+			<server type="extension" priority="1" name="SalonBook Update Site">http://salonbook.pelau.com/updatefiles/salonbook-updates.xml</server>
+		</updateservers>
+
 </extension>

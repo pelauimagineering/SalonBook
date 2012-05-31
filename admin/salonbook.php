@@ -4,7 +4,12 @@ defined('_JEXEC') or die('Restricted access');
  
 // import joomla controller library
 jimport('joomla.application.component.controller');
- 
+
+if(file_exists(JPATH_COMPONENT_ADMINISTRATOR.'/version.php'))
+{
+	require_once(JPATH_COMPONENT_ADMINISTRATOR.'/version.php');
+}
+
 JTable::addIncludePath( JPATH_COMPONENT.DS.'tables' );
 
 $view = JRequest::getCmd('view');
@@ -14,6 +19,7 @@ JSubMenuHelper::addEntry(JText::_('SALONBOOK_MENU_CLIENTS'), 'index.php?option=c
 JSubMenuHelper::addEntry(JText::_('SALONBOOK_MENU_STAFF'), 'index.php?option=com_salonbook&view=staff',$view == 'staff' );
 JSubMenuHelper::addEntry(JText::_('SALONBOOK_MENU_TIMEOFF'), 'index.php?option=com_salonbook&view=timeoff',$view == 'timeoff' );
 JSubMenuHelper::addEntry(JText::_('SALONBOOK_MENU_TOOLS'), 'index.php?option=com_salonbook&view=tools',$view == 'tools' );
+JSubMenuHelper::addEntry('ver. '.SALONBOOK_VERSION);
 
 require_once( JPATH_COMPONENT.DS.'controller.php' );
  

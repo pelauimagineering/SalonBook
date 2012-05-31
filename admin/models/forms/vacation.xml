@@ -36,7 +36,7 @@
 			label="Service"
 			size="1"
 			class="inputbox" >
-				<option value="0">Time Off</option>
+				<option value="1">Time Off</option>
 		</field>
 		
 		<field

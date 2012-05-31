@@ -78,7 +78,7 @@ class SalonBookModelAppointments extends JModelItem
 			$db = JFactory::getDBO();
 			$updateQuery = "UPDATE `#__salonbook_appointments` SET deposit_paid = '1', payment_id = '$txn_id' WHERE id='$orderNumber'";
 			
-			error_log($updateQuery."\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			error_log("Mark deposit paid ". $updateQuery."\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			
 			$db->setQuery((string)$updateQuery);
 			$db->query();
@@ -133,24 +133,55 @@ class SalonBookModelAppointments extends JModelItem
 		 */
 		public function getAppointmentDetailsForID($id = 0)
 		{
-			error_log("looking up details for $id\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			error_log("looking up appointment details for ID:[ " . $id . " ]\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			
 			// Load the data
-			if (empty( $this->_appointmentData ) && $id != 0 ) 
+			if ( $id > 0 )
 			{
+				$db = JFactory::getDBO();
+				
 				$appointmentQuery = "SELECT A.*, concat(STYLIST.firstname,' ',STYLIST.lastname) as stylistName, U.name, STYLIST.firstname, S.name as serviceName, U.email, STYLIST.calendarLogin, STYLIST.calendarPassword FROM `#__salonbook_appointments` A join `#__users` U ON A.user = U.id join `#__salonbook_services` S ON A.service = S.id join `#__salonbook_users` STYLIST on A.stylist = STYLIST.user_id WHERE A.id = $id";
-				$this->_db->setQuery( $appointmentQuery );
-				$this->_appointmentData = $this->_db->loadAssocList();
+				$db->setQuery( $appointmentQuery );
+				
+				error_log("QUERY " . $appointmentQuery . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+				
+				$this->_appointmentData = $db->loadAssocList();
+				
+				error_log("got some details " . var_dump($this->_appointmentData) . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+				
 			}
-			
-			if (!$this->_appointmentData) 
-			{
-				$this->_appointmentData = $this->getTable();
-				$this->_appointmentData->client = NULL;
-			}
+
 			return $this->_appointmentData;
 		}
 
+		/**
+		 * Look up and return details about a specific scheduled time off, by id
+		 * This is necessary as we don't insert a service into those appointments. 
+		 * or rather, we insert a value of 0 in the service field for them
+		 * 
+		 * @param int $id primary key of the #__salonbook_appointments table
+		 * @return array appointment data
+		 */
+		public function getAppointmentDetailsForTimeOffWithID($id = 0)
+		{
+			// error_log("looking up timeoff details for " . $id . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			
+			// Load the data
+			if ( $id > 0 )
+			{
+				$db = JFactory::getDBO();
+				
+				$appointmentQuery = "SELECT A.*, concat(STYLIST.firstname,' ',STYLIST.lastname) as stylistName, U.name, STYLIST.firstname, U.email, STYLIST.calendarLogin, STYLIST.calendarPassword FROM `#__salonbook_appointments` A join `#__users` U ON A.user = U.id join `#__salonbook_users` STYLIST on A.stylist = STYLIST.user_id WHERE A.id = $id";
+				$db->setQuery( $appointmentQuery );
+				
+				// error_log("QUERY " . $appointmentQuery . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+				
+				$this->_appointmentData = $db->loadAssocList();				
+			}
+
+			return $this->_appointmentData;
+		}
+		
 		/**
 		 * Get appointment details
 		 * 
@@ -164,7 +195,7 @@ class SalonBookModelAppointments extends JModelItem
 				return 0;
 			}
 			
-			error_log("\nlooking up details for user $user_id\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			// error_log("\nlooking up details for user $user_id\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
 			// look up the details of the passed in appointment
 			$db = JFactory::getDBO();
@@ -192,7 +223,7 @@ class SalonBookModelAppointments extends JModelItem
 			
 			if ( empty($data) )
 			{	
-				error_log("no data passed into the store function\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+				error_log("no data passed into the Appointments->store function\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 				return false;
 			}
 			
@@ -220,7 +251,7 @@ class SalonBookModelAppointments extends JModelItem
 			{
 				$convertedTime = date('H:i', strtotime($startTime));
 				$data['startTime'] = $convertedTime;
-				error_log("changed from " . $startTime . " to " . $convertedTime, 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+				// error_log("changed from " . $startTime . " to " . $convertedTime, 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			}
 			
 			// error_log("attempting to bind \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
@@ -275,7 +306,7 @@ class SalonBookModelAppointments extends JModelItem
 			$db = JFactory::getDBO();
 			$cancelQuery = "UPDATE `#__salonbook_appointments` A set status = ( SELECT S.id FROM `#__salonbook_status` S WHERE status LIKE 'Cancelled' ) WHERE A.id = '$appointment_id'";
 			
-			error_log($cancelQuery."\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			// error_log($cancelQuery."\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			
 			$db->setQuery((string)$cancelQuery);
 			$db->query();
@@ -290,21 +321,29 @@ class SalonBookModelAppointments extends JModelItem
 		 * after the time period specified in the config options.
 		 * In this context, 'removal' means setting the status to 'Cancelled'
 		 * This can be called every time a time a new appointment is added
+		 * 
+		 * The DATEDIFF function has a resolution in DAYS, therefore no matter how often this is run, appointments waiting for payment are only
+		 * removed if they are at least 1 day old.
+		 * 
+		 * The removal time is DEPRECATED
 		 */
 		function removeOldAppointmentsWithoutDeposits()
 		{
-			$configOptions =& JComponentHelper::getParams('com_salonbook');
-			$removalTime = $configOptions->get('remove_unpaid_after_minutes',0);
+			$db = JFactory::getDBO();
 			
-			error_log("Clean up unpaid: removalTime = " . $removalTime." minutes.\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
-			if ( $removalTime > 0 )
+			$cancelQuery = "UPDATE `#__salonbook_appointments` A set status = ( SELECT S.id FROM `#__salonbook_status` S WHERE status LIKE 'Cancelled' ) WHERE A.status = '0' AND DATEDIFF(now(),A.created_when) >= 1";
+				
+ 			// error_log("Clean up unpaid: " . $cancelQuery."\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+				
+			$db->setQuery((string)$cancelQuery);
+			$db->query();
+				
+			// report if any pending-payment appointments were cancelled
+			$affectedRowCount = $db->getAffectedRows();
+				
+			if ($affectedRowCount > 0)
 			{
-				$cancelQuery = "UPDATE `#__salonbook_appointments` A set status = ( SELECT S.id FROM `#__salonbook_status` S WHERE status LIKE 'Cancelled' ) WHERE A.status = '0' AND DATEDIFF(now(),A.created_when) > 0";
-				
-				// error_log("Clean up unpaid: " . $cancelQuery."\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
-				
-				$this->_db->setQuery((string)$cancelQuery);
-				$this->_db->query();
+				error_log("Cancelled " . $affectedRowCount . " appointments with stale 'Waiting for Deposit' flags\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			}
 		}
 
@@ -314,7 +353,7 @@ class SalonBookModelAppointments extends JModelItem
 			// run a query
 			$lookAheadQuery = "SELECT * FROM `#__salonbook_appointments` WHERE appointmentDate = '$futureDate' AND ( deposit_paid = '1' OR status='1' OR (status='0' AND created_by_staff='1') )";
 			// return a list
-			error_log("Look for appointments on " . $futureDate."\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			// error_log("Look for appointments on " . $futureDate."\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			
 			$this->_db->setQuery((string)$lookAheadQuery);
 			$this->_db->query();

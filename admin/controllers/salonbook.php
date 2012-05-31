@@ -26,7 +26,7 @@ class SalonBooksControllerSalonBook extends SalonBooksController
 	*/
 	function edit()
 	{
-		error_log("show the EDIT form\n", 3, "../logs/salonbook.log");
+		// error_log("show the EDIT form\n", 3, "../logs/salonbook.log");
 		
 		JRequest::setVar('view','salonbook');
 		JRequest::setVar('layout','edit');
@@ -57,7 +57,8 @@ class SalonBooksControllerSalonBook extends SalonBooksController
 			$transactionType = 'update';
 		}
 		
-		$success = $model->store($post);
+		$success = $model->store($post);	// inside site/models/salonbook.php
+		
 		$newInvoiceNumber = $model->get('_id');
 
 		error_log("Transaction type: " . $transactionType . "  New invoice number: " . $newInvoiceNumber .  "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
@@ -75,7 +76,7 @@ class SalonBooksControllerSalonBook extends SalonBooksController
 			$calendarModel = new SalonBookModelCalendar();
 			// error_log("Got a Calendar class MODEL to work with \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			
- 			// error_log("Go add a cal event using the model... \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+ 			// error_log("Go add a cal event using the invoice number as a lookup value... \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			$calendarModel->saveAppointmentToGoogle($newInvoiceNumber);
 			
 			// error_log("END calendar imports\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
@@ -148,11 +149,11 @@ class SalonBooksControllerSalonBook extends SalonBooksController
 		error_log("inside sendPaymentConfirmationEmail...\n", 3, "../logs/salonbook.log");
 	
 		JLoader::register('SalonBookModelEmail',  JPATH_COMPONENT_SITE.'/models/email.php');
-		error_log("Completed registering Email class \n", 3, "../logs/salonbook.log");
+		// error_log("Completed registering Email class \n", 3, "../logs/salonbook.log");
 		
 		// look up details and decide the contents of the message based on success/failure of the payment
 		$mailer = new SalonBookModelEmail();
-		error_log("Created new SalonBookModelEmail instance \n", 3, "../logs/salonbook.log");
+		// error_log("Created new SalonBookModelEmail instance \n", 3, "../logs/salonbook.log");
 		
 		if ( $mailer )
 		{
@@ -178,14 +179,14 @@ class SalonBooksControllerSalonBook extends SalonBooksController
 	 */
 	function sendAppointmentDetailsEmail($success, $appointmentDetails)
 	{
-		error_log("inside sendAppointmentDetailsEmail...\n", 3, "../logs/salonbook.log");
+		// error_log("inside sendAppointmentDetailsEmail...\n", 3, "../logs/salonbook.log");
 	
 		JLoader::register('SalonBookModelEmail',  JPATH_COMPONENT_SITE.'/models/email.php');
-		error_log("Completed registering Email class \n", 3, "../logs/salonbook.log");
+		// error_log("Completed registering Email class \n", 3, "../logs/salonbook.log");
 	
 		// look up details and decide the contents of the message based on success/failure of the payment
 		$mailer = new SalonBookModelEmail();
-		error_log("Created new SalonBookModelEmail instance \n", 3, "../logs/salonbook.log");
+		// error_log("Created new SalonBookModelEmail instance \n", 3, "../logs/salonbook.log");
 	
 		if ( $mailer )
 		{

@@ -148,8 +148,9 @@ class SalonBooksModelVacation extends JModelAdmin
 	{
 		$configOptions =& JComponentHelper::getParams('com_salonbook');
 		$timeoffUser = $configOptions->get('timeoff_user',0);
+// 		$service = $configOptions->get('timeoff_service', 7);
 		
-		error_log("inside vacation->store() \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		// error_log("inside vacation->store(). Add time off to local database \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 
 		$data = JRequest::get('form');
 		$newData = $data['jform']; 
@@ -163,7 +164,7 @@ class SalonBooksModelVacation extends JModelAdmin
 		$durationInMinutes = (strtotime($newData['returnTime']) - strtotime($newData['startTime'])) / 60;
 		$createdByStaff = true;
 		
-		error_log("times:start $startTime, return $returnTime, duration $durationInMinutes  \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		// error_log("times:start $startTime, return $returnTime, duration $durationInMinutes  \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
 		if($apptID == 0)
 		{
@@ -183,16 +184,28 @@ class SalonBooksModelVacation extends JModelAdmin
 						"WHERE id = '$apptID' ";
 		}
 
-		error_log("Vacation INSERT/UPDATE query: " . $query . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		// error_log("Vacation INSERT/UPDATE query: " . $query . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
-		$this->_db->setQuery( $query );
-		$result = $this->_db->query();
-		$updatedRows = $this->_db->getAffectedRows();
+		$db = JFactory::getDBO();
+		
+		$db->setQuery( $query );
+		$result = $db->query();
+		$updatedRows = $db->getAffectedRows();
+		
+		if($apptID == 0)
+		{
+			$apptID = $db->insertid();
+		}
 		
 		if ( $updatedRows > 0 )
 		{
-			error_log("Vacation INSERT/UPDATE success\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
-			return true;
+			// error_log("Vacation INSERT/UPDATE success using ID $apptID\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			
+			JLoader::register('SalonBookModelCalendar',  JPATH_COMPONENT_SITE.'/models/calendar.php');
+			$calendarModel = new SalonBookModelCalendar();
+			$calendarModel->saveAppointmentToGoogle($apptID, $durationInMinutes);
+			
+			return $apptID;
 		}
 		else
 		{

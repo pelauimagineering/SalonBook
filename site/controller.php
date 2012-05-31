@@ -64,7 +64,7 @@ class SalonBookController extends JController
 	 */
 	function updateAppointment()
 	{
-		error_log("inside updateAppointment()\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		// error_log("inside updateAppointment()\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 
   		$model = new SalonBookModelAppointments();
 		
@@ -76,17 +76,16 @@ class SalonBookController extends JController
 		if ( $appointment_id == 0 )
 		{
 			// we shouldn't be fetching data from the database AGAIN, only from the object we are passing around!!
-			error_log("LOOKUP or CREATE an appointment object\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			// error_log("LOOKUP or CREATE an appointment object\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			
-// 			$model = new SalonBookModelAppointments();
-			error_log("passed-in ID:" . $appointment_id . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			// error_log("passed-in ID:" . $appointment_id . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			
 			if ( $appointmentData['user'] == 0 )			
 			{
 				// set the user
 				$user =& JFactory::getUser();
 				$appointmentData['user'] = $user->id;
-				error_log("This is the NEW object\n" . var_export($appointmentData, true) ."\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+				// error_log("This is the NEW object\n" . var_export($appointmentData, true) ."\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			}
 		}
 		else
@@ -97,11 +96,11 @@ class SalonBookController extends JController
 			{
 				$savedData = $model->getAppointmentDetailsForID($appointment_id);
 				$appointmentData = $savedData[0];
-				error_log("appointmentData FROM the model  \n[ " . var_export($appointmentData, true) . "]\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+				// error_log("appointmentData FROM the model  \n[ " . var_export($appointmentData, true) . "]\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			}
 			else 
 			{
-				error_log("appointmentData FROM PREVIOUS screen  \n[ " . var_export($appointmentData, true) . "]\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+				// error_log("appointmentData FROM PREVIOUS screen  \n[ " . var_export($appointmentData, true) . "]\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			}
 		}
 		
@@ -117,13 +116,13 @@ class SalonBookController extends JController
 			$fieldValue = JRequest::getVar('fieldValue');
 			
 			// update with the recently selected values
-			error_log("SINGLE: setting " . $fieldName . " to " . $fieldValue . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			// error_log("SINGLE: setting " . $fieldName . " to " . $fieldValue . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 
 			$appointmentData[$fieldName] = $fieldValue;
 		}
 		else 
 		{
-			error_log("field count = " . $fieldCount . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			// error_log("field count = " . $fieldCount . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			
 			// it's an array
 			$fieldNameArray = JRequest::getVar('fieldName');
@@ -132,7 +131,7 @@ class SalonBookController extends JController
 			
 			for ($x=0; $x < $fieldCount; $x++)
 			{				
-				error_log("MULTIPLE: setting " . $fieldNameArray[$x] . " to " . $fieldValueArray[$x] . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+				// error_log("MULTIPLE: setting " . $fieldNameArray[$x] . " to " . $fieldValueArray[$x] . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 				$appointmentData[$fieldNameArray[$x]] = $fieldValueArray[$x];
 			}
 		}
@@ -146,10 +145,10 @@ class SalonBookController extends JController
 		$view->assignRef("appointmentData", &$appointmentData);
 		$view->setModel($model, false);
 
-		error_log("saving the appointment details to the session object\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		// error_log("saving the appointment details to the session object\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		$session->set('appointmentData', &$appointmentData, 'SalonBook');
 		
-		error_log("appointmentData sent to the next screen  \n[ " . var_export($appointmentData, true) . "]\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		// error_log("appointmentData sent to the next screen  \n[ " . var_export($appointmentData, true) . "]\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
 		// load and add the next Model
 		$nextModel = $this->getModel($nextViewModel);
@@ -197,7 +196,7 @@ class SalonBookController extends JController
 	 */
 	function showAppointmentToEdit()
 	{
-		error_log("inside showAppointmentToEdit()\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		// error_log("inside showAppointmentToEdit()\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 	
 		$appointment_id=JRequest::getVar( 'id');
 		
@@ -293,7 +292,7 @@ class SalonBookController extends JController
 	*/
 	function addappointment()
 	{ 
-		error_log("inside addappointment\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");		
+		// error_log("inside addappointment\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");		
 		
 		date_default_timezone_set('America/Toronto');
 		
@@ -311,7 +310,7 @@ class SalonBookController extends JController
 		$success = $appointmentModel->store();
 				
 		$appointment_id = $appointmentModel->_id;
-		error_log("ID: $appointment_id \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");		
+		// error_log("ID: $appointment_id \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");		
 		
 		// get the details of the deposit status to determine what is returned here
 		if ( $success === false ) 
@@ -402,11 +401,11 @@ class SalonBookController extends JController
 	{
 		// $log = &JLog::getInstance('logs/ipn_log.php');
 		JLoader::register('SalonBookModelCalendar',  JPATH_COMPONENT_SITE.DS.'models'.DS.'calendar.php');
-		error_log("Completed registering Calendar class \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		// error_log("Completed registering Calendar class \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
 		// look up details and decide the contents of the message based on success/failure of the payment
 		$calendarModel = new SalonBookModelCalendar();
-		error_log("Got a Calendar class MODEL to work with \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		// error_log("Got a Calendar class MODEL to work with \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
 		error_log("IPN start", 3, "../logs/ipn.log");
 		// read the post from PayPal system and add 'cmd'
@@ -461,7 +460,7 @@ class SalonBookController extends JController
 					$model = $this->getModel('appointments');
 					
 					$num_rows = $model->getMarkAppointmentDepositPaid($invoice_number, $txn_id);
-					error_log("db_update rows $num_rows for invoice $invoice_number\n", 3, JPATH_ROOT.DS."logs".DS."ipn.log");
+					// error_log("db_update rows $num_rows for invoice $invoice_number\n", 3, JPATH_ROOT.DS."logs".DS."ipn.log");
 					
 					// update the Google Calendar if this was successful
 					if ( $num_rows > 0 )
@@ -502,11 +501,11 @@ class SalonBookController extends JController
 		error_log("Export Script data from InternetSecure\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
 		JLoader::register('SalonBookModelCalendar',  JPATH_COMPONENT_SITE.DS.'models'.DS.'calendar.php');
-		error_log("Completed registering Calendar class \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		// error_log("Completed registering Calendar class \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
 		// look up details and decide the contents of the message based on success/failure of the payment
 		$calendarModel = new SalonBookModelCalendar();
-		error_log("Got a Calendar class MODEL to work with \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		// error_log("Got a Calendar class MODEL to work with \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
 		// read what was sent to us
 		foreach ($_REQUEST as $key => $value) 
@@ -522,7 +521,7 @@ class SalonBookController extends JController
 		$model = $this->getModel('appointments');
 		
 		$num_rows = $model->getMarkAppointmentDepositPaidFromInternetSecure($invoice_id);
-		error_log("db_update rows $num_rows for invoice $invoice_id\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		// error_log("db_update rows $num_rows for invoice $invoice_id\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
 		// update the Google Calendar if this was successful
 		if ( $num_rows > 0 )
@@ -579,10 +578,10 @@ class SalonBookController extends JController
 	 */
 	function timeSlotsUsedByEvent ($anEvent)
 	{
-		error_log("\n anEvent: " . $anEvent->startTime . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		// error_log("\n anEvent: " . $anEvent->startTime . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 	
 		$theStart =  strtotime($anEvent->startTime);
-		error_log("\n startTime of anEvent is " . date('g:i a',$theStart) . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		// error_log("\n startTime of anEvent is " . date('g:i a',$theStart) . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 	
 		$minutes = idate('H', $theStart) * 60;
 		$minutes += idate('i', $theStart);
@@ -594,7 +593,7 @@ class SalonBookController extends JController
 		$duration = $anEvent->durationInMinutes + $breakTime;
 		$theEnd = strtotime("+ $duration minutes", $theStart);
 	
-		error_log("\n endTime of anEvent (includng break) is " . date('g:i a',$theEnd) . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		// error_log("\n endTime of anEvent (includng break) is " . date('g:i a',$theEnd) . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 	
 		$minutes = idate('H', $theEnd) * 60;
 		$minutes += idate('i', $theEnd);
@@ -651,7 +650,7 @@ class SalonBookController extends JController
 		$model = $this->getModel('timeslots');
 		$feed = $model->getBusySlotsQuery($aDate);
 		
-		error_log("the busy feed has " . count($feed) . " items \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		// error_log("the busy feed has " . count($feed) . " items \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		$dailyResults = $feed;
 	
 		// set up the default available time slots
@@ -763,7 +762,7 @@ class SalonBookController extends JController
 		$theMonth = JRequest::getVar('theMonth',date('m'));	
 		$theYear = JRequest::getVar('theYear', date('Y'));
 		
-		error_log("theMonth/theYear" . $theMonth . "/" . $theYear . " \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		// error_log("theMonth/theYear" . $theMonth . "/" . $theYear . " \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
 		// register Calendar class
 		JLoader::register('Calendar',  JPATH_COMPONENT_SITE.DS.'calendar'.DS.'calendar.php');

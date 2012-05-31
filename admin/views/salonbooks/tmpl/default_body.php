@@ -33,7 +33,7 @@ defined('_JEXEC') or die('Restricted Access');
 		<td>
 			<?php 
 				$startTime = strtotime($item->startTime);
-				echo date("H:i", $startTime);
+				echo date("h:i a", $startTime);
 				// if no deposit has been received
 				if ( $item->deposit_paid < 1)
 				{
