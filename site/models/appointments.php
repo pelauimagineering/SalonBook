@@ -133,7 +133,7 @@ class SalonBookModelAppointments extends JModelItem
 		 */
 		public function getAppointmentDetailsForID($id = 0)
 		{
-			error_log("looking up appointment details for ID:[ " . $id . " ]\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			JLog::add("looking up appointment details for ID:[ " . $id . " ]\n");
 			
 			// Load the data
 			if ( $id > 0 )
@@ -143,11 +143,11 @@ class SalonBookModelAppointments extends JModelItem
 				$appointmentQuery = "SELECT A.*, concat(STYLIST.firstname,' ',STYLIST.lastname) as stylistName, U.name, STYLIST.firstname, S.name as serviceName, U.email, STYLIST.calendarLogin, STYLIST.calendarPassword FROM `#__salonbook_appointments` A join `#__users` U ON A.user = U.id join `#__salonbook_services` S ON A.service = S.id join `#__salonbook_users` STYLIST on A.stylist = STYLIST.user_id WHERE A.id = $id";
 				$db->setQuery( $appointmentQuery );
 				
-				error_log("QUERY " . $appointmentQuery . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+				// error_log("QUERY " . $appointmentQuery . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 				
 				$this->_appointmentData = $db->loadAssocList();
 				
-				error_log("got some details " . var_dump($this->_appointmentData) . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+				// error_log("got some details " . var_dump($this->_appointmentData) . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 				
 			}
 
@@ -216,14 +216,12 @@ class SalonBookModelAppointments extends JModelItem
 		 */
 		function store()
 		{
-			// error_log("inside store \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
-		
 			$session = JFactory::getSession();
 			$data =& $session->get('appointmentData', array(), 'SalonBook');
 			
 			if ( empty($data) )
 			{	
-				error_log("no data passed into the Appointments->store function\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+				JLog::add("no data passed into the Appointments->store function");
 				return false;
 			}
 			
@@ -236,11 +234,9 @@ class SalonBookModelAppointments extends JModelItem
 			
 			$data['durationInMinutes'] = $durationInMinutes;
 			
-			// error_log( "Trying to save the following to the database..\n" . var_export($data, true) ."\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
-
 			if ( !$row = $this->getTable('SalonBook') )
 			{
-				error_log("Did NOT get a table!\n" . $this->_db->getErrorMsg() . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+				JLog::add("Did NOT get a table!");
 				$this->setError($this->_db->getErrorMsg());
 				return false;
 			}
@@ -251,7 +247,6 @@ class SalonBookModelAppointments extends JModelItem
 			{
 				$convertedTime = date('H:i', strtotime($startTime));
 				$data['startTime'] = $convertedTime;
-				// error_log("changed from " . $startTime . " to " . $convertedTime, 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			}
 			
 			// error_log("attempting to bind \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
@@ -285,7 +280,7 @@ class SalonBookModelAppointments extends JModelItem
 				return false;
 			}
 		
-			error_log("Save worked. The new appointment # is: " . $row->get('id') . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			// error_log("Save worked. The new appointment # is: " . $row->get('id') . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			$this->_data = $row;
 			$this->_id = $row->get('id');
 			$this->depositPaid = $row->get('deposit_paid');
@@ -350,16 +345,15 @@ class SalonBookModelAppointments extends JModelItem
 		public function appointmentsScheduledAhead($numberOfDayAhead = 3)
 		{
 			$futureDate = date('Y-m-d', strtotime("+$numberOfDayAhead days 00:00"));
+
 			// run a query
 			$lookAheadQuery = "SELECT * FROM `#__salonbook_appointments` WHERE appointmentDate = '$futureDate' AND ( deposit_paid = '1' OR status='1' OR (status='0' AND created_by_staff='1') )";
-			// return a list
-			// error_log("Look for appointments on " . $futureDate."\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			
 			$this->_db->setQuery((string)$lookAheadQuery);
 			$this->_db->query();
 			
 			$appointmentList = $this->_db->loadAssocList();
-			// error_log("List of appointments: " . $appointmentList."\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			
 			return $appointmentList;
 		}
 		

@@ -22,7 +22,6 @@ class SalonBookModelEmail extends JModelItem
 		$recipients = NULL;	// clear out whatever addresses may be left from the last batch sent out
 		$recipients = array( $this->email );
 		$this->mailer->addRecipient($recipients);
-		// $this->mailer->addBCC("cron@pelau.com");
 		
 		$send =& $this->mailer->Send();
 		
@@ -76,9 +75,7 @@ class SalonBookModelEmail extends JModelItem
 	 *  @param array $appointmentList
 	 */
 	function sendReminders($appointmentList)
-	{
-		// error_log("inside sendReminders...\nFor list " . var_export($appointmentList[0], true) . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
-		
+	{		
 		// get appointment details and email address
 		JLoader::register('SalonBookModelAppointments',  JPATH_COMPONENT_SITE.DS.'models'.DS.'appointments.php');
 		$appointmentModel = new SalonBookModelAppointments();
@@ -87,21 +84,19 @@ class SalonBookModelEmail extends JModelItem
 		{
 			$mailingInfo = $appointmentModel->detailsForMail($appointment['id']);
 		
-			//error_log("mailingInfo... " . var_export($mailingInfo, true) . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
-			
 			// clear any old recipients
 			$this->email = NULL;
 			
 			$this->setSuccessMessage($mailingInfo);
 		
+			// $this->mailer->addBCC("cronwatch@pelau.com");
+			
 			$this->sendMail();
 		}
 	}
 	
 	function __construct()
 	{
-		// error_log("\n constructing an email...\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
-		
 		$this->mailer =& JFactory::getMailer();
 		
 		$config =& JFactory::getConfig();

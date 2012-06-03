@@ -16,13 +16,21 @@ JLoader::register('SalonBookModelEmail',  JPATH_COMPONENT_SITE.DS.'models'.DS.'e
 require_once (JPATH_SITE.DS.'includes'.DS.'Zend'.DS.'Loader.php');
 require_once 'models/email.php';
 
-/* TEST URL
-http://localhost/index.php?option=com_salonbook&view=payment&task=showpaymentresult&tx=11364803SM584351M&st=Pending&amt=16.95&cc=CAD&cm=&item_number=
+/** TEST URL
+ * http://localhost/index.php?option=com_salonbook&view=payment&task=showpaymentresult&tx=11364803SM584351M&st=Pending&amt=16.95&cc=CAD&cm=&item_number=
 */
 
-/* response from Internet Secure
-http://localhost/index.php?option=com_salonbook&view=payment&task=internetsecureconfirmation
+/** response from Internet Secure
+ * http://localhost/index.php?option=com_salonbook&view=payment&task=internetsecureconfirmation
 */
+
+/**
+ * reminder emails
+ * http://localhost/index.php?option=com_salonbook&view=payment&task=sendReminderEmails
+ * 
+ * cron job
+ * curl -F "option=com_salonbook" -F "view=payment" -F "task=sendReminderEmails" http://celebrityunisexsalon.com/index.php
+ */
 
 /**
  * reminder emails
@@ -234,21 +242,25 @@ class SalonBookController extends JController
 		JLoader::register('SalonBookModelAppointments',  JPATH_COMPONENT_SITE.'/models/appointments.php');		
 		$appointmentModel = $this->getModel('appointments','SalonBookModel');
 		
-		$mailer = new SalonBookModelEmail();
-		
-		if ( $mailer )
-		{
-			$messageList = $appointmentModel->appointmentsScheduledAhead($daysAhead);
-			if ( count($messageList) > 0 )
+			$appointmentList = $appointmentModel->appointmentsScheduledAhead($daysAhead);
+			if ( count($appointmentList) > 0 )
 			{
-				error_log("inside sendReminderEmails ... sending " . count($messageList) . " messages\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
-				$mailer->sendReminders($messageList);
+				error_log("inside sendReminderEmails ... sending " . count($appointmentList) . " messages\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+
+				foreach ($appointmentList as $appointment)
+				{
+					$mailer = new SalonBookModelEmail();
+					if ( $mailer )
+					{
+						$apptList = array($appointment);
+						$mailer->sendReminders($apptList);
+					}
+				}
 			}
 			else 
 			{
 				error_log("inside sendReminderEmails ... 0 messages to send\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			}
-		}
 	}
 	
 	/**
@@ -350,9 +362,18 @@ class SalonBookController extends JController
 		$view->display();		
 	}
 
+	/**
+	 * showpaymentsuccess()
+	 * 
+	 * Display a success message to the user as confirmation of their appointment being booked
+	 * 
+	 * Another code path is used to actually record the payment detail into the database.
+	 * That message is sent out of band to our server from the payment processor
+	 * 
+	 */
 	function showpaymentsuccess()
 	{
-		error_log('inside showpaymentsuccess()\n', 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		JLog::add('inside showpaymentsuccess method');
 		
 		$invoice_id = JRequest::getVar('xxxVar1');
 		
@@ -363,7 +384,7 @@ class SalonBookController extends JController
 		$view->assignRef("appointmentData", $appointmentData);
 		
 		// we could confirm we can read the appointment from the database, but we've already collected their money -- which is the client's main concern
-		// for now, we will assume all is okay, and show them a success message. Otherwise e could show them a slightly modified success message: one
+		// for now, we will assume all is okay, and show them a success message. Otherwise we could show them a slightly modified success message: one
 		// which does not rely on customizing data to be drawn from the database 
 		$view->assign("paid", '1');
 		
@@ -498,24 +519,21 @@ class SalonBookController extends JController
 	 */
 	function internetsecureconfirmation()
 	{
-		error_log("Export Script data from InternetSecure\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
-		
 		JLoader::register('SalonBookModelCalendar',  JPATH_COMPONENT_SITE.DS.'models'.DS.'calendar.php');
-		// error_log("Completed registering Calendar class \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
 		// look up details and decide the contents of the message based on success/failure of the payment
 		$calendarModel = new SalonBookModelCalendar();
-		// error_log("Got a Calendar class MODEL to work with \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 		
 		// read what was sent to us
 		foreach ($_REQUEST as $key => $value) 
 		{
 			$value = urlencode(stripslashes($value));
 			$req .= "&$key=$value";
-			error_log("&$key=$value\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			// JLog::add("&$key=$value");
 		}
 		
 		$invoice_id = JRequest::getVar('xxxVar1');
+ 		JLog::add("Received Export Script data from InternetSecure for invoice # " . $invoice_id);		
 		
 		// we only get these messages after a successful transaction, so send an email to the client, and mark the database as DEPOSIT PAID
 		$model = $this->getModel('appointments');

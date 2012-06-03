@@ -41,14 +41,22 @@
 			' AND profile_key LIKE \'salonbookprofile.%\'' .
 			' ORDER BY ordering'
 		);
-		$results = $db->loadRowList();
+// 		$results = $db->loadRowList();
+ 
+// 		// Check for a database error.
+// 		if ($db->getErrorNum()) {
+// 			$this->_subject->setError($db->getErrorMsg());
+// 			return false;
+// 		}
  
 		// Check for a database error.
-		if ($db->getErrorNum()) {
-			$this->_subject->setError($db->getErrorMsg());
-			return false;
+		try {
+			$results = $db->loadRowList();
+		} catch (Exception $err)
+		{
+			$this->_subject->setError($err->getMessage());
 		}
- 
+		
 		// Merge the profile data.
 		$data->salonbookprofile = array();
 		foreach ($results as $v) {

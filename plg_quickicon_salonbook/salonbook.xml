@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension version="2.5" type="plugin" group="quickicon" method="upgrade">
 	<name>SalonBook Quick Icon</name>
-	<author>Joomla! Project</author>
+	<author>Darren Baptiste</author>
 	<creationDate>February 21 2012</creationDate>
 	<copyright>Copyright (C) 2012 Darren Baptiste</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<authorEmail>darren@pelau.com</authorEmail>
 	<authorUrl>http://pelau.com</authorUrl>
-	<version>1.1</version>
-	<description>An Admin panel shortcut to the Salon Book component</description>
+	<version>1.2</version>
+	<!-- Latest minor update: changed Author name and product wordmark -->
+	<description>An Admin panel shortcut to the SalonBook extension</description>
 	<files>
 		<filename plugin="salonbook">salonbook.php</filename>
 		<filename>index.html</filename>
@@ -19,7 +20,7 @@
 				<field name="context"
 					type="text"
 					default="mod_quickicon"
-					description="An Admin panel shortcut to the Salon Book component"
+					description="An Admin panel shortcut to the SalonBook extension"
 					label="Group"
 				/>
 			</fieldset>

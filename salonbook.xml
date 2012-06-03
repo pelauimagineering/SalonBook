@@ -3,26 +3,16 @@
  
 	<name>COM_SALONBOOK</name>
 	<!-- The following elements are optional and free of formatting constraints -->
-	<creationDate>April 26 2012</creationDate>
+	<creationDate>June 2 2012</creationDate>
 	<author>Darren Baptiste</author>
 	<authorEmail>darren@pelau.com</authorEmail>
 	<authorUrl>http://www.pelau.com</authorUrl>
 	<copyright>Copyright 2012</copyright>
 	<license>License Info</license>
 	<!--  The version string is recorded in the components table -->
-	<version>1.1.2</version>
+	<version>1.1.4</version>
 	<!-- latest update: 
-		display code version number inside the Administrator
-		Use a 12-hour clock in Admin interface
-		Change the default of source of appointment in backend to Staff 
-		BUG: must allow transfer of appointments from one stylist to another 
-		NEW: display duration of each Service beside the name 
-		BUG: Avalon can't book new Time Off appointments for herself 
-		Appointments should remain in "Waiting for Deposit" status for a maximum of 1 day - add deletion to a daily cron job 
-		Display a time picker to the New Appointment form
-		On admin side: Set new appointments to 'Created by Staff' 
-		Add message: PLEASE NOTE: You MUST pay the deposit for your appointment to be booked. 
-		
+		FIXED: began switch to JLog framework for logging
   	-->
 	<!-- The description is optional and defaults to the name -->
 	<description>COM_SALONBOOK_DESCRIPTION</description>
@@ -58,6 +48,7 @@
 		<filename>controller.php</filename>
 		<filename>salonui.js</filename>
 		<filename>datejs.js</filename>
+		<filename>salonbookHelperLog.php</filename>
 		<folder>views</folder>
 		<folder>models</folder>
 		<folder>language</folder>
