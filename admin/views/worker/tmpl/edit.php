@@ -23,6 +23,7 @@ JHtml::_('behavior.tooltip');
 		<input type="hidden" name="controller" value="worker" />
 		<input type="hidden" name="task" value="" />
 		<input type="hidden" name="user_id" value="<?php echo $this->worker->user_id; ?>" />
+		<input type="hidden" name="view" value="staff" />
 		<?php echo JHtml::_('form.token'); ?>
 	</div>
 </form>

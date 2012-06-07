@@ -32,8 +32,11 @@ class SalonBookModelStylists extends JModelList
 			$queryString = "select C.firstname, U.id, U.name from #__users U JOIN #__comprofiler C on U.id = C.user_id where C.cb_stylesworked <> 'None'";
 		}
 
-		// show all users between clients (group=2) and SuperAdmin (group=8)
-		$queryString = "SELECT U.firstName as name, U.user_id as id FROM `#__salonbook_users` U JOIN `#__user_usergroup_map` G on U.user_id = G.user_id WHERE G.group_id > 2 AND G.group_id < 8";
+		// show all users in the Staff group
+		$configOptions =& JComponentHelper::getParams('com_salonbook');
+		$stylists_group = $configOptions->get('stylists_group',0);
+				
+		$queryString = "SELECT U.firstName as name, U.user_id as id FROM `#__salonbook_users` U JOIN `#__user_usergroup_map` G on U.user_id = G.user_id WHERE G.group_id = $stylists_group";
 
 		$db = JFactory::getDBO();
 		$db->setQuery((string)$queryString);

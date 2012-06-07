@@ -10,9 +10,10 @@
 	<copyright>Copyright 2012</copyright>
 	<license>License Info</license>
 	<!--  The version string is recorded in the components table -->
-	<version>1.1.4</version>
+	<version>1.1.5</version>
 	<!-- latest update: 
-		FIXED: began switch to JLog framework for logging
+		FIXED:  Allow Staff to select ANY start time
+		cleanup of version-marking process
   	-->
 	<!-- The description is optional and defaults to the name -->
 	<description>COM_SALONBOOK_DESCRIPTION</description>
@@ -76,7 +77,6 @@
 			<filename>index.html</filename>
 			<filename>salonbook.php</filename>
 			<filename>controller.php</filename>
-			<filename>version.php</filename>
 			<folder>controllers</folder>
 			<folder>models</folder>
 			<folder>sql</folder>

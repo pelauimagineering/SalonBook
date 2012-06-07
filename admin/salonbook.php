@@ -5,10 +5,15 @@ defined('_JEXEC') or die('Restricted access');
 // import joomla controller library
 jimport('joomla.application.component.controller');
 
-if(file_exists(JPATH_COMPONENT_ADMINISTRATOR.'/version.php'))
-{
-	require_once(JPATH_COMPONENT_ADMINISTRATOR.'/version.php');
-}
+$path = JPATH_COMPONENT_ADMINISTRATOR.DS.'salonbook.xml';
+if(file_exists($path)){
+	$manifest = simplexml_load_file($path);
+	define('SALONBOOK_VERSION', $manifest->version);
+	define('SALONBOOK_DATE', $manifest->creationDate);
+}else{
+	define('SALONBOOK_VERSION', '0.0');
+	define('SALONBOOK_DATE', '');
+	}
 
 JTable::addIncludePath( JPATH_COMPONENT.DS.'tables' );
 
@@ -38,7 +43,7 @@ $classname	= 'SalonBooksController'.$controller;
 $controller	= new $classname( );
 
 $theTask = JRequest::getCmd('task');
-// error_log("using controller: " . $classname . " and task: " . $theTask . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+// JLog::add("using controller: " . $classname . " and task: " . $theTask);
 
 // Perform the Request task
 $controller->execute(JRequest::getCmd('task'));

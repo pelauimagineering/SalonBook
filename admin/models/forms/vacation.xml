@@ -17,7 +17,7 @@
 			name="stylist"
 			label="Staff Stylist"
 			type="sql"
-			query="SELECT id as value, name as stylist FROM #__users U JOIN #__user_usergroup_map G on U.id = G.user_id WHERE G.group_id IN (3,4,5,6,7)"
+			query="SELECT id as value, name as stylist FROM #__users U JOIN #__user_usergroup_map G on U.id = G.user_id WHERE G.group_id > 2"
 		/>
 			
 		<field

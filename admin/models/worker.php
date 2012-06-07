@@ -147,15 +147,14 @@ class SalonBooksModelWorker extends JModelAdmin
 	 */
 	function store()
 	{
-		error_log("inside worker->store() \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
-		
 		$data = JRequest::get('form');
 		$newData = $data['jform']; 
 		
 		$query = 	"UPDATE `#__salonbook_users` SET firstName =TRIM('" . $newData['firstName'] . "'), " .
 					"lastName=TRIM('" . $newData['lastName'] ."'), " .
 					"calendarLogin=TRIM('" . $newData['calendarLogin'] ."'), " .
-					"calendarPassword=TRIM('" . $newData['calendarPassword'] ."') " .
+					"calendarPassword=TRIM('" . $newData['calendarPassword'] ."'), " .
+					"calendarMenuItemId=TRIM('" . $newData['calendarMenuItemId'] . "') " .
 					"WHERE id=" . $newData['id'];
 		 
 		error_log("Worker UPDATE query: " . $query . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
@@ -166,12 +165,13 @@ class SalonBooksModelWorker extends JModelAdmin
 		
 		if ( $updatedRows > 0 )
 		{
-			error_log("Worker UPDATE success\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
 			return true;
 		}
 		else
 		{
-			error_log("Worker UPDATE failure! Row count: $updatedRows AND error message " . $this->_db->getErrorMsg() . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			$entry = "Worker UPDATE failure! Row count: $updatedRows AND error message " . $this->_db->getErrorMsg();
+			JLog::add($entry);
+			
 			return false;
 		}
 	}

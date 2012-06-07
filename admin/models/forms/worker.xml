@@ -11,6 +11,7 @@
 	var $hairstyle = null;
 	var $notes = null;
 	var $completed_parsing = 0;
+	var $calendarMenuItemId = 0;
  -->
 <form>
 	<fieldset>
@@ -63,6 +64,15 @@
 			class="inputbox"
 			default=""
 		/>		
+		
+		<field
+			id="calendarMenuItemId"
+			name="calendarMenuItemId"
+			label="Calendar Menu Id"
+			type="sql"
+			query="select M.id as value, M.title as calendarMenuItemId from #__menu M where M.component_id in (select extension_id from #__extensions E where E.name LIKE 'com_gcalendar') and M.published = 1"
+		/>
+		
 	</fieldset>
 </form>
 

@@ -137,6 +137,14 @@
 			description="COM_SALONBOOK_TIMEOFF_USER_DESC" 
 			/>
 			
+		<field
+			id="stylists_group"
+			name="stylists_group"
+			label="Name of User Group for stylist"
+			type="sql"
+			query="select id as value, title as stylists_group from #__usergroups"
+		/>
+			
 	</fieldset>
 	<fieldset name="PAYMENTPROCESSOR">
 	

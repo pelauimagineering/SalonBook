@@ -30,17 +30,16 @@ $cancellationAllowedMinDays = $this->configOptions->get('change_allowed_after_pe
 <link rel="stylesheet" href="/components/com_salonbook/salonbook.css" type="text/css" />
 
 <script>
-	
 	function prepareToEdit(appointment_id)
 	{
 		$('#id').val(appointment_id);
-		
+
 		$('#fieldName').val('id');
 		$('#fieldValue').val(appointment_id);
 		$('#nextViewType').val('html');
 		$('#nextViewModel').val('services');
 		$('#task').val('updateAppointment');
-		
+
 		$("#sb_main_form").submit();
 	}
 

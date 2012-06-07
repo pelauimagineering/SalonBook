@@ -13,7 +13,10 @@ defined('_JEXEC') or die('Restricted Access');
 	<th width="100">
 		<?php echo JText::_('COM_SALONBOOK_SALONBOOK_APPOINTMENTS_DETAIL_STYLIST'); ?>
 	</th>
-	<th width="100">
+	<th width="30">
+		Link
+	</th>
+		<th width="100">
 		<?php echo JText::_('COM_SALONBOOK_SALONBOOK_GOOGLE_CALENDAR_LOGIN'); ?>
 	</th>
 	<th width="100">
