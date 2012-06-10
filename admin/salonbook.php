@@ -38,6 +38,11 @@ if($controller = JRequest::getWord('controller')) {
 	}
 }
 
+// setup the location for our log files and create a contant to help us call it
+define('SALONBOOK_ERROR_LOG', 'com_salonbook.log.'.date('Y_m_d').'.php');
+require_once JPATH_COMPONENT_SITE.DS.'salonbookHelperLog.php';
+$log = new SalonBookHelperLog();
+
 // Create the controller
 $classname	= 'SalonBooksController'.$controller;
 $controller	= new $classname( );

@@ -148,10 +148,7 @@ class SalonBooksModelVacation extends JModelAdmin
 	{
 		$configOptions =& JComponentHelper::getParams('com_salonbook');
 		$timeoffUser = $configOptions->get('timeoff_user',0);
-// 		$service = $configOptions->get('timeoff_service', 7);
 		
-		// error_log("inside vacation->store(). Add time off to local database \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
-
 		$data = JRequest::get('form');
 		$newData = $data['jform']; 
 		$apptID = $newData['id'];
@@ -164,7 +161,7 @@ class SalonBooksModelVacation extends JModelAdmin
 		$durationInMinutes = (strtotime($newData['returnTime']) - strtotime($newData['startTime'])) / 60;
 		$createdByStaff = true;
 		
-		// error_log("times:start $startTime, return $returnTime, duration $durationInMinutes  \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		JLog::add("times:start $startTime, return $returnTime, duration $durationInMinutes");
 		
 		if($apptID == 0)
 		{
@@ -184,7 +181,7 @@ class SalonBooksModelVacation extends JModelAdmin
 						"WHERE id = '$apptID' ";
 		}
 
-		// error_log("Vacation INSERT/UPDATE query: " . $query . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		JLog::add("Vacation INSERT/UPDATE query: " . $query);
 		
 		$db = JFactory::getDBO();
 		
@@ -199,17 +196,13 @@ class SalonBooksModelVacation extends JModelAdmin
 		
 		if ( $updatedRows > 0 )
 		{
-			// error_log("Vacation INSERT/UPDATE success using ID $apptID\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
-			
-			JLoader::register('SalonBookModelCalendar',  JPATH_COMPONENT_SITE.'/models/calendar.php');
-			$calendarModel = new SalonBookModelCalendar();
-			$calendarModel->saveAppointmentToGoogle($apptID, $durationInMinutes);
+			JLog::add("Vacation INSERT/UPDATE success using ID $apptID");
 			
 			return $apptID;
 		}
 		else
 		{
-			error_log("Vacation INSERT/UPDATE failure! Row count: $updatedRows AND error message " . $this->_db->getErrorMsg() . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			JLog::add("Vacation INSERT/UPDATE failure! Row count: $updatedRows AND error message " . $this->_db->getErrorMsg());
 			return false;
 		}
 

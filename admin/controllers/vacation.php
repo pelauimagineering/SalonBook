@@ -47,8 +47,8 @@ class SalonBooksControllerVacation extends SalonBooksController
 	
 	function save()
 	{
-		error_log("SAVE the vacation data\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
-		
+		JLog::add("Save the vacation data");
+
 		$model = $this->getModel('vacation');
 	
 		$post = JInput::get('post');
@@ -57,11 +57,6 @@ class SalonBooksControllerVacation extends SalonBooksController
 		
 		if ( $appointmentID > 0 )
 		{
-			// $success = apptID
-			//TODO: update Google calendar
-// 			JLoader::register('SalonBookModelAppointments',  JPATH_COMPONENT_SITE.'/models/appointments.php');
-			// error_log("An apptID was returned: " . $appointmentID . ". Create Google calendar objects now...\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
-			
 			JLoader::register('SalonBookModelCalendar',  JPATH_COMPONENT_SITE.'/models/calendar.php');
 			$calendarModel = new SalonBookModelCalendar();
 			$calendarModel->saveAppointmentToGoogle($appointmentID);

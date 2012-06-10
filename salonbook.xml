@@ -3,17 +3,17 @@
  
 	<name>COM_SALONBOOK</name>
 	<!-- The following elements are optional and free of formatting constraints -->
-	<creationDate>June 2 2012</creationDate>
+	<creationDate>June 10 2012</creationDate>
 	<author>Darren Baptiste</author>
 	<authorEmail>darren@pelau.com</authorEmail>
 	<authorUrl>http://www.pelau.com</authorUrl>
 	<copyright>Copyright 2012</copyright>
 	<license>License Info</license>
 	<!--  The version string is recorded in the components table -->
-	<version>1.1.5</version>
+	<version>1.1.6</version>
 	<!-- latest update: 
-		FIXED:  Allow Staff to select ANY start time
-		cleanup of version-marking process
+		Fixes: Time Off defaulting to 1 hour
+		Only create a single Google Calendar entry per appointment, and update it with changes instead of creating new ones
   	-->
 	<!-- The description is optional and defaults to the name -->
 	<description>COM_SALONBOOK_DESCRIPTION</description>

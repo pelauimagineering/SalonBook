@@ -195,12 +195,10 @@ class SalonBookModelAppointments extends JModelItem
 				return 0;
 			}
 			
-			// error_log("\nlooking up details for user $user_id\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
-		
 			// look up the details of the passed in appointment
 			$db = JFactory::getDBO();
-			$appointmentQuery = "SELECT A.*, U.name, STYLIST.firstname as stylistName, S.name as serviceName, U.email FROM `#__salonbook_appointments` A join `#__users` U ON A.user = U.id join `#__salonbook_services` S ON A.service = S.id join `#__salonbook_users` STYLIST on A.stylist = STYLIST.user_id WHERE A.user = $user_id AND A.status = 1 AND A.deposit_paid = 1 ORDER BY A.appointmentDate ASC";
-
+			$appointmentQuery = "SELECT A.*, U.name, STYLIST.firstname as stylistName, S.name as serviceName, U.email FROM `#__salonbook_appointments` A join `#__users` U ON A.user = U.id join `#__salonbook_services` S ON A.service = S.id join `#__salonbook_users` STYLIST on A.stylist = STYLIST.user_id WHERE A.user = $user_id AND A.status > 0 ORDER BY A.appointmentDate DESC";
+			
 			$db->setQuery((string)$appointmentQuery);
 		
 			$appointmentData = $db->loadAssocList();
@@ -211,10 +209,13 @@ class SalonBookModelAppointments extends JModelItem
 		/**
 		 * Method to store an appointment record from the front-end
 		 *
+		 * Allow an override to eplictly set the length of appointments for cases when we are updating and exisiting appointment and we want to keep the already-modified duartion
+		 * This is the case with the Time Off function. The default duration is 1 hour, but this is almost nevet the amount that was set by the user
+		 *
 		 * @access	public
 		 * @return	boolean	True on success
 		 */
-		function store()
+		function store($duration = NULL)
 		{
 			$session = JFactory::getSession();
 			$data =& $session->get('appointmentData', array(), 'SalonBook');
@@ -227,12 +228,19 @@ class SalonBookModelAppointments extends JModelItem
 			
 			$db = JFactory::getDBO();
 			$service_id = $data['service'];
+			
+			if ( $duration == NULL )
+			{
 			$durationQuery = "select durationInMinutes from #__salonbook_services where id = $service_id";
 			$db->setQuery((string)$durationQuery);
 			$db->query();
-			$durationInMinutes = $db->loadResult();
-			
+			$durationInMinutes = $db->loadResult();			
 			$data['durationInMinutes'] = $durationInMinutes;
+			}
+			else
+			{
+				$data['durationInMinutes'] = $duration;
+			}
 			
 			if ( !$row = $this->getTable('SalonBook') )
 			{

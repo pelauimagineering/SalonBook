@@ -9,7 +9,7 @@ JHtml::_('behavior.tooltip');
 var newWindow;
 function displayCalendarPopup(url)
 {
-  newWindow = window.open(url, 'name','height=500,width=600');
+  newWindow = window.open(url, 'name','height=600,width=800');
   
   if (window.focus)
   {

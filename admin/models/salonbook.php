@@ -265,18 +265,13 @@ class SalonBooksModelSalonBook extends JModelAdmin
 	}
 	
 	/*
-	*	TODO:
-	*	This function properly belongs inside the SalonBookModelStylists class of stylists.php file.
-	*	The function IS in fact there right now, but is NOT being linked to properly as we still need to learn
-	*	how to handle setting up and calling from multiple data models in a default view/controller in the Admin section.
-	*
-	*	All of that to say that this function should be identical to the copy over there, then finally removed from this class
-	*	once the proper calling structure has been implemented.
 	*/
 	public function getOptionListOfStylists()
 	{
-		// show all users between clients (group=2) and SuperAdmin (group=8)
-		$queryString = "SELECT U.firstName as name, U.user_id as id FROM `#__salonbook_users` U JOIN `#__user_usergroup_map` G on U.user_id = G.user_id WHERE G.group_id > 2 AND G.group_id < 8";
+		$configOptions =& JComponentHelper::getParams('com_salonbook');
+		$stylists_group = $configOptions->get('stylists_group',0);
+		
+		$queryString = "SELECT U.firstName as name, U.user_id as id FROM `#__salonbook_users` U JOIN `#__user_usergroup_map` G on U.user_id = G.user_id WHERE G.group_id = $stylists_group";
 
 		$db = JFactory::getDBO();
 		$db->setQuery((string)$queryString);
