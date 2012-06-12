@@ -10,10 +10,9 @@
 	<copyright>Copyright 2012</copyright>
 	<license>License Info</license>
 	<!--  The version string is recorded in the components table -->
-	<version>1.1.6</version>
+	<version>1.1.6.1</version>
 	<!-- latest update: 
-		Fixes: Time Off defaulting to 1 hour
-		Only create a single Google Calendar entry per appointment, and update it with changes instead of creating new ones
+		Allow deletion of Users when Salonbook Synch is enabled
   	-->
 	<!-- The description is optional and defaults to the name -->
 	<description>COM_SALONBOOK_DESCRIPTION</description>

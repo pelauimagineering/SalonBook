@@ -22,7 +22,7 @@ class SalonBooksModelUsers extends JModelItem
 	 *
 	 * @return	boolean	success/failure of add process
 	 */
-	protected function getAddUser($id, $name, $password, $isStaff)
+	function getAddUser($id, $name, $password, $isStaff)
 	{
 		// use only the id to look up and copy the data between the tables
 		error_log("adding the latest site User to Salonbook. ID# " . $id, 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
@@ -30,7 +30,7 @@ class SalonBooksModelUsers extends JModelItem
 	}
 	
 	// remove user
-	protected function getRemoveUser($id)
+	function getRemoveUser($id)
 	{
 		$db = JFactory::getDBO();
 		
@@ -41,7 +41,7 @@ class SalonBooksModelUsers extends JModelItem
 	}
 	
 	// update user
-	protected function getUpdateUser($id)
+	function getUpdateUser($id)
 	{
 		//
 	}
