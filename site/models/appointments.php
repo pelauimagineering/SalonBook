@@ -197,7 +197,7 @@ class SalonBookModelAppointments extends JModelItem
 			
 			// look up the details of the passed in appointment
 			$db = JFactory::getDBO();
-			$appointmentQuery = "SELECT A.*, U.name, STYLIST.firstname as stylistName, S.name as serviceName, U.email FROM `#__salonbook_appointments` A join `#__users` U ON A.user = U.id join `#__salonbook_services` S ON A.service = S.id join `#__salonbook_users` STYLIST on A.stylist = STYLIST.user_id WHERE A.user = $user_id AND A.status > 0 ORDER BY A.appointmentDate DESC";
+			$appointmentQuery = "SELECT A.*, U.name, STYLIST.firstname as stylistName, S.name as serviceName, U.email, ST.status as 'statusText' FROM `#__salonbook_appointments` A join `#__users` U ON A.user = U.id join `#__salonbook_services` S ON A.service = S.id join `#__salonbook_users` STYLIST on A.stylist = STYLIST.user_id JOIN `#__salonbook_status` ST on A.status = ST.id WHERE A.user = $user_id AND A.status > 0 ORDER BY A.appointmentDate DESC";
 			
 			$db->setQuery((string)$appointmentQuery);
 		
@@ -309,7 +309,7 @@ class SalonBookModelAppointments extends JModelItem
 			$db = JFactory::getDBO();
 			$cancelQuery = "UPDATE `#__salonbook_appointments` A set status = ( SELECT S.id FROM `#__salonbook_status` S WHERE status LIKE 'Cancelled' ) WHERE A.id = '$appointment_id'";
 			
-			// error_log($cancelQuery."\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+			JLog::add("cancel appointment: " . $cancelQuery);
 			
 			$db->setQuery((string)$cancelQuery);
 			$db->query();

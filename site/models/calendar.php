@@ -34,7 +34,7 @@ class SalonBookModelCalendar extends JModel
 	 */
 	function deleteCalendarEntry($calendar, $calendarEventURL)
 	{
-		error_log("deleting event at URI: " . $calendarEventURL . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		JLog::add("deleting event at URI: " . $calendarEventURL);
 		try {
 			$response = $calendar->performHttpRequest('DELETE', $calendarEventURL);
 			
@@ -170,6 +170,47 @@ class SalonBookModelCalendar extends JModel
 		}
 	}
 	
+	/**
+	 * Remove the Google Calendar entry tied to the passed-in appointment
+	 * 
+	 * @param int $appointment_id
+	 * @return boolean	Success or failure of operation
+	 */
+	function removeAppointmentFromGoogle($appointment_id)
+	{
+		JLog::add("inside remove Appt from Google for appointment_id " . $appointment_id);
+		
+		// look up the calendar info for this appointment
+		JLoader::register('SalonBookModelAppointments',  JPATH_COMPONENT_SITE.DS.'models'.DS.'appointments.php');
+		$appointmentModel = new SalonBookModelAppointments();
+		$appointmentData = $appointmentModel->getAppointmentDetailsForID($appointment_id);
+		
+		JLog::add("details: " . var_export($appointmentData, true));
+		
+		$calendarEventURL = $appointmentData[0]['calendarEventURL']; 
+		if ( $calendarEventURL != NULL )
+		{
+			$calendarLogin = $appointmentData[0]['calendarLogin'];
+			$calendarPassword = $appointmentData[0]['calendarPassword'];
+			
+			// use the stylist data to figure out the correct calendar to post to
+			$calendar = $this->setupCalendarConnection($calendarLogin, $calendarPassword);
+			
+			return $this->deleteCalendarEntry($calendar, $calendarEventURL);
+		}
+		else
+		{
+			JLog::add("we couldn't find a Google calendar to delete");
+			return false;
+		}
+	}
+	
+	/**
+	 * Add or update this information to a Google calendar entry
+	 * 
+	 * @param unknown_type $appointment_id
+	 * @param unknown_type $durationInMinutes
+	 */
 	function saveAppointmentToGoogle($appointment_id, $durationInMinutes)
 	{
 // 		JLog::add("inside saveAppointmentToGoogle... with ID " . $appointment_id ." and durationInMinutes " . $durationInMinutes);

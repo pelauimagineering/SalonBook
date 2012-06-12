@@ -71,7 +71,19 @@ $cancellationAllowedMinDays = $this->configOptions->get('change_allowed_after_pe
 
 <?php
 	$resultsArray = $this->appointmentsList;
-	if ( count($resultsArray) < $maxBookings )
+	
+	// how many of these appointments are currently "In Progress"?
+	$current_count = 0;
+	foreach ($resultsArray as $appt) 
+	{
+		if ( $appt['status'] == 1 )
+		{
+			$current_count++;
+		}
+	}
+
+	if ( $current_count < 2 && $currentCount < $maxBookings )
+// 	if ( count($resultsArray) < $maxBookings )
 	{ 			
 	?>
 		<h2>Ok, <?php echo $firstName; ?>, let's get you started on booking a new appointment.</h2>
@@ -96,7 +108,8 @@ $cancellationAllowedMinDays = $this->configOptions->get('change_allowed_after_pe
 				$theDiff = strtotime($appointment['appointmentDate']) - time();		
 				$days = $theDiff / 60 / 60 / 24;
 			
-				if ( $days > $cancellationAllowedMinDays && $now < $date2 )
+				// only allow active, upcoming events to be rescheduled
+				if ( $appointment['status'] < 2 && $days > $cancellationAllowedMinDays && $now < $date2 )
 				{
 					$editButton = "<input type='button' name='edit' value='" . JText::_('COM_SALONBOOK_LIST_BUTTON_CHANGE_TITLE') . "' onclick='prepareToEdit(" . $appointment['id'] . "); ' class='apptEditButton_change' />";
 				}
@@ -105,7 +118,16 @@ $cancellationAllowedMinDays = $this->configOptions->get('change_allowed_after_pe
 					$editButton = "<input type='button' name='edit' value='" . JText::_('COM_SALONBOOK_LIST_BUTTON_LOCKED_TITLE') . "' class='apptEditButton_locked' disabled='disabled' />";
 				}
 			
-				$cancelButton = "<input type='button' name='edit' value='" . JText::_('COM_SALONBOOK_LIST_BUTTON_CANCEL_TITLE') . "' onclick='showCancelWarning(" . $appointment['id'] . "); ' class='apptEditButton_cancel' />";
+				// only allow access to the Cancel button if the Status is 0/1 'Waiting for Deposit' or 'In Progress'
+				if ( $appointment['status'] < 2 )
+				{
+					$cancelButton = "<input type='button' name='edit' value='" . JText::_('COM_SALONBOOK_LIST_BUTTON_CANCEL_TITLE') . "' onclick='showCancelWarning(" . $appointment['id'] . "); ' class='apptEditButton_cancel' />";
+				}
+				else
+				{
+					// disable this button
+					$cancelButton = "<input type='button' name='edit' value='" . $appointment['statusText'] . "' disabled='disabled' class='apptEditButton_locked' />";
+				}
 			
 				echo "<div class='apptDetail'>" . $editButton . $cancelButton . $appointment['serviceName'] . " with " . $appointment['stylistName'] . " on " . date("D M j", strtotime($appointment['appointmentDate']) ) . " at " . date("g:i a",strtotime($appointment['startTime'])) . " </div>";
 			}

@@ -10,9 +10,10 @@
 	<copyright>Copyright 2012</copyright>
 	<license>License Info</license>
 	<!--  The version string is recorded in the components table -->
-	<version>1.1.6.1</version>
+	<version>1.1.7</version>
 	<!-- latest update: 
-		Allow deletion of Users when Salonbook Synch is enabled
+		BUG: unable to delete an upcoming appointment 
+		Adjust the first page of the Booking Wizard to allow new appointments if the user has less than 2 "In Progress" 
   	-->
 	<!-- The description is optional and defaults to the name -->
 	<description>COM_SALONBOOK_DESCRIPTION</description>

@@ -12,6 +12,7 @@ JTable::addIncludePath(JPATH_COMPONENT_ADMINISTRATOR.DS.'tables');
 JLoader::register('SalonBookModelAppointments',  JPATH_COMPONENT_SITE.DS.'models'.DS.'appointments.php');
 JLoader::register('TableSalonBook', JPATH_COMPONENT_ADMINISTRATOR.DS.'tables'.DS.'salonbook.php');
 JLoader::register('SalonBookModelEmail',  JPATH_COMPONENT_SITE.DS.'models'.DS.'email.php');
+JLoader::register('SalonBookModelCalendar',  JPATH_COMPONENT_SITE.DS.'models'.DS.'calendar.php');
 
 require_once (JPATH_SITE.DS.'includes'.DS.'Zend'.DS.'Loader.php');
 require_once 'models/email.php';
@@ -170,23 +171,24 @@ class SalonBookController extends JController
 	 */
 	function cancelAppointment()
 	{
-		error_log("inside cancelAppointment()\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		JLog::add("inside cancelAppointment()");
 		
 		$model = new SalonBookModelAppointments();
 		
 		$appointment_id=JRequest::getVar('id', '0');
 		
-		if ( $appointment_id > 0 )
-		{
-			$success = $model->cancelAppointment($appointment_id);
-		}
+		$success = $model->cancelAppointment($appointment_id);
 		
-		error_log("did the appointment cancel properly? : |" . $success . "| \n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		JLog::add("did the appointment cancel properly? : |" . $success);
 		
 		$view = &$this->getView('Cancellation', 'html');
 		
 		if ( $success > 0 )
 		{
+			// remove the Google Calendar appointment as well
+			$calendarModel = new SalonBookModelCalendar();
+			$calendarSuccess = $calendarModel->removeAppointmentFromGoogle($appointment_id);
+			
 			// show a success message
 			$view->assign("success", true);		
 		}
