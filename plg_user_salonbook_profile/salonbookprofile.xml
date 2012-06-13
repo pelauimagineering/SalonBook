@@ -2,12 +2,12 @@
 <install version="1.6" type="plugin" group="user" method="upgrade">
 	<name>plg_user_salonbookprofile</name>
 	<author>Darren Baptiste</author>
-	<creationDate>June 2 2012</creationDate>
+	<creationDate>June 13 2012</creationDate>
 	<copyright>(C) 2012 pélau imagineering</copyright>
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
 	<authorEmail>darren@pelau.com</authorEmail>
 	<authorUrl>www.pelau.com</authorUrl>
-	<version>1.1</version>
+	<version>1.1.3</version>
 	<description>User - Salonbook Profile Plug-in</description>
 	<!-- Latest changes: replaced deprecated database error reporting method with standard exception handling -->
 	<files>
@@ -92,4 +92,10 @@
  
 		</fields>
 	</config>
+	
+	<updateservers>
+		<!-- Note: No spaces or linebreaks allowed between the server tags -->
+		<server type="extension" priority="2" name="SalonBook Update Site">http://salonbook.pelau.com/updatefiles/salonbook-updates_plg_user_salonbookprofile.xml</server>
+	</updateservers>
+	
  </install>

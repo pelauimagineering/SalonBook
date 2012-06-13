@@ -715,55 +715,61 @@ class SalonBookController extends JController
 		
 		$durationInSlots = ceil($duration / $minutesPerTimeslot);
 		
-		for ( $x=0; $x < count($slotsOpenForBookingToday); $x++ )
+		if ( count($slotsOpenForBookingToday) > 0 )
 		{
-			$thisSlotNumber = $slotsOpenForBookingToday[$x];
-			// error_log("thisSlotNumber = " . $thisSlotNumber . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
-			
-			
-			// check to see if the next $durationInSlots are free
-			$durationAvailable = false;
-			for ( $test = 0; $test < $durationInSlots; $test++ )
+			for ( $x=0; $x < count($slotsOpenForBookingToday); $x++ )
 			{
-				try 
+				if ( !array_key_exists($x, $slotsOpenForBookingToday) );
 				{
-					$nextSlotNumber = $slotsOpenForBookingToday[$x+$test+1];
-					$durationAvailable = true;
-				} 
-				catch (Exception $e) 
-				{
-					// end of the day
-					$nextSlotNumber = 0;
-				}
 				
-				if ( $nextSlotNumber == 0 )
-				{
+					$thisSlotNumber = $slotsOpenForBookingToday[$x];
+					// error_log("thisSlotNumber = " . $thisSlotNumber . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+					
+					// check to see if the next $durationInSlots are free
 					$durationAvailable = false;
-					break;
+					for ( $test = 0; $test < $durationInSlots; $test++ )
+					{
+						$testSlotIndex = $x+$test+1;
+						if ( array_key_exists($testSlotIndex, $slotsOpenForBookingToday) )
+						{
+							$nextSlotNumber =  $slotsOpenForBookingToday[$testSlotIndex];
+							$durationAvailable = true;
+						} 
+						else
+						{
+							// end of the day
+							$nextSlotNumber = 0;
+						}
+						
+						if ( $nextSlotNumber == 0 )
+						{
+							$durationAvailable = false;
+							break;
+						}
+					}
+		
+					// error_log("thisSlotNumber = " . $thisSlotNumber . " NextSlotNumber = " . $nextSlotNumber . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+					
+					if ( $durationAvailable == true && $thisSlotNumber )
+					{
+						// show this timeslot
+						$slotTime = $this->slotNumber2Time($thisSlotNumber);
+						$ampm = ($thisSlotNumber < 24) ? "am" : "pm";
+						$returnValue .= "<option value='$thisSlotNumber' name='$thisSlotNumber' ";
+						$displayTime = $slotTime . ' ' . $ampm;
+						$selectedTime = date('g:i a', strtotime($aTime));
+						if ( $displayTime === $selectedTime )
+						{
+							$returnValue .= " selected ";
+						}
+						$returnValue .= ">$slotTime $ampm</option>\n";
+						
+					}
 				}
 			}
-
-			// error_log("thisSlotNumber = " . $thisSlotNumber . " NextSlotNumber = " . $nextSlotNumber . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
-			
-			if ( $durationAvailable == true && $thisSlotNumber )
-			{
-				// show this timeslot
-				$slotTime = $this->slotNumber2Time($thisSlotNumber);
-				$ampm = ($thisSlotNumber < 24) ? "am" : "pm";
-				$returnValue .= "<option value='$thisSlotNumber' name='$thisSlotNumber' ";
-				$displayTime = $slotTime . ' ' . $ampm;
-				$selectedTime = date('g:i a', strtotime($aTime));
-				if ( $displayTime === $selectedTime )
-				{
-					$returnValue .= " selected ";
-				}
-				$returnValue .= ">$slotTime $ampm</option>\n";
-				
-			}
-			
 		}
-
-		// error_log("returnValue = " . $returnValue . "\n", 3, JPATH_ROOT.DS."logs".DS."salonbook.log");
+		
+		// JLog::add("returnValue = " . $returnValue);
 		
 		echo $returnValue;
 	}	

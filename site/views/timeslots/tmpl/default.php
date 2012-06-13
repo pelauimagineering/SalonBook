@@ -13,7 +13,7 @@ $stylist_id = JRequest::getInt('stylist_id');
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 
 <script type="text/javascript" src="/components/com_salonbook/salonui.js"></script>
-
+<script type="text/javascript" src="/media/com_salonbook/js/moment.min.js"></script>
 <!-- scripts -->
 <script>
 	function setPreviouslySelectedDateAndTime()
@@ -73,8 +73,11 @@ $stylist_id = JRequest::getInt('stylist_id');
 			
 			dateValue = $('#hiddenSelectedDate').val();
 			newDate = Date.parse(dateValue);
-			dateName = newDate.toString('dd-mm-yyyy');
-			dateName = dateName.substr(0,15);
+			// dateName = newDate.toString('dd-mm-yyyy');
+			// dateName = dateName.substr(0,15);
+			// dateName = newDate.getDay() + " " + newDate.getMonthName() + " " + newDate.getDate();
+			// newDate.getFullYear() + "-" + (newDate.getMonth() + 1) + "-" + newDate.getDate();
+			dateName = moment(newDate).format("dddd, MMMM D");
 			
 			// output the selected timeslot so the user can easily see what was chosen			
 			// if the user doesn't want one of the times shown... disable moving on
@@ -267,9 +270,9 @@ $stylist_id = JRequest::getInt('stylist_id');
 		<select class='time_selector' name='time_selector' id='time_selector_control'></select>
 		
 		<div id="displayAreaSelectedTimeslot">
-			<h2><span id="selectedTimeslot"></span>&nbsp;&nbsp;
+			<h3><span id="selectedTimeslot"></span></h3>
 				<input type=submit id="nextButton" value='Next >' class='goToNextPage' name="add">
-			</h2>
+			
 		</div>
 		
 	</div>

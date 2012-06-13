@@ -1,23 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <updates>
-   <update>
-      <name>SalonBook</name>
-      <description>SalonBook Appointment Booking Extension</description>
-      <element>com_salonbook</element>
-      <type>component</type>
-      <version>1.1.7.2</version>
- 
-      <infourl title="SalonBook URL">http://salonbook.pelau.com</infourl>
-      <downloads>
-         <downloadurl type="full" format="zip">http://salonbook.pelau.com/updatefiles/com_salonbook_1.1.7.2.zip</downloadurl>
-      </downloads>
-      <tags>
-         <tag>Bug fixes: typos</tag>
-      </tags>
- 
-      <maintainer>Pelau Imagineering Inc.</maintainer>
-      <maintainerurl>http://pelau.com</maintainerurl>
-      <section>Regular update</section>
-      <targetplatform name="joomla" version="2.5" />
-   </update> 
+	<update>
+		<name>SalonBook</name>
+		<description>SalonBook Appointment Booking Extension</description>
+		<element>com_salonbook</element>
+		<type>component</type>
+		<version>1.1.8</version>
+
+		<infourl title="SalonBook URL">http://salonbook.pelau.com</infourl>
+		<downloads>
+			<downloadurl type="full" format="zip">http://salonbook.pelau.com/updatefiles/com_salonbook_1.1.8.zip</downloadurl>
+		</downloads>
+		<tags />
+
+		<maintainer>Pelau Imagineering Inc.</maintainer>
+		<maintainerurl>http://pelau.com</maintainerurl>
+		<section/>
+		<targetplatform name="joomla" version="2.5" />
+	</update>
 </updates>
