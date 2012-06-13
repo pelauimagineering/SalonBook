@@ -82,8 +82,7 @@ $cancellationAllowedMinDays = $this->configOptions->get('change_allowed_after_pe
 		}
 	}
 
-	if ( $current_count < 2 && $currentCount < $maxBookings )
-// 	if ( count($resultsArray) < $maxBookings )
+	if ( $current_count < 2 && $current_count < $maxBookings )
 	{ 			
 	?>
 		<h2>Ok, <?php echo $firstName; ?>, let's get you started on booking a new appointment.</h2>
